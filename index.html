@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RPMS Res. 3280 - Hospital San Antonio E.S.E.</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800">
@@ -41,7 +42,7 @@
             <span id="toast-msg">Operación exitosa</span>
         </div>
 
-        <!-- Header Institucional (Limpio sin datos personales) -->
+        <!-- Header Institucional -->
         <header class="bg-blue-900 text-white shadow-md border-b-4 border-amber-500">
             <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
                 <div class="flex items-center space-x-3">
@@ -56,10 +57,9 @@
             </div>
         </header>
 
-        <!-- Dashboard KPI Resumen (Actualizado con Asistencias e Inasistencias) -->
         <main class="max-w-7xl mx-auto px-4 py-6">
+            <!-- Dashboard KPI Resumen Tarjetas -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-                <!-- Total Captados -->
                 <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
                     <div>
                         <p class="text-[11px] font-bold text-slate-400 uppercase">Total Captados</p>
@@ -68,25 +68,22 @@
                     <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-users"></i></div>
                 </div>
 
-                <!-- Asistencias / Demanda Completa -->
                 <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
                     <div>
-                        <p class="text-[11px] font-bold text-slate-400 uppercase">Demanda Completa / Asistió</p>
+                        <p class="text-[11px] font-bold text-slate-400 uppercase">Demanda Completa</p>
                         <h3 id="kpi-asistencias" class="text-2xl font-extrabold text-emerald-600 mt-0.5">0</h3>
                     </div>
                     <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-circle-check"></i></div>
                 </div>
 
-                <!-- Inasistencias -->
                 <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
                     <div>
-                        <p class="text-[11px] font-bold text-slate-400 uppercase">Inasistencias / Faltó</p>
+                        <p class="text-[11px] font-bold text-slate-400 uppercase">Inasistencias</p>
                         <h3 id="kpi-inasistencias" class="text-2xl font-extrabold text-rose-600 mt-0.5">0</h3>
                     </div>
                     <div class="w-10 h-10 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-user-xmark"></i></div>
                 </div>
 
-                <!-- Intervenciones Pendientes -->
                 <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
                     <div>
                         <p class="text-[11px] font-bold text-slate-400 uppercase">Pendientes / Brechas</p>
@@ -95,13 +92,35 @@
                     <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-clock"></i></div>
                 </div>
 
-                <!-- % Cierre Efectivo Ruta -->
                 <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
                     <div>
-                        <p class="text-[11px] font-bold text-slate-400 uppercase">% Cierre Efectivo</p>
+                        <p class="text-[11px] font-bold text-slate-400 uppercase">% Cierre Ruta</p>
                         <h3 id="kpi-cierre" class="text-2xl font-extrabold text-blue-600 mt-0.5">0%</h3>
                     </div>
                     <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-chart-line"></i></div>
+                </div>
+            </div>
+
+            <!-- EVIDENCIA GRÁFICA / ANALÍTICA (NUEVO) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                    <h3 class="text-xs font-bold text-slate-600 uppercase mb-4 flex items-center space-x-2">
+                        <i class="fa-solid fa-chart-pie text-blue-600"></i>
+                        <span>Estado de Atención y Cobertura de Rutas</span>
+                    </h3>
+                    <div class="h-56 relative flex items-center justify-center">
+                        <canvas id="chartEstado"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                    <h3 class="text-xs font-bold text-slate-600 uppercase mb-4 flex items-center space-x-2">
+                        <i class="fa-solid fa-chart-bar text-amber-500"></i>
+                        <span>Distribución de Pacientes por Entidad (EPS)</span>
+                    </h3>
+                    <div class="h-56 relative flex items-center justify-center">
+                        <canvas id="chartEps"></canvas>
+                    </div>
                 </div>
             </div>
 
@@ -204,10 +223,10 @@
                         <input type="date" id="fechaCaptacion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                     </div>
 
-                    <!-- Intervención Faltante en RPMS (Brechas) -->
+                    <!-- Intervención Faltante en RPMS -->
                     <div class="md:col-span-2">
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Intervención Faltante en RPMS (Brechas)</label>
-                        <select id="intervencionFaltante" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-medium text-amber-700">
+                        <select id="intervencionFaltante" onchange="actualizarProximaAccion()" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-medium text-amber-700">
                             <option value="">-- Seleccione o Autodetecte --</option>
                             <option value="Tamizaje CCU (Citología / ADN-VPH)">Tamizaje CCU (Citología / ADN-VPH)</option>
                             <option value="Tamizaje Cáncer de Mama (Mamografía)">Tamizaje Cáncer de Mama (Mamografía)</option>
@@ -232,15 +251,16 @@
                         </select>
                     </div>
 
-                    <!-- Próxima Acción de Ruta -->
+                    <!-- Próxima Acción de Ruta (AUTOMÁTICA SEGÚN INTERVENCIÓN) -->
                     <div class="md:col-span-2">
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Próxima Acción de Ruta</label>
-                        <select id="proximaAccion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Próxima Acción de Ruta (Automática)</label>
+                        <select id="proximaAccion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-semibold text-blue-900">
                             <option value="">Seleccione próxima acción...</option>
                             <option value="Asistir a toma de muestras / laboratorio">Asistir a toma de muestras / laboratorio</option>
                             <option value="Asistir a consulta médica general / valoración">Asistir a consulta médica general / valoración</option>
                             <option value="Asistir a cita de planificación familiar">Asistir a cita de planificación familiar</option>
                             <option value="Asistir a programa de vacunación PAI">Asistir a programa de vacunación PAI</option>
+                            <option value="Asistir a consulta odontológica preventiva">Asistir a consulta odontológica preventiva</option>
                             <option value="Seguimiento telefónico en 8 días">Seguimiento telefónico en 8 días</option>
                             <option value="Cierre definitivo de ruta completado">Cierre definitivo de ruta completado</option>
                         </select>
@@ -252,17 +272,17 @@
                         <input type="date" id="fechaProgramada" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                     </div>
 
-                    <!-- Responsable -->
+                    <!-- Responsable del Seguimiento (EDITABLE SEGÚN EL DOCTOR) -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Responsable del Seguimiento</label>
-                        <input type="text" id="responsable" value="Laura Ramírez" readonly 
-                               class="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 bg-slate-100 text-slate-600 text-sm">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Responsable / Doctor Tratante</label>
+                        <input type="text" id="responsable" placeholder="Ej. Dr. Carlos Mendoza / Laura Ramírez" value="Laura Ramírez" 
+                               class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                     </div>
 
-                    <!-- Estado de Atención RPMS (Actualizado con Inasistencia y Demanda Completa) -->
+                    <!-- Estado de Atención RPMS / Demanda Completa -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Estado de Atención / Asistencia</label>
-                        <select id="estadoAtencion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-medium">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Estado de Atención / Demanda</label>
+                        <select id="estadoAtencion" onchange="verificarCierreAutomatico()" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-medium">
                             <option value="Pendiente">Pendiente</option>
                             <option value="Gestionado / Citado">Gestionado / Citado</option>
                             <option value="Asistió / Demanda Completa">Asistió / Demanda Completa</option>
@@ -270,7 +290,7 @@
                         </select>
                     </div>
 
-                    <!-- Cierre Verificado -->
+                    <!-- Cierre Verificado de Ruta -->
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Cierre Verificado de Ruta</label>
                         <select id="cierreVerificado" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
@@ -305,6 +325,7 @@
                                 <th class="p-3">Edad / Ciclo Vital</th>
                                 <th class="p-3">EPS / Régimen</th>
                                 <th class="p-3">Brecha / Intervención</th>
+                                <th class="p-3">Doctor / Responsable</th>
                                 <th class="p-3">Estado Atención</th>
                                 <th class="p-3 text-center">Acciones</th>
                             </tr>
@@ -319,6 +340,9 @@
     </div>
 
     <script>
+        let chartEstadoInstance = null;
+        let chartEpsInstance = null;
+
         function handleLogin(event) {
             event.preventDefault();
             const pass = document.getElementById('access-pass').value;
@@ -371,12 +395,46 @@
 
             document.getElementById('cicloVital').value = ciclo;
             
+            // Selección automática de brecha
             const selectIntervencion = document.getElementById('intervencionFaltante');
             for (let i = 0; i < selectIntervencion.options.length; i++) {
                 if (selectIntervencion.options[i].value.toLowerCase().includes(brechaSugerida.toLowerCase())) {
                     selectIntervencion.selectedIndex = i;
                     break;
                 }
+            }
+
+            // Automatizar la Próxima Acción basada en la brecha autodiseñada
+            actualizarProximaAccion();
+        }
+
+        // Vincular Próxima Acción de Ruta automáticamente según la Intervención Faltante
+        function actualizarProximaAccion() {
+            const intervencion = document.getElementById('intervencionFaltante').value;
+            const selectAccion = document.getElementById('proximaAccion');
+
+            if (intervencion.includes('Tamizaje CCU') || intervencion.includes('Mama')) {
+                selectAccion.value = "Asistir a toma de muestras / laboratorio";
+            } else if (intervencion.includes('Cardiovascular')) {
+                selectAccion.value = "Asistir a consulta médica general / valoración";
+            } else if (intervencion.includes('Vacunación')) {
+                selectAccion.value = "Asistir a programa de vacunación PAI";
+            } else if (intervencion.includes('Salud Bucal')) {
+                selectAccion.value = "Asistir a consulta odontológica preventiva";
+            } else if (intervencion.includes('Planificación')) {
+                selectAccion.value = "Asistir a cita de planificación familiar";
+            }
+        }
+
+        // Cambiar el Cierre Verificado automáticamente cuando complete la Demanda
+        function verificarCierreAutomatico() {
+            const estadoAtencion = document.getElementById('estadoAtencion').value;
+            const selectCierre = document.getElementById('cierreVerificado');
+            if (estadoAtencion.includes('Asistió / Demanda Completa')) {
+                selectCierre.value = "Sí (Cerrado)";
+                document.getElementById('proximaAccion').value = "Cierre definitivo de ruta completado";
+            } else {
+                selectCierre.value = "No (Abierto)";
             }
         }
 
@@ -436,9 +494,17 @@
             document.getElementById('kpi-cierre').innerText = porcentajeCierre + "%";
 
             if (total === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">No hay registros cargados actualmente.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">No hay registros cargados actualmente.</td></tr>`;
+                renderGraficas(0, 0, 0, {});
                 return;
             }
+
+            // Agrupar EPS para la gráfica
+            let conteoEps = {};
+            registros.forEach(r => {
+                let eps = r.entidadEps || 'No Especificado';
+                conteoEps[eps] = (conteoEps[eps] || 0) + 1;
+            });
 
             registros.forEach((r) => {
                 const tr = document.createElement('tr');
@@ -462,6 +528,7 @@
                         <p class="text-[10px] text-slate-500 mt-0.5">Afiliación: ${r.estadoAfiliacion}</p>
                     </td>
                     <td class="p-3 font-medium text-amber-800">${r.intervencionFaltante}</td>
+                    <td class="p-3 text-slate-700 font-medium">${r.responsable}</td>
                     <td class="p-3">
                         <span class="px-2 py-0.5 rounded-full text-[10px] ${badgeColor}">
                             ${r.estadoAtencion}
@@ -474,6 +541,52 @@
                     </td>
                 `;
                 tbody.appendChild(tr);
+            });
+
+            renderGraficas(asistencias, inasistencias, pendientes, conteoEps);
+        }
+
+        function renderGraficas(asistencias, inasistencias, pendientes, conteoEps) {
+            // Gráfica de Estado de Atenciones
+            const ctxEstado = document.getElementById('chartEstado').getContext('2d');
+            if (chartEstadoInstance) chartEstadoInstance.destroy();
+
+            chartEstadoInstance = new Chart(ctxEstado, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Demanda Completa', 'Inasistencias', 'Pendientes'],
+                    datasets: [{
+                        data: [asistencias, inasistencias, pendientes],
+                        backgroundColor: ['#10b981', '#f43f5e', '#f59e0b']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+
+            // Gráfica de Cobertura por EPS
+            const ctxEps = document.getElementById('chartEps').getContext('2d');
+            if (chartEpsInstance) chartEpsInstance.destroy();
+
+            chartEpsInstance = new Chart(ctxEps, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(conteoEps),
+                    datasets: [{
+                        label: 'Pacientes Captados',
+                        data: Object.values(conteoEps),
+                        backgroundColor: '#1e40af'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                }
             });
         }
 
