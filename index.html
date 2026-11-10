@@ -97,7 +97,7 @@
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
                 <div class="bg-slate-900 px-6 py-4 flex items-center space-x-3 text-white">
                     <i class="fa-solid fa-address-card text-amber-400 text-lg"></i>
-                    <h2 class="font-bold tracking-wide text-sm uppercase">Captión y Seguimiento a Intervenciones RPMS</h2>
+                    <h2 class="font-bold tracking-wide text-sm uppercase">Captación y Seguimiento a Intervenciones RPMS</h2>
                 </div>
                 
                 <form id="rpms-form" onsubmit="handleSubmit(event)" class="p-6 grid grid-cols-1 md:grid-cols-4 gap-5">
@@ -126,31 +126,31 @@
                         </select>
                     </div>
 
-                    <!-- Año de Nacimiento (Nuevo para cálculo de edad) -->
+                    <!-- Año de Nacimiento (Para cálculo automático de edad) -->
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Año de Nacimiento</label>
-                        <input type="number" id="AnioNacimiento" required min="1900" max="2026" placeholder="Ej. 1995" onchange="calcularEdadYCiclo()"
+                        <input type="number" id="AnioNacimiento" required min="1900" max="2026" placeholder="Ej. 1995" oninput="calcularEdadYCiclo()" onchange="calcularEdadYCiclo()"
                                class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                     </div>
 
-                    <!-- Edad calculada automáticamente -->
+                    <!-- Edad calculada -->
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Edad Calculada</label>
                         <input type="text" id="edadCalculada" readonly placeholder="Automática" 
                                class="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 bg-slate-100 text-slate-600 text-sm font-bold">
                     </div>
 
-                    <!-- Momento del Ciclo Vital (Automatizado) -->
+                    <!-- Momento del Ciclo Vital -->
                     <div class="md:col-span-2">
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Momento del Ciclo Vital (Auto)</label>
                         <input type="text" id="cicloVital" readonly placeholder="Se calcula según el año de nacimiento" 
                                class="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 bg-slate-100 text-blue-900 font-semibold text-sm">
                     </div>
 
-                    <!-- Entidad EPS (Desplegable detallado solicitado) -->
+                    <!-- Entidad EPS (Desplegable detallado institucional) -->
                     <div class="md:col-span-2">
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Entidad (EPS)</label>
-                        <select id="entidadEps" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
+                        <select id="entidadEps" required class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
                             <option value="">Seleccione EPS y Régimen...</option>
                             <option value="Nueva EPS - Contributivo">Nueva EPS - Contributivo</option>
                             <option value="Nueva EPS - Subsidiado">Nueva EPS - Subsidiado</option>
@@ -192,15 +192,15 @@
                         <input type="date" id="fechaCaptacion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                     </div>
 
-                    <!-- Intervención Faltante en RPMS (Brechas - Automatizada o sugerida) -->
+                    <!-- Intervención Faltante en RPMS (Brechas - Automatizada por edad) -->
                     <div class="md:col-span-2">
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Intervención Faltante en RPMS (Brechas)</label>
                         <select id="intervencionFaltante" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-medium text-amber-700">
                             <option value="">-- Seleccione o Autodetecte --</option>
-                            <option value="Tamizaje CCU (Citología / ADN-VPH)">Tamizaje CCU (Citología / ADN-VPH) [Adultez]</option>
-                            <option value="Tamizaje Cáncer de Mama (Mamografía)">Tamizaje Cáncer de Mama (Mamografía) [Adultez / Vejez]</option>
-                            <option value="Valoración Integral / RIESGO CARDIOVASCULAR">Valoración Integral / Riesgo Cardiovascular</option>
-                            <option value="Esquema de Vacunación PAI Regular">Esquema de Vacunación PAI Regular [Primera Infancia / Infancia]</option>
+                            <option value="Tamizaje CCU (Citología / ADN-VPH)">Tamizaje CCU (Citología / ADN-VPH)</option>
+                            <option value="Tamizaje Cáncer de Mama (Mamografía)">Tamizaje Cáncer de Mama (Mamografía)</option>
+                            <option value="Valoración Integral / Riesgo Cardiovascular">Valoración Integral / Riesgo Cardiovascular</option>
+                            <option value="Esquema de Vacunación PAI Regular">Esquema de Vacunación PAI Regular</option>
                             <option value="Salud Bucal / Higiene Oral Preventiva">Salud Bucal / Higiene Oral Preventiva</option>
                             <option value="Planificación Familiar / Asesoría Anticonceptiva">Planificación Familiar / Asesoría Anticonceptiva</option>
                         </select>
@@ -292,7 +292,6 @@
     </div>
 
     <script>
-        // Lógica de seguridad y control de sesión
         function handleLogin(event) {
             event.preventDefault();
             const pass = document.getElementById('access-pass').value;
@@ -305,10 +304,8 @@
             }
         }
 
-        // Establecer fecha actual por defecto
         document.getElementById('fechaCaptacion').valueAsDate = new Date();
 
-        // Automatización de Edad y Ciclo Vital según Año de Nacimiento
         function calcularEdadYCiclo() {
             const anioNac = parseInt(document.getElementById('AnioNacimiento').value);
             const anioActual = new Date().getFullYear();
@@ -327,39 +324,35 @@
 
             if (edad >= 0 && edad <= 5) {
                 ciclo = "Primera Infancia (0-5 años)";
-                brechaSugerida = "Esquema de Vacunación PAI Regular";
+                brechaSugerida = "Vacunación";
             } else if (edad >= 6 && edad <= 11) {
                 ciclo = "Infancia (6-11 años)";
-                brechaSugerida = "Salud Bucal / Higiene Oral Preventiva";
+                brechaSugerida = "Salud Bucal";
             } else if (edad >= 12 && edad <= 17) {
                 ciclo = "Adolescencia (12-17 años)";
-                brechaSugerida = "Planificación Familiar / Asesoría Anticonceptiva";
+                brechaSugerida = "Planificación";
             } else if (edad >= 18 && edad <= 28) {
                 ciclo = "Juventud (18-28 años)";
-                brechaSugerida = "Tamizaje CCU (Citología / ADN-VPH)";
+                brechaSugerida = "Tamizaje CCU";
             } else if (edad >= 29 && edad <= 59) {
                 ciclo = "Adultez (29-59 años)";
-                brechaSugerida = "Tamizaje Cáncer de Mama (Mamografía)";
+                brechaSugerida = "Cáncer de Mama";
             } else {
                 ciclo = "Vejez (60+ años)";
-                brechaSugerida = "Valoración Integral / RIESGO CARDIOVASCULAR";
+                brechaSugerida = "Cardiovascular";
             }
 
             document.getElementById('cicloVital').value = ciclo;
             
-            // Sugerir automáticamente la intervención faltante en base a la edad/ciclo
             const selectIntervencion = document.getElementById('intervencionFaltante');
-            if (brechaSugerida) {
-                for (let i = 0; i < selectIntervencion.options.length; i++) {
-                    if (selectIntervencion.options[i].value.includes(brechaSugerida.split(' ')[0])) {
-                        selectIntervencion.selectedIndex = i;
-                        break;
-                    }
+            for (let i = 0; i < selectIntervencion.options.length; i++) {
+                if (selectIntervencion.options[i].value.toLowerCase().includes(brechaSugerida.toLowerCase())) {
+                    selectIntervencion.selectedIndex = i;
+                    break;
                 }
             }
         }
 
-        // Base de datos local simulada en navegador (lista para conectar con Google Sheets)
         let registros = JSON.parse(localStorage.getItem('rpms_registros')) || [];
 
         function handleSubmit(event) {
@@ -393,6 +386,8 @@
             document.getElementById('rpms-form').reset();
             document.getElementById('fechaCaptacion').valueAsDate = new Date();
             document.getElementById('responsable').value = "Laura Ramírez";
+            document.getElementById('edadCalculada').value = "";
+            document.getElementById('cicloVital').value = "";
             cargarRegistros();
         }
 
@@ -416,7 +411,7 @@
                 return;
             }
 
-            registros.forEach((r, index) => {
+            registros.forEach((r) => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition";
                 tr.innerHTML = `
@@ -479,7 +474,6 @@
             a.click();
         }
 
-        // Cargar datos iniciales al abrir
         cargarRegistros();
     </script>
 </body>
