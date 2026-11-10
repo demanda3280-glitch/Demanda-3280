@@ -13,439 +13,474 @@
     <div id="login-modal" class="fixed inset-0 z-50 bg-blue-950 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 border-t-4 border-amber-500">
             <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-blue-100 text-blue-900 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
+                <div class="w-16 h-16 bg-blue-100 text-blue-900 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl font-bold">
                     <i class="fa-solid fa-lock"></i>
                 </div>
-                <h2 class="text-xl font-bold text-blue-900">Acceso Restringido</h2>
-                <p class="text-xs text-slate-500 mt-1">Hospital San Antonio E.S.E. de Ambalema<br>Gestión de Demanda Inducida (Res. 3280)</p>
+                <h2 class="text-2xl font-bold text-slate-900">Acceso Restringido</h2>
+                <p class="text-sm text-slate-500 mt-1">Hospital San Antonio E.S.E. de Ambalema</p>
             </div>
-            <form id="form-login" class="space-y-4">
+            <form onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Contraseña de Acceso</label>
-                    <input type="password" id="password-input" required placeholder="Ingresa la contraseña..." class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Contraseña de Acceso</label>
+                    <input type="password" id="access-pass" required placeholder="Ingrese la contraseña" 
+                           class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-slate-800">
                 </div>
-                <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-medium py-3 rounded-lg text-sm transition shadow-md flex items-center justify-center">
-                    <i class="fa-solid fa-right-to-bracket mr-2"></i> Ingresar al Sistema
+                <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-semibold py-3 rounded-lg transition duration-200 shadow-md">
+                    Ingresar al Sistema
                 </button>
-                <p id="error-login" class="text-xs text-rose-600 text-center font-semibold hidden">Contraseña incorrecta. Intenta nuevamente.</p>
             </form>
+            <p id="login-error" class="text-red-500 text-xs text-center mt-3 hidden font-medium">Contraseña incorrecta. Intente nuevamente.</p>
         </div>
     </div>
 
-    <!-- APLICACIÓN PRINCIPAL (OCULTA HASTA INGRESAR CLAVE) -->
-    <div id="app-content" class="hidden min-h-screen">
+    <!-- APLICACIÓN PRINCIPAL -->
+    <div id="app-container" class="hidden">
         <!-- Notificación Toast -->
-        <div id="toast" class="fixed top-5 right-5 z-50 transform translate-x-full transition-transform duration-300 bg-emerald-600 text-white px-4 py-3 rounded-lg shadow-lg flex items-center space-x-2">
-            <i class="fa-solid fa-circle-check"></i>
-            <span id="toast-msg">¡Operación exitosa!</span>
+        <div id="toast" class="fixed top-5 right-5 z-50 transform translate-x-full transition-transform duration-300 bg-emerald-600 text-white px-6 py-3 rounded-xl shadow-xl flex items-center space-x-3">
+            <i class="fa-solid fa-circle-check text-xl"></i>
+            <span id="toast-msg">Operación exitosa</span>
         </div>
 
         <!-- Header Institucional -->
         <header class="bg-blue-900 text-white shadow-md border-b-4 border-amber-500">
             <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
-                <div>
-                    <h1 class="text-xl font-bold tracking-wide">HOSPITAL SAN ANTONIO E.S.E. DE AMBALEMA</h1>
-                    <p class="text-xs text-blue-200 mt-1">Gestión de la Ruta Integral de Atención para la Promoción y Mantenimiento de la Salud (RPMS - Res. 3280)</p>
-                </div>
-                <div class="mt-3 md:mt-0 flex items-center space-x-4">
-                    <div class="text-right text-xs bg-blue-800 px-3 py-2 rounded border border-blue-700">
-                        <p><span class="font-semibold">Estudiante:</span> Laura Natali Ramírez Agudelo (ID: 794842)</p>
-                        <p><span class="font-semibold">Jefe Inmediato:</span> Cindy Tatiana López Bonilla</p>
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white text-blue-900 p-2.5 rounded-xl font-black text-xl shadow">
+                        <i class="fa-solid fa-hospital"></i>
                     </div>
-                    <button onclick="cerrarSesion()" title="Cerrar Sesión" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-2 rounded text-xs transition shadow-sm">
-                        <i class="fa-solid fa-power-off"></i>
-                    </button>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-wide">HOSPITAL SAN ANTONIO E.S.E. DE AMBALEMA</h1>
+                        <p class="text-xs text-blue-200 font-medium">Gestión de la Ruta Integral de Atención para la Promoción y Mantenimiento de la Salud (RPMS - Res. 3280)</p>
+                    </div>
+                </div>
+                <div class="mt-3 md:mt-0 bg-blue-950/60 px-4 py-2 rounded-lg border border-blue-800 text-xs text-right">
+                    <p><span class="font-semibold text-amber-400">Estudiante:</span> Laura Natali Ramírez Agudelo (ID: 794842)</p>
+                    <p><span class="font-semibold text-amber-400">Jefe Inmediato:</span> Cindy Tatiana López Bonilla</p>
                 </div>
             </div>
         </header>
 
-        <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
-
-            <!-- Tarjetas KPI RPMS -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+        <!-- Dashboard KPI Resumen -->
+        <main class="max-w-7xl mx-auto px-4 py-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-medium text-slate-500 uppercase">Total Captados en Rutas</p>
-                        <h3 id="kpi-total" class="text-2xl font-bold text-slate-800 mt-1">0</h3>
+                        <p class="text-xs font-bold text-slate-400 uppercase">Total Captados en Rutas</p>
+                        <h3 id="kpi-total" class="text-3xl font-extrabold text-blue-900 mt-1">0</h3>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-lg"><i class="fa-solid fa-users"></i></div>
+                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
                 </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-medium text-slate-500 uppercase">Usuarios Activos EPS</p>
-                        <h3 id="kpi-activos" class="text-2xl font-bold text-emerald-600 mt-1">0</h3>
+                        <p class="text-xs font-bold text-slate-400 uppercase">Usuarios Activos EPS</p>
+                        <h3 id="kpi-activos" class="text-3xl font-extrabold text-emerald-600 mt-1">0</h3>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg"><i class="fa-solid fa-user-check"></i></div>
+                    <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-user-check"></i></div>
                 </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-medium text-slate-500 uppercase">Intervenciones Pendientes</p>
-                        <h3 id="kpi-pendientes" class="text-2xl font-bold text-amber-600 mt-1">0</h3>
+                        <p class="text-xs font-bold text-slate-400 uppercase">Intervenciones Pendientes</p>
+                        <h3 id="kpi-pendientes" class="text-3xl font-extrabold text-amber-600 mt-1">0</h3>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center text-lg"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-triangle-exclamation"></i></div>
                 </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-medium text-slate-500 uppercase">% Cierre Efectivo Ruta</p>
-                        <h3 id="kpi-cumplimiento" class="text-2xl font-bold text-indigo-600 mt-1">0%</h3>
+                        <p class="text-xs font-bold text-slate-400 uppercase">% Cierre Efectivo Ruta</p>
+                        <h3 id="kpi-cierre" class="text-3xl font-extrabold text-blue-600 mt-1">0%</h3>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg"><i class="fa-solid fa-chart-pie"></i></div>
+                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-chart-pie"></i></div>
                 </div>
             </div>
 
-            <!-- Formulario Registro RPMS -->
-            <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                <h2 class="text-sm font-bold text-blue-900 uppercase tracking-wider mb-4 flex items-center">
-                    <i class="fa-solid fa-notes-medical mr-2"></i> Captación y Seguimiento a Intervenciones RPMS
-                </h2>
-                <form id="form-registro" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Nombre Completo</label>
-                        <input type="text" id="nombre" required placeholder="Ej. Ana Lucía Gómez" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+            <!-- Formulario de Captación y Gestión RPMS -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
+                <div class="bg-slate-900 px-6 py-4 flex items-center space-x-3 text-white">
+                    <i class="fa-solid fa-address-card text-amber-400 text-lg"></i>
+                    <h2 class="font-bold tracking-wide text-sm uppercase">Captión y Seguimiento a Intervenciones RPMS</h2>
+                </div>
+                
+                <form id="rpms-form" onsubmit="handleSubmit(event)" class="p-6 grid grid-cols-1 md:grid-cols-4 gap-5">
+                    
+                    <!-- Nombre Completo -->
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nombre Completo</label>
+                        <input type="text" id="nombre" required placeholder="Ej. Ana Lucía Gómez" 
+                               class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                     </div>
+
+                    <!-- Documento -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Documento de Identidad</label>
-                        <input type="text" id="doc" required placeholder="Ej. 1070934512" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Documento de Identidad</label>
+                        <input type="text" id="documento" required placeholder="Ej. 1070934512" 
+                               class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                     </div>
+
+                    <!-- Sexo / Género -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Sexo / Género</label>
-                        <select id="sexo" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Sexo / Género</label>
+                        <select id="sexo" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
                             <option value="Femenino">Femenino</option>
                             <option value="Masculino">Masculino</option>
-                            <option value="Intersexual / Otro">Intersexual / Otro</option>
+                            <option value="Otro">Otro</option>
                         </select>
                     </div>
+
+                    <!-- Año de Nacimiento (Nuevo para cálculo de edad) -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Momento del Ciclo Vital</label>
-                        <select id="ciclo" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="Primera Infancia (0-5 años)">Primera Infancia (0-5 años)</option>
-                            <option value="Infancia (6-11 años)">Infancia (6-11 años)</option>
-                            <option value="Adolescencia (12-17 años)">Adolescencia (12-17 años)</option>
-                            <option value="Juventud (18-28 años)">Juventud (18-28 años)</option>
-                            <option value="Adultez (29-59 años)" selected>Adultez (29-59 años)</option>
-                            <option value="Vejez (60+ años)">Vejez (60+ años)</option>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Año de Nacimiento</label>
+                        <input type="number" id="AnioNacimiento" required min="1900" max="2026" placeholder="Ej. 1995" onchange="calcularEdadYCiclo()"
+                               class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
+                    </div>
+
+                    <!-- Edad calculada automáticamente -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Edad Calculada</label>
+                        <input type="text" id="edadCalculada" readonly placeholder="Automática" 
+                               class="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 bg-slate-100 text-slate-600 text-sm font-bold">
+                    </div>
+
+                    <!-- Momento del Ciclo Vital (Automatizado) -->
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Momento del Ciclo Vital (Auto)</label>
+                        <input type="text" id="cicloVital" readonly placeholder="Se calcula según el año de nacimiento" 
+                               class="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 bg-slate-100 text-blue-900 font-semibold text-sm">
+                    </div>
+
+                    <!-- Entidad EPS (Desplegable detallado solicitado) -->
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Entidad (EPS)</label>
+                        <select id="entidadEps" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
+                            <option value="">Seleccione EPS y Régimen...</option>
+                            <option value="Nueva EPS - Contributivo">Nueva EPS - Contributivo</option>
+                            <option value="Nueva EPS - Subsidiado">Nueva EPS - Subsidiado</option>
+                            <option value="Asmet Salud - Contributivo">Asmet Salud - Contributivo</option>
+                            <option value="Asmet Salud - Subsidiado">Asmet Salud - Subsidiado</option>
+                            <option value="Salud Total - Contributivo">Salud Total - Contributivo</option>
+                            <option value="Salud Total - Subsidiado">Salud Total - Subsidiado</option>
+                            <option value="Fomag (Magisterio)">Fomag (Magisterio)</option>
+                            <option value="Sanitas - Contributivo">Sanitas - Contributivo</option>
+                            <option value="Sura - Contributivo">Sura - Contributivo</option>
+                            <option value="Otra / No Asegurado">Otra / No Asegurado</option>
                         </select>
                     </div>
+
+                    <!-- Estado de Afiliación -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Entidad (EPS)</label>
-                        <input type="text" id="eps" required placeholder="Ej. Nueva EPS, Pijaos Salud..." class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Estado de Afiliación</label>
-                        <select id="estadoEps" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="Activo" selected>Activo</option>
-                            <option value="Inactivo / Retirado">Inactivo / Retirado</option>
-                            <option value="En Verificación">En Verificación</option>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Estado de Afiliación</label>
+                        <select id="estadoAfiliacion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
+                            <option value="Activo">Activo</option>
+                            <option value="Inactivo">Inactivo</option>
+                            <option value="Retirado">Retirado</option>
                         </select>
                     </div>
+
+                    <!-- Entorno de Captación -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Entorno / Origen de Captación</label>
-                        <select id="origen" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="Equipos Básicos de Salud (EBS)" selected>Equipos Básicos de Salud (EBS)</option>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Entorno / Origen</label>
+                        <select id="entorno" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
+                            <option value="Equipos Básicos de Salud (EBS)">Equipos Básicos de Salud (EBS)</option>
                             <option value="Consulta Externa">Consulta Externa</option>
+                            <option value="Urgencias">Urgencias</option>
+                            <option value="Demanda Inducida / Jornada">Demanda Inducida / Jornada</option>
                         </select>
                     </div>
+
+                    <!-- Fecha de Captación -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Fecha de Captación</label>
-                        <input type="date" id="fechaCaptacion" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Fecha de Captación</label>
+                        <input type="date" id="fechaCaptacion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                     </div>
-                    <div class="sm:col-span-2">
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Intervención Faltante en RPMS (Brechas)</label>
-                        <input type="text" id="faltantes" required placeholder="Ej. Tamizaje CCU, Valoración Integral, Muestras de Sangre..." class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Última Gestión / Intervención</label>
-                        <input type="text" id="ultimaGestion" placeholder="Ej. Sensibilización y asignación de cita" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Próxima Acción de Ruta</label>
-                        <input type="text" id="proximaAccion" placeholder="Ej. Asistir a toma de muestras" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Fecha Programada de Atención</label>
-                        <input type="date" id="fechaCita" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Responsable del Seguimiento</label>
-                        <input type="text" id="responsable" required placeholder="Ej. Laura Ramírez" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Estado de Atención RPMS</label>
-                        <select id="estadoCita" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="Pendiente" selected>Pendiente</option>
-                            <option value="Atendido">Atendido / Efectivo</option>
-                            <option value="Inasistente">Inasistente</option>
+
+                    <!-- Intervención Faltante en RPMS (Brechas - Automatizada o sugerida) -->
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Intervención Faltante en RPMS (Brechas)</label>
+                        <select id="intervencionFaltante" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-medium text-amber-700">
+                            <option value="">-- Seleccione o Autodetecte --</option>
+                            <option value="Tamizaje CCU (Citología / ADN-VPH)">Tamizaje CCU (Citología / ADN-VPH) [Adultez]</option>
+                            <option value="Tamizaje Cáncer de Mama (Mamografía)">Tamizaje Cáncer de Mama (Mamografía) [Adultez / Vejez]</option>
+                            <option value="Valoración Integral / RIESGO CARDIOVASCULAR">Valoración Integral / Riesgo Cardiovascular</option>
+                            <option value="Esquema de Vacunación PAI Regular">Esquema de Vacunación PAI Regular [Primera Infancia / Infancia]</option>
+                            <option value="Salud Bucal / Higiene Oral Preventiva">Salud Bucal / Higiene Oral Preventiva</option>
+                            <option value="Planificación Familiar / Asesoría Anticonceptiva">Planificación Familiar / Asesoría Anticonceptiva</option>
                         </select>
                     </div>
+
+                    <!-- Última Gestión -->
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Última Gestión / Intervención</label>
+                        <input type="text" id="ultimaGestion" placeholder="Ej. Sensibilización y asignación de cita" 
+                               class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
+                    </div>
+
+                    <!-- Próxima Acción -->
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Próxima Acción de Ruta</label>
+                        <input type="text" id="proximaAccion" placeholder="Ej. Asistir a toma de muestras" 
+                               class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
+                    </div>
+
+                    <!-- Fecha Programada -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Cierre Verificado de Ruta</label>
-                        <select id="cierreVerificado" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="No" selected>No (Abierto)</option>
-                            <option value="Sí">Sí (Verificado / Cumplido)</option>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Fecha Programada Atención</label>
+                        <input type="date" id="fechaProgramada" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
+                    </div>
+
+                    <!-- Responsable -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Responsable del Seguimiento</label>
+                        <input type="text" id="responsable" value="Laura Ramírez" readonly 
+                               class="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 bg-slate-100 text-slate-600 text-sm">
+                    </div>
+
+                    <!-- Estado de Atención -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Estado de Atención RPMS</label>
+                        <select id="estadoAtencion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Gestionado">Gestionado</option>
+                            <option value="Efectivo / Atendido">Efectivo / Atendido</option>
                         </select>
                     </div>
-                    <div class="sm:col-span-2 lg:col-span-4 flex justify-end mt-2">
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg text-sm transition shadow-sm flex items-center">
-                            <i class="fa-solid fa-floppy-disk mr-2"></i> Guardar Registro RPMS
+
+                    <!-- Cierre Verificado -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Cierre Verificado de Ruta</label>
+                        <select id="cierreVerificado" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
+                            <option value="No (Abierto)">No (Abierto)</option>
+                            <option value="Sí (Cerrado)">Sí (Cerrado)</option>
+                        </select>
+                    </div>
+
+                    <!-- Botón Guardar -->
+                    <div class="md:col-span-4 flex justify-end mt-2">
+                        <button type="submit" class="bg-blue-900 hover:bg-blue-800 text-white font-bold px-8 py-3 rounded-xl transition duration-200 shadow-lg flex items-center space-x-2 text-sm">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            <span>Guardar Registro RPMS</span>
                         </button>
                     </div>
                 </form>
-            </section>
+            </div>
 
-            <!-- Tabla y Filtros Avanzados -->
-            <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
-                    <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
-                        <div class="relative w-full md:w-64">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"><i class="fa-solid fa-magnifying-glass"></i></span>
-                            <input type="text" id="buscador" placeholder="Buscar cédula, nombre..." class="w-full pl-9 pr-4 py-1.5 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-                    </div>
-                    <div class="flex flex-wrap gap-2 w-full md:w-auto justify-end">
-                        <button onclick="filtrarEstado('Todos')" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Todos</button>
-                        <button onclick="filtrarEstado('Pendiente')" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 transition">Pendientes</button>
-                        <button onclick="filtrarEstado('Atendido')" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition">Atendidos</button>
-                        <button onclick="exportarCSV()" class="bg-slate-800 hover:bg-slate-900 text-white px-3 py-1.5 text-xs font-medium rounded-lg transition flex items-center">
-                            <i class="fa-solid fa-file-excel mr-1.5"></i> Exportar CSV
-                        </button>
-                    </div>
+            <!-- Tabla de Registros -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-12">
+                <div class="bg-slate-900 px-6 py-4 flex justify-between items-center text-white">
+                    <h3 class="font-bold text-sm uppercase">Pacientes Registrados en el Sistema</h3>
+                    <button onclick="exportarExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-xs px-3 py-1.5 rounded-lg font-semibold transition">
+                        <i class="fa-solid fa-file-excel mr-1"></i> Exportar Datos
+                    </button>
                 </div>
-
-                <div class="overflow-x-auto rounded-lg border border-slate-200">
+                <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
-                            <tr class="bg-blue-900 text-white">
-                                <th class="p-3 font-semibold">Usuario / Doc</th>
-                                <th class="p-3 font-semibold">Sexo / Ciclo Vital</th>
-                                <th class="p-3 font-semibold">EPS / Estado</th>
-                                <th class="p-3 font-semibold">Intervención Faltante</th>
-                                <th class="p-3 font-semibold">Gestión de Ruta</th>
-                                <th class="p-3 font-semibold">Fecha y Responsable</th>
-                                <th class="p-3 font-semibold text-center">Estado Atención</th>
-                                <th class="p-3 font-semibold text-center">Cierre Verificado</th>
+                            <tr class="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold uppercase">
+                                <th class="p-3">Paciente / Documento</th>
+                                <th class="p-3">Edad / Ciclo Vital</th>
+                                <th class="p-3">EPS / Régimen</th>
+                                <th class="p-3">Brecha / Intervención</th>
+                                <th class="p-3">Estado</th>
+                                <th class="p-3 text-center">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody id="tabla-pacientes" class="divide-y divide-slate-200 text-slate-700">
-                            <!-- Se llena dinámicamente -->
+                        <tbody id="tabla-registros" class="divide-y divide-slate-100">
+                            <!-- Filas dinámicas -->
                         </tbody>
                     </table>
                 </div>
-            </section>
+            </div>
         </main>
     </div>
 
     <script>
-        // CONTRASEÑA DE ACCESO PRIVADO (Puedes cambiarla aquí entre las comillas)
-        const CLAVE_SECRETA = "Hospital3280";
-
-        let pacientes = [
-            { 
-                doc: "1070984512", nombre: "Maria Carmen Rodriguez", sexo: "Femenino", eps: "Nueva EPS", estadoEps: "Activo", ciclo: "Adultez (29-59 años)", origen: "Equipos Básicos de Salud (EBS)", 
-                faltantes: "Valoración Integral Adultez + Tamizaje CCU", ultimaGestion: "Llamada inicial realizada", proximaAccion: "Asistir a citología", fechaCaptacion: "2026-08-10", 
-                fechaCita: "2026-08-11", responsable: "Laura Ramírez", estadoCita: "Atendido", cierreVerificado: "Sí" 
+        // Lógica de seguridad y control de sesión
+        function handleLogin(event) {
+            event.preventDefault();
+            const pass = document.getElementById('access-pass').value;
+            if (pass === "Hospital3280") {
+                document.getElementById('login-modal').classList.add('hidden');
+                document.getElementById('app-container').classList.remove('hidden');
+                cargarRegistros();
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
             }
-        ];
-
-        let filtroActualEstado = 'Todos';
-
-        document.addEventListener("DOMContentLoaded", () => {
-            // Validar si ya había ingresado sesión en este navegador
-            if (sessionStorage.getItem("sesion_autorizada") === "true") {
-                mostrarAplicacion();
-            }
-
-            // Manejar el formulario de Login
-            document.getElementById('form-login').addEventListener('submit', (e) => {
-                e.preventDefault();
-                const inputPass = document.getElementById('password-input').value;
-                const errorMsg = document.getElementById('error-login');
-
-                if (inputPass === CLAVE_SECRETA) {
-                    sessionStorage.setItem("sesion_autorizada", "true");
-                    mostrarAplicacion();
-                } else {
-                    errorMsg.classList.remove('hidden');
-                }
-            });
-        });
-
-        function mostrarAplicacion() {
-            document.getElementById('login-modal').classList.add('hidden');
-            document.getElementById('app-content').classList.remove('hidden');
-
-            const hoy = new Date().toISOString().split('T')[0];
-            document.getElementById('fechaCaptacion').value = hoy;
-            document.getElementById('fechaCita').value = hoy;
-
-            renderizarTabla();
-
-            document.getElementById('buscador').addEventListener('input', renderizarTabla);
-
-            document.getElementById('form-registro').addEventListener('submit', (e) => {
-                e.preventDefault();
-                const nuevo = {
-                    doc: document.getElementById('doc').value,
-                    nombre: document.getElementById('nombre').value,
-                    sexo: document.getElementById('sexo').value,
-                    eps: document.getElementById('eps').value,
-                    estadoEps: document.getElementById('estadoEps').value,
-                    ciclo: document.getElementById('ciclo').value,
-                    origen: document.getElementById('origen').value,
-                    faltantes: document.getElementById('faltantes').value,
-                    ultimaGestion: document.getElementById('ultimaGestion').value || "Captación inicial en ruta",
-                    proximaAccion: document.getElementById('proximaAccion').value || "Pendiente gestión de cita",
-                    fechaCaptacion: document.getElementById('fechaCaptacion').value,
-                    fechaCita: document.getElementById('fechaCita').value,
-                    responsable: document.getElementById('responsable').value,
-                    estadoCita: document.getElementById('estadoCita').value,
-                    cierreVerificado: document.getElementById('cierreVerificado').value
-                };
-
-                pacientes.unshift(nuevo);
-                renderizarTabla();
-                document.getElementById('form-registro').reset();
-                document.getElementById('fechaCaptacion').value = hoy;
-                document.getElementById('fechaCita').value = hoy;
-                mostrarToast("¡Registro RPMS guardado con éxito!");
-            });
         }
 
-        function cerrarSesion() {
-            sessionStorage.removeItem("sesion_autorizada");
-            location.reload();
-        }
+        // Establecer fecha actual por defecto
+        document.getElementById('fechaCaptacion').valueAsDate = new Date();
 
-        function renderizarTabla() {
-            const tbody = document.getElementById('tabla-pacientes');
-            const textoBusqueda = document.getElementById('buscador').value.toLowerCase();
-            tbody.innerHTML = "";
-
-            const hoyStr = new Date().toISOString().split('T')[0];
-
-            let filtrados = pacientes.filter(p => {
-                let coincideTexto = p.nombre.toLowerCase().includes(textoBusqueda) || p.doc.includes(textoBusqueda) || p.faltantes.toLowerCase().includes(textoBusqueda);
-                let coincideEstado = filtroActualEstado === 'Todos' || p.estadoCita === filtroActualEstado;
-                return coincideTexto && coincideEstado;
-            });
-
-            document.getElementById('kpi-total').textContent = pacientes.length;
-            document.getElementById('kpi-activos').textContent = pacientes.filter(p => p.estadoEps === 'Activo').length;
-            document.getElementById('kpi-pendientes').textContent = pacientes.filter(p => p.estadoCita === 'Pendiente').length;
-            const verificadosCount = pacientes.filter(p => p.cierreVerificado === 'Sí').length;
-            const porcentajeVerificado = pacientes.length > 0 ? Math.round((verificadosCount / pacientes.length) * 100) : 0;
-            document.getElementById('kpi-cumplimiento').textContent = porcentajeVerificado + "%";
-
-            if (filtrados.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center p-6 text-slate-400">No se encontraron registros coincidentes.</td></tr>`;
+        // Automatización de Edad y Ciclo Vital según Año de Nacimiento
+        function calcularEdadYCiclo() {
+            const anioNac = parseInt(document.getElementById('AnioNacimiento').value);
+            const anioActual = new Date().getFullYear();
+            
+            if (!anioNac || anioNac < 1900 || anioNac > anioActual) {
+                document.getElementById('edadCalculada').value = "";
+                document.getElementById('cicloVital').value = "";
                 return;
             }
 
-            filtrados.forEach((p) => {
-                let tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition";
+            const edad = anioActual - anioNac;
+            document.getElementById('edadCalculada').value = edad + " años";
 
-                let badgeFecha = "";
-                if (p.estadoCita === 'Pendiente') {
-                    if (p.fechaCita < hoyStr) {
-                        badgeFecha = `<span class="ml-1 px-1.5 py-0.5 bg-rose-100 text-rose-700 rounded text-[10px] font-bold">Vencida</span>`;
-                    } else if (p.fechaCita === hoyStr) {
-                        badgeFecha = `<span class="ml-1 px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded text-[10px] font-bold">Hoy</span>`;
+            let ciclo = "";
+            let brechaSugerida = "";
+
+            if (edad >= 0 && edad <= 5) {
+                ciclo = "Primera Infancia (0-5 años)";
+                brechaSugerida = "Esquema de Vacunación PAI Regular";
+            } else if (edad >= 6 && edad <= 11) {
+                ciclo = "Infancia (6-11 años)";
+                brechaSugerida = "Salud Bucal / Higiene Oral Preventiva";
+            } else if (edad >= 12 && edad <= 17) {
+                ciclo = "Adolescencia (12-17 años)";
+                brechaSugerida = "Planificación Familiar / Asesoría Anticonceptiva";
+            } else if (edad >= 18 && edad <= 28) {
+                ciclo = "Juventud (18-28 años)";
+                brechaSugerida = "Tamizaje CCU (Citología / ADN-VPH)";
+            } else if (edad >= 29 && edad <= 59) {
+                ciclo = "Adultez (29-59 años)";
+                brechaSugerida = "Tamizaje Cáncer de Mama (Mamografía)";
+            } else {
+                ciclo = "Vejez (60+ años)";
+                brechaSugerida = "Valoración Integral / RIESGO CARDIOVASCULAR";
+            }
+
+            document.getElementById('cicloVital').value = ciclo;
+            
+            // Sugerir automáticamente la intervención faltante en base a la edad/ciclo
+            const selectIntervencion = document.getElementById('intervencionFaltante');
+            if (brechaSugerida) {
+                for (let i = 0; i < selectIntervencion.options.length; i++) {
+                    if (selectIntervencion.options[i].value.includes(brechaSugerida.split(' ')[0])) {
+                        selectIntervencion.selectedIndex = i;
+                        break;
                     }
                 }
+            }
+        }
 
+        // Base de datos local simulada en navegador (lista para conectar con Google Sheets)
+        let registros = JSON.parse(localStorage.getItem('rpms_registros')) || [];
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const nuevoRegistro = {
+                id: Date.now(),
+                nombre: document.getElementById('nombre').value,
+                documento: document.getElementById('documento').value,
+                sexo: document.getElementById('sexo').value,
+                anioNacimiento: document.getElementById('AnioNacimiento').value,
+                edad: document.getElementById('edadCalculada').value,
+                cicloVital: document.getElementById('cicloVital').value,
+                entidadEps: document.getElementById('entidadEps').value,
+                estadoAfiliacion: document.getElementById('estadoAfiliacion').value,
+                entorno: document.getElementById('entorno').value,
+                fechaCaptacion: document.getElementById('fechaCaptacion').value,
+                intervencionFaltante: document.getElementById('intervencionFaltante').value,
+                ultimaGestion: document.getElementById('ultimaGestion').value,
+                proximaAccion: document.getElementById('proximaAccion').value,
+                fechaProgramada: document.getElementById('fechaProgramada').value,
+                responsable: document.getElementById('responsable').value,
+                estadoAtencion: document.getElementById('estadoAtencion').value,
+                cierreVerificado: document.getElementById('cierreVerificado').value
+            };
+
+            registros.unshift(nuevoRegistro);
+            localStorage.setItem('rpms_registros', JSON.stringify(registros));
+            
+            mostrarToast("Registro guardado con éxito en el sistema");
+            document.getElementById('rpms-form').reset();
+            document.getElementById('fechaCaptacion').valueAsDate = new Date();
+            document.getElementById('responsable').value = "Laura Ramírez";
+            cargarRegistros();
+        }
+
+        function cargarRegistros() {
+            const tbody = document.getElementById('tabla-registros');
+            tbody.innerHTML = "";
+
+            let total = registros.length;
+            let activos = registros.filter(r => r.estadoAfiliacion === 'Activo').length;
+            let pendientes = registros.filter(r => r.estadoAtencion === 'Pendiente').length;
+            let cerrados = registros.filter(r => r.cierreVerificado.includes('Sí')).length;
+            let porcentajeCierre = total > 0 ? Math.round((cerrados / total) * 100) : 100;
+
+            document.getElementById('kpi-total').innerText = total;
+            document.getElementById('kpi-activos').innerText = activos;
+            document.getElementById('kpi-pendientes').innerText = pendientes;
+            document.getElementById('kpi-cierre').innerText = porcentajeCierre + "%";
+
+            if (total === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">No hay registros cargados actualmente.</td></tr>`;
+                return;
+            }
+
+            registros.forEach((r, index) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
                 tr.innerHTML = `
                     <td class="p-3">
-                        <div class="font-bold text-slate-900">${p.nombre}</div>
-                        <div class="font-mono text-[11px] text-slate-500">CC: ${p.doc}</div>
+                        <p class="font-bold text-slate-900">${r.nombre}</p>
+                        <p class="text-slate-500 text-[11px]">CC: ${r.documento}</p>
                     </td>
                     <td class="p-3">
-                        <div class="text-slate-800 font-medium">${p.sexo}</div>
-                        <div class="text-[11px] text-slate-500">${p.ciclo}</div>
+                        <p class="font-medium text-slate-800">${r.edad}</p>
+                        <p class="text-[11px] text-blue-800 font-semibold">${r.cicloVital}</p>
                     </td>
                     <td class="p-3">
-                        <div class="font-semibold text-blue-900">${p.eps}</div>
-                        <span class="px-2 py-0.5 rounded text-[10px] font-medium ${p.estadoEps === 'Activo' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${p.estadoEps}</span>
+                        <span class="px-2 py-1 rounded bg-blue-50 text-blue-900 font-semibold text-[11px]">${r.entidadEps}</span>
+                        <p class="text-[10px] text-slate-500 mt-0.5">Afiliación: ${r.estadoAfiliacion}</p>
                     </td>
+                    <td class="p-3 font-medium text-amber-800">${r.intervencionFaltante}</td>
                     <td class="p-3">
-                        <div class="font-semibold text-rose-700 bg-rose-50 p-1.5 rounded border border-rose-100"><i class="fa-solid fa-notes-medical mr-1"></i>${p.faltantes}</div>
-                    </td>
-                    <td class="p-3">
-                        <div class="text-slate-700"><span class="font-semibold">Últ:</span> ${p.ultimaGestion}</div>
-                        <div class="text-slate-500 text-[11px]"><span class="font-semibold">Próx:</span> ${p.proximaAccion}</div>
-                    </td>
-                    <td class="p-3">
-                        <div><span class="font-semibold">Atención:</span> ${p.fechaCita} ${badgeFecha}</div>
-                        <div class="text-[11px] text-slate-500"><i class="fa-solid fa-user-gear mr-1"></i>${p.responsable}</div>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${r.estadoAtencion === 'Pendiente' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">
+                            ${r.estadoAtencion}
+                        </span>
                     </td>
                     <td class="p-3 text-center">
-                        <select onchange="cambiarEstado('${p.doc}', this.value)" class="border rounded px-2 py-1 text-xs font-semibold outline-none shadow-sm ${
-                            p.estadoCita === 'Atendido' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' :
-                            p.estadoCita === 'Pendiente' ? 'bg-amber-50 text-amber-700 border-amber-300' :
-                            'bg-rose-50 text-rose-700 border-rose-300'
-                        }">
-                            <option value="Pendiente" ${p.estadoCita === 'Pendiente' ? 'selected' : ''}>Pendiente</option>
-                            <option value="Atendido" ${p.estadoCita === 'Atendido' ? 'selected' : ''}>Atendido</option>
-                            <option value="Inasistente" ${p.estadoCita === 'Inasistente' ? 'selected' : ''}>Inasistente</option>
-                        </select>
-                    </td>
-                    <td class="p-3 text-center">
-                        <select onchange="cambiarCierre('${p.doc}', this.value)" class="border rounded px-2 py-1 text-xs font-semibold outline-none shadow-sm ${
-                            p.cierreVerificado === 'Sí' ? 'bg-indigo-50 text-indigo-700 border-indigo-300' : 'bg-slate-50 text-slate-600 border-slate-300'
-                        }">
-                            <option value="No" ${p.cierreVerificado === 'No' ? 'selected' : ''}>No</option>
-                            <option value="Sí" ${p.cierreVerificado === 'Sí' ? 'selected' : ''}>Sí</option>
-                        </select>
+                        <button onclick="eliminarRegistro(${r.id})" class="text-red-500 hover:text-red-700 p-1" title="Eliminar registro">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function cambiarEstado(doc, nuevoEstado) {
-            let p = pacientes.find(item => item.doc === doc);
-            if (p) {
-                p.estadoCita = nuevoEstado;
-                renderizarTabla();
-                mostrarToast(`Estado cambiado a: ${nuevoEstado}`);
+        function eliminarRegistro(id) {
+            if (confirm("¿Estás segura de eliminar este registro del sistema?")) {
+                registros = registros.filter(r => r.id !== id);
+                localStorage.setItem('rpms_registros', JSON.stringify(registros));
+                cargarRegistros();
+                mostrarToast("Registro eliminado correctamente");
             }
         }
 
-        function cambiarCierre(doc, nuevoCierre) {
-            let p = pacientes.find(item => item.doc === doc);
-            if (p) {
-                p.cierreVerificado = nuevoCierre;
-                renderizarTabla();
-                mostrarToast(`Cierre de Ruta Verificado: ${nuevoCierre}`);
-            }
-        }
-
-        function filtrarEstado(estado) {
-            filtroActualEstado = estado;
-            renderizarTabla();
-        }
-
-        function mostrarToast(mensaje) {
+        function mostrarToast(msg) {
             const toast = document.getElementById('toast');
-            document.getElementById('toast-msg').textContent = mensaje;
+            document.getElementById('toast-msg').innerText = msg;
             toast.classList.remove('translate-x-full');
-            setTimeout(() => { toast.classList.add('translate-x-full'); }, 3000);
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+            }, 3000);
         }
 
-        function exportarCSV() {
-            let csvContent = "data:text/csv;charset=utf-8,Documento,Nombre,Sexo,EPS,EstadoEPS,CicloVital,OrigenEntorno,IntervencionFaltante,UltimaGestion,ProximaAccion,FechaCaptacion,FechaProgramada,Responsable,EstadoAtencion,CierreVerificado\n";
-            pacientes.forEach(p => {
-                let fila = [p.doc, `"${p.nombre}"`, p.sexo, `"${p.eps}"`, p.estadoEps, `"${p.ciclo}"`, `"${p.origen}"`, `"${p.faltantes}"`, `"${p.ultimaGestion}"`, `"${p.proximaAccion}"`, p.fechaCaptacion, p.fechaCita, `"${p.responsable}"`, p.estadoCita, p.cierreVerificado];
-                csvContent += fila.join(",") + "\n";
+        function exportarExcel() {
+            let csv = "Nombre,Documento,Sexo,AnioNacimiento,Edad,CicloVital,EntidadEps,EstadoAfiliacion,Entorno,FechaCaptacion,IntervencionFaltante,UltimaGestion,ProximaAccion,FechaProgramada,Responsable,EstadoAtencion,CierreVerificado\n";
+            registros.forEach(r => {
+                csv += `"${r.nombre}","${r.documento}","${r.sexo}","${r.anioNacimiento}","${r.edad}","${r.cicloVital}","${r.entidadEps}","${r.estadoAfiliacion}","${r.entorno}","${r.fechaCaptacion}","${r.intervencionFaltante}","${r.ultimaGestion}","${r.proximaAccion}","${r.fechaProgramada}","${r.responsable}","${r.estadoAtencion}","${r.cierreVerificado}"\n`;
             });
-            let encodedUri = encodeURI(csvContent);
-            let link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "reporte_rpms_res3280.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            mostrarToast("¡Exportado a CSV exitosamente!");
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Reporte_RPMS_Hospital_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
         }
+
+        // Cargar datos iniciales al abrir
+        cargarRegistros();
     </script>
 </body>
 </html>
