@@ -284,11 +284,11 @@
                             </div>
                         </div>
 
-                        <!-- Próximas Acciones de Ruta (SELECCIÓN MÚLTIPLE AUTOMÁTICA SEGÚN INTERVENCIONES) -->
+                        <!-- Próximas Acciones de Ruta (SELECCIÓN MÚLTIPLE AUTOMÁTICA AISLADA Y CON PERFILES COMPLETOS) -->
                         <div class="md:col-span-4 bg-blue-50/70 p-4 rounded-xl border border-blue-200">
                             <label class="block text-xs font-bold text-blue-950 uppercase mb-2 flex items-center justify-between">
                                 <span><i class="fa-solid fa-list-check mr-1 text-blue-700"></i> Próximas Acciones de Ruta (Selección Múltiple Automatizada)</span>
-                                <span class="text-blue-800 text-[11px] font-medium">Se marcan automáticamente según las intervenciones seleccionadas</span>
+                                <span class="text-blue-800 text-[11px] font-medium">Sincronizado por género y perfiles (Lipídico, Glicémico, ITS, PSA)</span>
                             </label>
                             <div id="contenedor-acciones" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                                 <label class="flex items-center space-x-2 text-xs font-semibold bg-white p-2.5 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100/50">
@@ -296,8 +296,12 @@
                                     <span>Asistir a tamizaje de tacto rectal y PSA</span>
                                 </label>
                                 <label class="flex items-center space-x-2 text-xs font-semibold bg-white p-2.5 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100/50">
-                                    <input type="checkbox" name="acciones_ruta" value="Asistir a toma de muestras / laboratorio (Citología / VPH / Mama)" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
-                                    <span>Asistir a toma de muestras / laboratorio</span>
+                                    <input type="checkbox" name="acciones_ruta" value="Laboratorio Perfil Masculino (PSA, Lipídico, Glicemia, ITS)" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Laboratorio Perfil Masculino (PSA/Lipídico/Glicemia/ITS)</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-semibold bg-white p-2.5 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100/50">
+                                    <input type="checkbox" name="acciones_ruta" value="Laboratorio Perfil Femenino (Citología/VPH/Mama/Lipídico/Glicemia/ITS)" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Laboratorio Perfil Femenino (Citología/VPH/Mama/Lipídico/ITS)</span>
                                 </label>
                                 <label class="flex items-center space-x-2 text-xs font-semibold bg-white p-2.5 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100/50">
                                     <input type="checkbox" name="acciones_ruta" value="Asistir a consulta médica general / valoración" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
@@ -582,9 +586,10 @@
             sincronizarProximasAcciones();
         }
 
-        // SINCRONIZACIÓN MÚLTIPLE DE PRÓXIMAS ACCIONES
+        // SINCRONIZACIÓN MÚLTIPLE INTELIGENTE CON PERFILES COMPLETOS AISLADOS (LIPÍDICO, GLICÉMICO, ITS, PSA)
         function sincronizarProximasAcciones() {
             const brechasMarcadas = Array.from(document.querySelectorAll('input[name="brechas"]:checked')).map(cb => cb.value.toLowerCase());
+            const sexo = document.getElementById('sexo').value;
             const accionesCheckboxes = document.querySelectorAll('input[name="acciones_ruta"]');
             
             accionesCheckboxes.forEach(ac => ac.checked = false);
@@ -592,12 +597,24 @@
             accionesCheckboxes.forEach(ac => {
                 const valAccion = ac.value.toLowerCase();
                 
-                if (brechasMarcadas.some(b => b.includes('tacto rectal')) && valAccion.includes('tacto rectal')) {
-                    ac.checked = true;
+                // Reglas exclusivas para Hombres (Sin cruces con mujeres)
+                if (sexo === 'Masculino') {
+                    if (brechasMarcadas.some(b => b.includes('tacto rectal')) && valAccion.includes('tacto rectal')) {
+                        ac.checked = true;
+                    }
+                    if (brechasMarcadas.some(b => b.includes('valoración integral') || b.includes('tacto')) && valAccion.includes('perfil masculino')) {
+                        ac.checked = true;
+                    }
                 }
-                if (brechasMarcadas.some(b => b.includes('ccu') || b.includes('mama')) && valAccion.includes('muestras')) {
-                    ac.checked = true;
+
+                // Reglas exclusivas para Mujeres (Sin cruces con hombres)
+                if (sexo === 'Femenino') {
+                    if (brechasMarcadas.some(b => b.includes('ccu') || b.includes('mama') || b.includes('valoración')) && valAccion.includes('perfil femenino')) {
+                        ac.checked = true;
+                    }
                 }
+
+                // Reglas comunes preventivas aplicadas según ciclo vital y selección
                 if (brechasMarcadas.some(b => b.includes('valoración integral')) && valAccion.includes('médica general')) {
                     ac.checked = true;
                 }
@@ -834,7 +851,6 @@
             mostrarToast("Estado de ruta modificado");
         }
 
-        // RENDERIZADO DE GRÁFICAS DETALLADAS POR ESTADO Y KPI
         function renderizarGraficasDatos() {
             let pendientes = registros.filter(r => r.estadoAtencion === 'Pendiente').length;
             let citados = registros.filter(r => r.estadoAtencion.includes('Gestionado')).length;
@@ -863,7 +879,6 @@
                 }
             });
 
-            // Gráfica KPI 1: Estado Detallado
             const ctxEstado = document.getElementById('chartEstadoDetallado').getContext('2d');
             if (chartEstadoInstance) chartEstadoInstance.destroy();
 
@@ -885,7 +900,6 @@
                 }
             });
 
-            // Gráfica 2: EPS
             const ctxEps = document.getElementById('chartEps').getContext('2d');
             if (chartEpsInstance) chartEpsInstance.destroy();
 
@@ -905,7 +919,6 @@
                 }
             });
 
-            // Gráfica 3: Ciclo Vital
             const ctxCiclo = document.getElementById('chartCicloVital').getContext('2d');
             if (chartCicloInstance) chartCicloInstance.destroy();
 
