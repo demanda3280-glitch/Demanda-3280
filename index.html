@@ -57,286 +57,314 @@
             </div>
         </header>
 
+        <!-- NAVEGACIÓN POR PESTAÑAS / SECCIONES INTERACTIVAS -->
+        <nav class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 flex space-x-4">
+                <button onclick="cambiarSeccion('captacion')" id="nav-captacion" class="py-3 px-4 font-bold text-sm border-b-2 border-blue-900 text-blue-900 flex items-center space-x-2 transition">
+                    <i class="fa-solid fa-address-card"></i>
+                    <span>1. Captación y Seguimiento</span>
+                </button>
+                <button onclick="cambiarSeccion('pacientes')" id="nav-pacientes" class="py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center space-x-2 transition">
+                    <i class="fa-solid fa-users-gear"></i>
+                    <span>2. Pacientes Registrados</span>
+                </button>
+                <button onclick="cambiarSeccion('analitica')" id="nav-analitica" class="py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center space-x-2 transition">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>3. Analítica y Gráficas</span>
+                </button>
+            </div>
+        </nav>
+
         <main class="max-w-7xl mx-auto px-4 py-6">
-            <!-- Dashboard KPI Resumen Tarjetas -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
-                    <div>
-                        <p class="text-[11px] font-bold text-slate-400 uppercase">Total Captados</p>
-                        <h3 id="kpi-total" class="text-2xl font-extrabold text-blue-900 mt-0.5">0</h3>
-                    </div>
-                    <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-users"></i></div>
-                </div>
 
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
-                    <div>
-                        <p class="text-[11px] font-bold text-slate-400 uppercase">Demanda Completa</p>
-                        <h3 id="kpi-asistencias" class="text-2xl font-extrabold text-emerald-600 mt-0.5">0</h3>
+            <!-- SECCIÓN 1: CAPTACIÓN Y SEGUIMIENTO (FORMULARIO) -->
+            <section id="seccion-captacion" class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
+                    <div class="bg-slate-900 px-6 py-4 flex items-center space-x-3 text-white">
+                        <i class="fa-solid fa-address-card text-amber-400 text-lg"></i>
+                        <h2 class="font-bold tracking-wide text-sm uppercase">Nuevo Registro de Captación y Brechas RPMS</h2>
                     </div>
-                    <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-circle-check"></i></div>
-                </div>
-
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
-                    <div>
-                        <p class="text-[11px] font-bold text-slate-400 uppercase">Inasistencias / Desistió</p>
-                        <h3 id="kpi-inasistencias" class="text-2xl font-extrabold text-rose-600 mt-0.5">0</h3>
-                    </div>
-                    <div class="w-10 h-10 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-user-xmark"></i></div>
-                </div>
-
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
-                    <div>
-                        <p class="text-[11px] font-bold text-slate-400 uppercase">Pendientes / Brechas</p>
-                        <h3 id="kpi-pendientes" class="text-2xl font-extrabold text-amber-600 mt-0.5">0</h3>
-                    </div>
-                    <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-clock"></i></div>
-                </div>
-
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
-                    <div>
-                        <p class="text-[11px] font-bold text-slate-400 uppercase">% Cierre Ruta</p>
-                        <h3 id="kpi-cierre" class="text-2xl font-extrabold text-blue-600 mt-0.5">0%</h3>
-                    </div>
-                    <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-chart-line"></i></div>
-                </div>
-            </div>
-
-            <!-- EVIDENCIA GRÁFICA / ANALÍTICA -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                    <h3 class="text-xs font-bold text-slate-600 uppercase mb-4 flex items-center space-x-2">
-                        <i class="fa-solid fa-chart-pie text-blue-600"></i>
-                        <span>Estado de Atención y Cobertura de Rutas</span>
-                    </h3>
-                    <div class="h-56 relative flex items-center justify-center">
-                        <canvas id="chartEstado"></canvas>
-                    </div>
-                </div>
-
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                    <h3 class="text-xs font-bold text-slate-600 uppercase mb-4 flex items-center space-x-2">
-                        <i class="fa-solid fa-chart-bar text-amber-500"></i>
-                        <span>Distribución de Pacientes por Entidad (EPS)</span>
-                    </h3>
-                    <div class="h-56 relative flex items-center justify-center">
-                        <canvas id="chartEps"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Formulario de Captación y Gestión RPMS -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
-                <div class="bg-slate-900 px-6 py-4 flex items-center space-x-3 text-white">
-                    <i class="fa-solid fa-address-card text-amber-400 text-lg"></i>
-                    <h2 class="font-bold tracking-wide text-sm uppercase">Captación y Seguimiento a Intervenciones RPMS</h2>
-                </div>
-                
-                <form id="rpms-form" onsubmit="handleSubmit(event)" class="p-6 grid grid-cols-1 md:grid-cols-4 gap-5">
                     
-                    <!-- Nombre Completo -->
-                    <div class="md:col-span-2">
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nombre Completo</label>
-                        <input type="text" id="nombre" required placeholder="Ej. Ana Lucía Gómez" 
-                               class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
-                    </div>
+                    <form id="rpms-form" onsubmit="handleSubmit(event)" class="p-6 grid grid-cols-1 md:grid-cols-4 gap-5">
+                        
+                        <!-- Nombre Completo -->
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nombre Completo</label>
+                            <input type="text" id="nombre" required placeholder="Ej. Carlos Mario Pérez" 
+                                   class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
+                        </div>
 
-                    <!-- Documento -->
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Documento de Identidad</label>
-                        <input type="text" id="documento" required placeholder="Ej. 1070934512" 
-                               class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
-                    </div>
+                        <!-- Documento -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Documento de Identidad</label>
+                            <input type="text" id="documento" required placeholder="Ej. 1070934512" 
+                                   class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
+                        </div>
 
-                    <!-- Sexo / Género -->
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Sexo / Género</label>
-                        <select id="sexo" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
-                            <option value="Femenino">Femenino</option>
-                            <option value="Masculino">Masculino</option>
-                            <option value="Otro">Otro</option>
-                        </select>
-                    </div>
+                        <!-- Sexo / Género (Afecta automatización de brechas) -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Sexo / Género</label>
+                            <select id="sexo" onchange="calcularEdadYBrechas()" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-medium">
+                                <option value="Masculino">Masculino</option>
+                                <option value="Femenino">Femenino</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
 
-                    <!-- Fecha de Nacimiento Completa (NUEVO) -->
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Fecha de Nacimiento</label>
-                        <input type="date" id="fechaNacimiento" required onchange="calcularEdadExacta()" 
-                               class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
-                    </div>
+                        <!-- Fecha de Nacimiento -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Fecha de Nacimiento</label>
+                            <input type="date" id="fechaNacimiento" required onchange="calcularEdadYBrechas()" 
+                                   class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
+                        </div>
 
-                    <!-- Edad calculada exacta -->
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Edad Exacta</label>
-                        <input type="text" id="edadCalculada" readonly placeholder="Automática" 
-                               class="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 bg-slate-100 text-slate-600 text-sm font-bold">
-                    </div>
+                        <!-- Edad calculada exacta -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Edad Exacta</label>
+                            <input type="text" id="edadCalculada" readonly placeholder="Automática" 
+                                   class="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 bg-slate-100 text-slate-600 text-sm font-bold">
+                        </div>
 
-                    <!-- Momento del Ciclo Vital -->
-                    <div class="md:col-span-2">
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Momento del Ciclo Vital (Auto)</label>
-                        <input type="text" id="cicloVital" readonly placeholder="Se calcula según fecha de nacimiento" 
-                               class="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 bg-slate-100 text-blue-900 font-semibold text-sm">
-                    </div>
+                        <!-- Momento del Ciclo Vital -->
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Momento del Ciclo Vital (Auto)</label>
+                            <input type="text" id="cicloVital" readonly placeholder="Se calcula según fecha de nacimiento" 
+                                   class="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 bg-slate-100 text-blue-900 font-semibold text-sm">
+                        </div>
 
-                    <!-- Entidad EPS -->
-                    <div class="md:col-span-2">
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Entidad (EPS)</label>
-                        <select id="entidadEps" required class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
-                            <option value="">Seleccione EPS y Régimen...</option>
-                            <option value="Nueva EPS - Contributivo">Nueva EPS - Contributivo</option>
-                            <option value="Nueva EPS - Subsidiado">Nueva EPS - Subsidiado</option>
-                            <option value="Asmet Salud - Contributivo">Asmet Salud - Contributivo</option>
-                            <option value="Asmet Salud - Subsidiado">Asmet Salud - Subsidiado</option>
-                            <option value="Salud Total - Contributivo">Salud Total - Contributivo</option>
-                            <option value="Salud Total - Subsidiado">Salud Total - Subsidiado</option>
-                            <option value="Fomag (Magisterio)">Fomag (Magisterio)</option>
-                            <option value="Sanitas - Contributivo">Sanitas - Contributivo</option>
-                            <option value="Sura - Contributivo">Sura - Contributivo</option>
-                            <option value="Otra / No Asegurado">Otra / No Asegurado</option>
-                        </select>
-                    </div>
+                        <!-- Entidad EPS -->
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Entidad (EPS)</label>
+                            <select id="entidadEps" required class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
+                                <option value="">Seleccione EPS y Régimen...</option>
+                                <option value="Nueva EPS - Contributivo">Nueva EPS - Contributivo</option>
+                                <option value="Nueva EPS - Subsidiado">Nueva EPS - Subsidiado</option>
+                                <option value="Asmet Salud - Contributivo">Asmet Salud - Contributivo</option>
+                                <option value="Asmet Salud - Subsidiado">Asmet Salud - Subsidiado</option>
+                                <option value="Salud Total - Contributivo">Salud Total - Contributivo</option>
+                                <option value="Salud Total - Subsidiado">Salud Total - Subsidiado</option>
+                                <option value="Fomag (Magisterio)">Fomag (Magisterio)</option>
+                                <option value="Sanitas - Contributivo">Sanitas - Contributivo</option>
+                                <option value="Sura - Contributivo">Sura - Contributivo</option>
+                                <option value="Otra / No Asegurado">Otra / No Asegurado</option>
+                            </select>
+                        </div>
 
-                    <!-- Estado de Afiliación -->
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Estado de Afiliación</label>
-                        <select id="estadoAfiliacion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
-                            <option value="Activo">Activo</option>
-                            <option value="Inactivo">Inactivo</option>
-                            <option value="Retirado">Retirado</option>
-                        </select>
-                    </div>
+                        <!-- Estado de Afiliación -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Estado de Afiliación</label>
+                            <select id="estadoAfiliacion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
+                                <option value="Activo">Activo</option>
+                                <option value="Inactivo">Inactivo</option>
+                                <option value="Retirado">Retirado</option>
+                            </select>
+                        </div>
 
-                    <!-- Entorno de Captación -->
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Entorno / Origen</label>
-                        <select id="entorno" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
-                            <option value="Equipos Básicos de Salud (EBS)">Equipos Básicos de Salud (EBS)</option>
-                            <option value="Consulta Externa">Consulta Externa</option>
-                            <option value="Urgencias">Urgencias</option>
-                            <option value="Demanda Inducida / Jornada">Demanda Inducida / Jornada</option>
-                        </select>
-                    </div>
+                        <!-- Entorno de Captación -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Entorno / Origen</label>
+                            <select id="entorno" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
+                                <option value="Equipos Básicos de Salud (EBS)">Equipos Básicos de Salud (EBS)</option>
+                                <option value="Consulta Externa">Consulta Externa</option>
+                                <option value="Urgencias">Urgencias</option>
+                                <option value="Demanda Inducida / Jornada">Demanda Inducida / Jornada</option>
+                            </select>
+                        </div>
 
-                    <!-- Fecha de Captación -->
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Fecha de Captación</label>
-                        <input type="date" id="fechaCaptacion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
-                    </div>
+                        <!-- Fecha de Captación -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Fecha de Captación</label>
+                            <input type="date" id="fechaCaptacion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
+                        </div>
 
-                    <!-- Intervención Faltante en RPMS -->
-                    <div class="md:col-span-2">
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Intervención Faltante en RPMS (Brechas)</label>
-                        <select id="intervencionFaltante" onchange="actualizarProximaAccion()" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-medium text-amber-700">
-                            <option value="">-- Seleccione o Autodetecte --</option>
-                            <option value="Tamizaje CCU (Citología / ADN-VPH)">Tamizaje CCU (Citología / ADN-VPH)</option>
-                            <option value="Tamizaje Cáncer de Mama (Mamografía)">Tamizaje Cáncer de Mama (Mamografía)</option>
-                            <option value="Valoración Integral / Riesgo Cardiovascular">Valoración Integral / Riesgo Cardiovascular</option>
-                            <option value="Esquema de Vacunación PAI Regular">Esquema de Vacunación PAI Regular</option>
-                            <option value="Salud Bucal / Higiene Oral Preventiva">Salud Bucal / Higiene Oral Preventiva</option>
-                            <option value="Planificación Familiar / Asesoría Anticonceptiva">Planificación Familiar / Asesoría Anticonceptiva</option>
-                        </select>
-                    </div>
+                        <!-- Intervención Faltante en RPMS (Automatizada por Edad y Sexo - Incluye Próstata para hombres mayores) -->
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Intervención Faltante en RPMS (Brechas Auto)</label>
+                            <select id="intervencionFaltante" onchange="actualizarProximaAccion()" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-medium text-amber-700">
+                                <option value="">-- Autodetectado por Edad y Sexo --</option>
+                                <option value="Tamizaje Próstata (Antígeno / Urología)">Tamizaje Próstata (Antígeno / Urología) [Hombre Adulto/Mayor]</option>
+                                <option value="Tamizaje CCU (Citología / ADN-VPH)">Tamizaje CCU (Citología / ADN-VPH) [Mujer]</option>
+                                <option value="Tamizaje Cáncer de Mama (Mamografía)">Tamizaje Cáncer de Mama (Mamografía) [Mujer Adultez/Vejez]</option>
+                                <option value="Valoración Integral / Riesgo Cardiovascular">Valoración Integral / Riesgo Cardiovascular</option>
+                                <option value="Salud Bucal / Higiene Oral Preventiva">Salud Bucal / Higiene Oral Preventiva</option>
+                                <option value="Planificación Familiar / Asesoría Anticonceptiva">Planificación Familiar / Asesoría Anticonceptiva</option>
+                            </select>
+                        </div>
 
-                    <!-- Última Gestión / Intervención -->
-                    <div class="md:col-span-2">
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Última Gestión / Intervención</label>
-                        <select id="ultimaGestion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
-                            <option value="">Seleccione última gestión realizada...</option>
-                            <option value="Sensibilización y asignación de cita">Sensibilización y asignación de cita</option>
-                            <option value="Llamada telefónica de seguimiento realizada">Llamada telefónica de seguimiento realizada</option>
-                            <option value="Visita domiciliaria EBS efectuada">Visita domiciliaria EBS efectuada</option>
-                            <option value="Revisión de historia clínica y verificación de brechas">Revisión de historia clínica y verificación de brechas</option>
-                            <option value="Charla educativa en sala de espera impartida">Charla educativa en sala de espera impartida</option>
-                            <option value="Paciente localizado, pendiente aceptación de ruta">Paciente localizado, pendiente aceptación de ruta</option>
-                        </select>
-                    </div>
+                        <!-- Última Gestión / Intervención -->
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Última Gestión / Intervención</label>
+                            <select id="ultimaGestion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
+                                <option value="">Seleccione última gestión realizada...</option>
+                                <option value="Sensibilización y asignación de cita">Sensibilización y asignación de cita</option>
+                                <option value="Llamada telefónica de seguimiento realizada">Llamada telefónica de seguimiento realizada</option>
+                                <option value="Visita domiciliaria EBS efectuada">Visita domiciliaria EBS efectuada</option>
+                                <option value="Revisión de historia clínica y verificación de brechas">Revisión de historia clínica y verificación de brechas</option>
+                                <option value="Charla educativa en sala de espera impartida">Charla educativa en sala de espera impartida</option>
+                                <option value="Paciente localizado, pendiente aceptación de ruta">Paciente localizado, pendiente aceptación de ruta</option>
+                            </select>
+                        </div>
 
-                    <!-- Próxima Acción de Ruta -->
-                    <div class="md:col-span-2">
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Próxima Acción de Ruta (Automática)</label>
-                        <select id="proximaAccion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-semibold text-blue-900">
-                            <option value="">Seleccione próxima acción...</option>
-                            <option value="Asistir a toma de muestras / laboratorio">Asistir a toma de muestras / laboratorio</option>
-                            <option value="Asistir a consulta médica general / valoración">Asistir a consulta médica general / valoración</option>
-                            <option value="Asistir a cita de planificación familiar">Asistir a cita de planificación familiar</option>
-                            <option value="Asistir a programa de vacunación PAI">Asistir a programa de vacunación PAI</option>
-                            <option value="Asistir a consulta odontológica preventiva">Asistir a consulta odontológica preventiva</option>
-                            <option value="Seguimiento telefónico en 8 días">Seguimiento telefónico en 8 días</option>
-                            <option value="Cierre definitivo de ruta completado">Cierre definitivo de ruta completado</option>
-                        </select>
-                    </div>
+                        <!-- Próxima Acción de Ruta (Automatizada según intervención) -->
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Próxima Acción de Ruta (Automática)</label>
+                            <select id="proximaAccion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-semibold text-blue-900">
+                                <option value="">Seleccione próxima acción...</option>
+                                <option value="Asistir a tamizaje de próstata / urología">Asistir a tamizaje de próstata / urología</option>
+                                <option value="Asistir a toma de muestras / laboratorio">Asistir a toma de muestras / laboratorio</option>
+                                <option value="Asistir a consulta médica general / valoración">Asistir a consulta médica general / valoración</option>
+                                <option value="Asistir a cita de planificación familiar">Asistir a cita de planificación familiar</option>
+                                <option value="Asistir a consulta odontológica preventiva">Asistir a consulta odontológica preventiva</option>
+                                <option value="Seguimiento telefónico en 8 días">Seguimiento telefónico en 8 días</option>
+                                <option value="Cierre definitivo de ruta completado">Cierre definitivo de ruta completado</option>
+                            </select>
+                        </div>
 
-                    <!-- Fecha Programada -->
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Fecha Programada Atención</label>
-                        <input type="date" id="fechaProgramada" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
-                    </div>
+                        <!-- Fecha Programada -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Fecha Programada Atención</label>
+                            <input type="date" id="fechaProgramada" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
+                        </div>
 
-                    <!-- Responsable del Seguimiento -->
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Responsable / Doctor Tratante</label>
-                        <input type="text" id="responsable" placeholder="Ej. Dr. Carlos Mendoza" value="Laura Ramírez" 
-                               class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
-                    </div>
+                        <!-- Responsable del Seguimiento -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Responsable / Doctor Tratante</label>
+                            <input type="text" id="responsable" placeholder="Ej. Dr. Carlos Mendoza" value="Laura Ramírez" 
+                                   class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
+                        </div>
 
-                    <!-- Estado de Atención RPMS -->
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Estado de Atención / Demanda</label>
-                        <select id="estadoAtencion" onchange="verificarCierreAutomatico()" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-medium">
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="Gestionado / Citado">Gestionado / Citado</option>
-                            <option value="Asistió / Demanda Completa">Asistió / Demanda Completa</option>
-                            <option value="Inasistencia / No asistió">Inasistencia / No asistió</option>
-                            <option value="Desistió del proceso">Desistió del proceso</option>
-                        </select>
-                    </div>
+                        <!-- Estado de Atención RPMS -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Estado de Atención / Demanda</label>
+                            <select id="estadoAtencion" onchange="verificarCierreAutomatico()" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-medium">
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="Gestionado / Citado">Gestionado / Citado</option>
+                                <option value="Asistió / Demanda Completa">Asistió / Demanda Completa</option>
+                                <option value="Inasistencia / No asistió">Inasistencia / No asistió</option>
+                                <option value="Desistió del proceso">Desistió del proceso</option>
+                            </select>
+                        </div>
 
-                    <!-- Cierre Verificado de Ruta -->
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Cierre Verificado de Ruta</label>
-                        <select id="cierreVerificado" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
-                            <option value="No (Abierto)">No (Abierto)</option>
-                            <option value="Sí (Cerrado)">Sí (Cerrado)</option>
-                        </select>
-                    </div>
+                        <!-- Cierre Verificado de Ruta -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Cierre Verificado de Ruta</label>
+                            <select id="cierreVerificado" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
+                                <option value="No (Abierto)">No (Abierto)</option>
+                                <option value="Sí (Cerrado)">Sí (Cerrado)</option>
+                            </select>
+                        </div>
 
-                    <!-- Botón Guardar -->
-                    <div class="md:col-span-4 flex justify-end mt-2">
-                        <button type="submit" class="bg-blue-900 hover:bg-blue-800 text-white font-bold px-8 py-3 rounded-xl transition duration-200 shadow-lg flex items-center space-x-2 text-sm">
-                            <i class="fa-solid fa-floppy-disk"></i>
-                            <span>Guardar Registro RPMS</span>
+                        <!-- Botón Guardar -->
+                        <div class="md:col-span-4 flex justify-end mt-2">
+                            <button type="submit" class="bg-blue-900 hover:bg-blue-800 text-white font-bold px-8 py-3 rounded-xl transition duration-200 shadow-lg flex items-center space-x-2 text-sm">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                <span>Guardar Registro y Ver Pacientes</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: PACIENTES REGISTRADOS (TABLA CON FECHA DE CIERRE DE DEMANDA) -->
+            <section id="seccion-pacientes" class="hidden space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-12">
+                    <div class="bg-slate-900 px-6 py-4 flex justify-between items-center text-white">
+                        <h3 class="font-bold text-sm uppercase"><i class="fa-solid fa-users-gear mr-2 text-amber-400"></i> Pacientes Registrados y Control de Demanda</h3>
+                        <button onclick="exportarExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-xs px-3 py-1.5 rounded-lg font-semibold transition">
+                            <i class="fa-solid fa-file-excel mr-1"></i> Exportar Datos
                         </button>
                     </div>
-                </form>
-            </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold uppercase">
+                                    <th class="p-3">Paciente / Documento</th>
+                                    <th class="p-3">Edad / Ciclo Vital</th>
+                                    <th class="p-3">EPS / Régimen</th>
+                                    <th class="p-3">Brecha / Intervención</th>
+                                    <th class="p-3">Doctor / Responsable</th>
+                                    <th class="p-3">Estado Atención</th>
+                                    <th class="p-3">Fecha Cierre Demanda</th>
+                                    <th class="p-3 text-center">Acciones (Proceso Ruta)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-registros" class="divide-y divide-slate-100">
+                                <!-- Filas dinámicas -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
 
-            <!-- Tabla de Registros -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-12">
-                <div class="bg-slate-900 px-6 py-4 flex justify-between items-center text-white">
-                    <h3 class="font-bold text-sm uppercase">Pacientes Registrados en el Sistema</h3>
-                    <button onclick="exportarExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-xs px-3 py-1.5 rounded-lg font-semibold transition">
-                        <i class="fa-solid fa-file-excel mr-1"></i> Exportar Datos
-                    </button>
+            <!-- SECCIÓN 3: ANALÍTICA Y GRÁFICAS -->
+            <section id="seccion-analitica" class="hidden space-y-6">
+                <!-- Dashboard KPI Tarjetas Resumen -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase">Total Captados</p>
+                            <h3 id="kpi-total" class="text-2xl font-extrabold text-blue-900 mt-0.5">0</h3>
+                        </div>
+                        <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-users"></i></div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase">Demanda Completa</p>
+                            <h3 id="kpi-asistencias" class="text-2xl font-extrabold text-emerald-600 mt-0.5">0</h3>
+                        </div>
+                        <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-circle-check"></i></div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase">Inasistencias / Desistió</p>
+                            <h3 id="kpi-inasistencias" class="text-2xl font-extrabold text-rose-600 mt-0.5">0</h3>
+                        </div>
+                        <div class="w-10 h-10 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-user-xmark"></i></div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase">Pendientes / Brechas</p>
+                            <h3 id="kpi-pendientes" class="text-2xl font-extrabold text-amber-600 mt-0.5">0</h3>
+                        </div>
+                        <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-clock"></i></div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase">% Cierre Ruta</p>
+                            <h3 id="kpi-cierre" class="text-2xl font-extrabold text-blue-600 mt-0.5">0%</h3>
+                        </div>
+                        <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-chart-line"></i></div>
+                    </div>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-xs">
-                        <thead>
-                            <tr class="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold uppercase">
-                                <th class="p-3">Paciente / Documento</th>
-                                <th class="p-3">Edad / Ciclo Vital</th>
-                                <th class="p-3">EPS / Régimen</th>
-                                <th class="p-3">Brecha / Intervención</th>
-                                <th class="p-3">Doctor / Responsable</th>
-                                <th class="p-3">Estado Atención (Editable)</th>
-                                <th class="p-3 text-center">Acciones (Proceso Ruta)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabla-registros" class="divide-y divide-slate-100">
-                            <!-- Filas dinámicas -->
-                        </tbody>
-                    </table>
+
+                <!-- Gráficas Interactivas -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="text-xs font-bold text-slate-600 uppercase mb-4 flex items-center space-x-2">
+                            <i class="fa-solid fa-chart-pie text-blue-600"></i>
+                            <span>Estado de Atención y Cobertura de Rutas</span>
+                        </h3>
+                        <div class="h-64 relative flex items-center justify-center">
+                            <canvas id="chartEstado"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="text-xs font-bold text-slate-600 uppercase mb-4 flex items-center space-x-2">
+                            <i class="fa-solid fa-chart-bar text-amber-500"></i>
+                            <span>Distribución de Pacientes por Entidad (EPS)</span>
+                        </h3>
+                        <div class="h-64 relative flex items-center justify-center">
+                            <canvas id="chartEps"></canvas>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </section>
+
         </main>
     </div>
 
@@ -358,8 +386,33 @@
 
         document.getElementById('fechaCaptacion').valueAsDate = new Date();
 
-        function calcularEdadExacta() {
+        // Cambiar entre pestañas de forma interactiva
+        function cambiarSeccion(seccion) {
+            document.getElementById('seccion-captacion').classList.add('hidden');
+            document.getElementById('seccion-pacientes').classList.add('hidden');
+            document.getElementById('seccion-analitica').classList.add('hidden');
+
+            document.getElementById('nav-captacion').className = "py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center space-x-2 transition";
+            document.getElementById('nav-pacientes').className = "py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center space-x-2 transition";
+            document.getElementById('nav-analitica').className = "py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center space-x-2 transition";
+
+            if (seccion === 'captacion') {
+                document.getElementById('seccion-captacion').classList.remove('hidden');
+                document.getElementById('nav-captacion').className = "py-3 px-4 font-bold text-sm border-b-2 border-blue-900 text-blue-900 flex items-center space-x-2 transition";
+            } else if (seccion === 'pacientes') {
+                document.getElementById('seccion-pacientes').classList.remove('hidden');
+                document.getElementById('nav-pacientes').className = "py-3 px-4 font-bold text-sm border-b-2 border-blue-900 text-blue-900 flex items-center space-x-2 transition";
+            } else if (seccion === 'analitica') {
+                document.getElementById('seccion-analitica').classList.remove('hidden');
+                document.getElementById('nav-analitica').className = "py-3 px-4 font-bold text-sm border-b-2 border-blue-900 text-blue-900 flex items-center space-x-2 transition";
+                renderizarGraficasDatos();
+            }
+        }
+
+        // Automatización por Edad y Sexo (Incluye Próstata para hombres mayores)
+        function calcularEdadYBrechas() {
             const fechaNacVal = document.getElementById('fechaNacimiento').value;
+            const sexo = document.getElementById('sexo').value;
             if (!fechaNacVal) return;
 
             const hoy = new Date();
@@ -384,7 +437,7 @@
 
             if (edadAnios >= 0 && edadAnios <= 5) {
                 ciclo = "Primera Infancia (0-5 años)";
-                brechaSugerida = "Vacunación";
+                brechaSugerida = "Valoración Integral";
             } else if (edadAnios >= 6 && edadAnios <= 11) {
                 ciclo = "Infancia (6-11 años)";
                 brechaSugerida = "Salud Bucal";
@@ -393,13 +446,21 @@
                 brechaSugerida = "Planificación";
             } else if (edadAnios >= 18 && edadAnios <= 28) {
                 ciclo = "Juventud (18-28 años)";
-                brechaSugerida = "Tamizaje CCU";
+                brechaSugerida = sexo === 'Femenino' ? "Tamizaje CCU" : "Valoración Integral";
             } else if (edadAnios >= 29 && edadAnios <= 59) {
                 ciclo = "Adultez (29-59 años)";
-                brechaSugerida = "Cáncer de Mama";
+                if (sexo === 'Femenino') {
+                    brechaSugerida = "Cáncer de Mama";
+                } else {
+                    brechaSugerida = "Valoración Integral";
+                }
             } else {
                 ciclo = "Vejez (60+ años)";
-                brechaSugerida = "Cardiovascular";
+                if (sexo === 'Masculino') {
+                    brechaSugerida = "Tamizaje Próstata";
+                } else {
+                    brechaSugerida = "Valoración Integral";
+                }
             }
 
             document.getElementById('cicloVital').value = ciclo;
@@ -415,16 +476,17 @@
             actualizarProximaAccion();
         }
 
+        // Próxima Acción automática según intervención faltante
         function actualizarProximaAccion() {
             const intervencion = document.getElementById('intervencionFaltante').value;
             const selectAccion = document.getElementById('proximaAccion');
 
-            if (intervencion.includes('Tamizaje CCU') || intervencion.includes('Mama')) {
+            if (intervencion.includes('Próstata')) {
+                selectAccion.value = "Asistir a tamizaje de próstata / urología";
+            } else if (intervencion.includes('Tamizaje CCU') || intervencion.includes('Mama')) {
                 selectAccion.value = "Asistir a toma de muestras / laboratorio";
-            } else if (intervencion.includes('Cardiovascular')) {
+            } else if (intervencion.includes('Cardiovascular') || intervencion.includes('Valoración Integral')) {
                 selectAccion.value = "Asistir a consulta médica general / valoración";
-            } else if (intervencion.includes('Vacunación')) {
-                selectAccion.value = "Asistir a programa de vacunación PAI";
             } else if (intervencion.includes('Salud Bucal')) {
                 selectAccion.value = "Asistir a consulta odontológica preventiva";
             } else if (intervencion.includes('Planificación')) {
@@ -448,6 +510,10 @@
         function handleSubmit(event) {
             event.preventDefault();
             
+            const estadoAtencion = document.getElementById('estadoAtencion').value;
+            const cierreVerificado = document.getElementById('cierreVerificado').value;
+            const fechaCierreDemanda = (estadoAtencion.includes('Asistió') || cierreVerificado.includes('Sí')) ? new Date().toISOString().slice(0, 10) : 'Pendiente';
+
             const nuevoRegistro = {
                 id: Date.now(),
                 nombre: document.getElementById('nombre').value,
@@ -465,20 +531,23 @@
                 proximaAccion: document.getElementById('proximaAccion').value,
                 fechaProgramada: document.getElementById('fechaProgramada').value,
                 responsable: document.getElementById('responsable').value,
-                estadoAtencion: document.getElementById('estadoAtencion').value,
-                cierreVerificado: document.getElementById('cierreVerificado').value
+                estadoAtencion: estadoAtencion,
+                cierreVerificado: cierreVerificado,
+                fechaCierreDemanda: fechaCierreDemanda
             };
 
             registros.unshift(nuevoRegistro);
             localStorage.setItem('rpms_registros', JSON.stringify(registros));
             
-            mostrarToast("Registro guardado con éxito en el sistema");
+            mostrarToast("Registro guardado. Redirigiendo a Pacientes Registrados...");
             document.getElementById('rpms-form').reset();
             document.getElementById('fechaCaptacion').valueAsDate = new Date();
             document.getElementById('responsable').value = "Laura Ramírez";
             document.getElementById('edadCalculada').value = "";
             document.getElementById('cicloVital').value = "";
+            
             cargarRegistros();
+            cambiarSeccion('pacientes'); // Redirige automáticamente al apartado de pacientes registrados
         }
 
         function cargarRegistros() {
@@ -499,16 +568,9 @@
             document.getElementById('kpi-cierre').innerText = porcentajeCierre + "%";
 
             if (total === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">No hay registros cargados actualmente.</td></tr>`;
-                renderGraficas(0, 0, 0, {});
+                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">No hay registros cargados actualmente.</td></tr>`;
                 return;
             }
-
-            let conteoEps = {};
-            registros.forEach(r => {
-                let eps = r.entidadEps || 'No Especificado';
-                conteoEps[eps] = (conteoEps[eps] || 0) + 1;
-            });
 
             registros.forEach((r) => {
                 const tr = document.createElement('tr');
@@ -538,6 +600,7 @@
                             <option value="Desistió del proceso" ${r.estadoAtencion === 'Desistió del proceso' ? 'selected' : ''}>Desistió del proceso</option>
                         </select>
                     </td>
+                    <td class="p-3 font-semibold text-emerald-700">${r.fechaCierreDemanda}</td>
                     <td class="p-3 text-center space-x-2">
                         <button onclick="alternarCompletado(${r.id})" class="px-2.5 py-1 rounded text-[11px] font-bold ${r.cierreVerificado.includes('Sí') ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-amber-100 text-amber-800 hover:bg-amber-200'}" title="Hacer clic para cambiar estado de proceso">
                             <i class="fa-solid ${r.cierreVerificado.includes('Sí') ? 'fa-circle-check' : 'fa-clock'} mr-1"></i>
@@ -550,37 +613,39 @@
                 `;
                 tbody.appendChild(tr);
             });
-
-            renderGraficas(asistencias, inasistencias, pendientes, conteoEps);
         }
 
-        // Modificar el estado de atención directamente en la tabla
         function actualizarEstadoFila(id, nuevoEstado) {
+            const hoyStr = new Date().toISOString().slice(0, 10);
             registros = registros.map(r => {
                 if (r.id === id) {
                     r.estadoAtencion = nuevoEstado;
                     if (nuevoEstado.includes('Asistió / Demanda Completa')) {
                         r.cierreVerificado = "Sí (Cerrado)";
-                    } else if (nuevoEstado.includes('Inasistencia') || nuevoEstado.includes('Desistió')) {
+                        r.fechaCierreDemanda = hoyStr;
+                    } else {
                         r.cierreVerificado = "No (Abierto)";
+                        r.fechaCierreDemanda = "Pendiente";
                     }
                 }
                 return r;
             });
             localStorage.setItem('rpms_registros', JSON.stringify(registros));
             cargarRegistros();
-            mostrarToast("Estado actualizado correctamente");
+            mostrarToast("Estado y fecha de cierre actualizados");
         }
 
-        // Alternar si completó o no el proceso en las acciones
         function alternarCompletado(id) {
+            const hoyStr = new Date().toISOString().slice(0, 10);
             registros = registros.map(r => {
                 if (r.id === id) {
                     if (r.cierreVerificado.includes('Sí')) {
                         r.cierreVerificado = "No (Abierto)";
+                        r.fechaCierreDemanda = "Pendiente";
                     } else {
                         r.cierreVerificado = "Sí (Cerrado)";
                         r.estadoAtencion = "Asistió / Demanda Completa";
+                        r.fechaCierreDemanda = hoyStr;
                     }
                 }
                 return r;
@@ -590,7 +655,17 @@
             mostrarToast("Estado de ruta modificado");
         }
 
-        function renderGraficas(asistencias, inasistencias, pendientes, conteoEps) {
+        function renderizarGraficasDatos() {
+            let asistencias = registros.filter(r => r.estadoAtencion.includes('Asistió')).length;
+            let inasistencias = registros.filter(r => r.estadoAtencion.includes('Inasistencia') || r.estadoAtencion.includes('Desistió')).length;
+            let pendientes = registros.filter(r => r.estadoAtencion === 'Pendiente' || r.estadoAtencion.includes('Gestionado')).length;
+
+            let conteoEps = {};
+            registros.forEach(r => {
+                let eps = r.entidadEps || 'No Especificado';
+                conteoEps[eps] = (conteoEps[eps] || 0) + 1;
+            });
+
             const ctxEstado = document.getElementById('chartEstado').getContext('2d');
             if (chartEstadoInstance) chartEstadoInstance.destroy();
 
@@ -651,9 +726,9 @@
         }
 
         function exportarExcel() {
-            let csv = "Nombre,Documento,Sexo,FechaNacimiento,Edad,CicloVital,EntidadEps,EstadoAfiliacion,Entorno,FechaCaptacion,IntervencionFaltante,UltimaGestion,ProximaAccion,FechaProgramada,Responsable,EstadoAtencion,CierreVerificado\n";
+            let csv = "Nombre,Documento,Sexo,FechaNacimiento,Edad,CicloVital,EntidadEps,EstadoAfiliacion,Entorno,FechaCaptacion,IntervencionFaltante,UltimaGestion,ProximaAccion,FechaProgramada,Responsable,EstadoAtencion,CierreVerificado,FechaCierreDemanda\n";
             registros.forEach(r => {
-                csv += `"${r.nombre}","${r.documento}","${r.sexo}","${r.fechaNacimiento}","${r.edad}","${r.cicloVital}","${r.entidadEps}","${r.estadoAfiliacion}","${r.entorno}","${r.fechaCaptacion}","${r.intervencionFaltante}","${r.ultimaGestion}","${r.proximaAccion}","${r.fechaProgramada}","${r.responsable}","${r.estadoAtencion}","${r.cierreVerificado}"\n`;
+                csv += `"${r.nombre}","${r.documento}","${r.sexo}","${r.fechaNacimiento}","${r.edad}","${r.cicloVital}","${r.entidadEps}","${r.estadoAfiliacion}","${r.entorno}","${r.fechaCaptacion}","${r.intervencionFaltante}","${r.ultimaGestion}","${r.proximaAccion}","${r.fechaProgramada}","${r.responsable}","${r.estadoAtencion}","${r.cierreVerificado}","${r.fechaCierreDemanda}"\n`;
             });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
