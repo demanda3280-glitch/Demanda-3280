@@ -126,7 +126,7 @@
                         </select>
                     </div>
 
-                    <!-- Año de Nacimiento (Para cálculo automático de edad) -->
+                    <!-- Año de Nacimiento -->
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Año de Nacimiento</label>
                         <input type="number" id="AnioNacimiento" required min="1900" max="2026" placeholder="Ej. 1995" oninput="calcularEdadYCiclo()" onchange="calcularEdadYCiclo()"
@@ -147,7 +147,7 @@
                                class="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 bg-slate-100 text-blue-900 font-semibold text-sm">
                     </div>
 
-                    <!-- Entidad EPS (Desplegable detallado institucional) -->
+                    <!-- Entidad EPS -->
                     <div class="md:col-span-2">
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Entidad (EPS)</label>
                         <select id="entidadEps" required class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
@@ -192,7 +192,7 @@
                         <input type="date" id="fechaCaptacion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                     </div>
 
-                    <!-- Intervención Faltante en RPMS (Brechas - Automatizada por edad) -->
+                    <!-- Intervención Faltante en RPMS (Brechas) -->
                     <div class="md:col-span-2">
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Intervención Faltante en RPMS (Brechas)</label>
                         <select id="intervencionFaltante" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-medium text-amber-700">
@@ -206,18 +206,32 @@
                         </select>
                     </div>
 
-                    <!-- Última Gestión -->
+                    <!-- Última Gestión / Intervención (Desplegable Desglosado) -->
                     <div class="md:col-span-2">
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Última Gestión / Intervención</label>
-                        <input type="text" id="ultimaGestion" placeholder="Ej. Sensibilización y asignación de cita" 
-                               class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
+                        <select id="ultimaGestion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
+                            <option value="">Seleccione última gestión realizada...</option>
+                            <option value="Sensibilización y asignación de cita">Sensibilización y asignación de cita</option>
+                            <option value="Llamada telefónica de seguimiento realizada">Llamada telefónica de seguimiento realizada</option>
+                            <option value="Visita domiciliaria EBS efectuada">Visita domiciliaria EBS efectuada</option>
+                            <option value="Revisión de historia clínica y verificación de brechas">Revisión de historia clínica y verificación de brechas</option>
+                            <option value="Charla educativa en sala de espera impartida">Charla educativa en sala de espera impartida</option>
+                            <option value="Paciente localizado, pendiente aceptación de ruta">Paciente localizado, pendiente aceptación de ruta</option>
+                        </select>
                     </div>
 
-                    <!-- Próxima Acción -->
+                    <!-- Próxima Acción de Ruta (Desplegable Desglosado) -->
                     <div class="md:col-span-2">
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Próxima Acción de Ruta</label>
-                        <input type="text" id="proximaAccion" placeholder="Ej. Asistir a toma de muestras" 
-                               class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
+                        <select id="proximaAccion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
+                            <option value="">Seleccione próxima acción...</option>
+                            <option value="Asistir a toma de muestras / laboratorio">Asistir a toma de muestras / laboratorio</option>
+                            <option value="Asistir a consulta médica general / valoración">Asistir a consulta médica general / valoración</option>
+                            <option value="Asistir a cita de planificación familiar">Asistir a cita de planificación familiar</option>
+                            <option value="Asistir a programa de vacunación PAI">Asistir a programa de vacunación PAI</option>
+                            <option value="Seguimiento telefónico en 8 días">Seguimiento telefónico en 8 días</option>
+                            <option value="Cierre definitivo de ruta completado">Cierre definitivo de ruta completado</option>
+                        </select>
                     </div>
 
                     <!-- Fecha Programada -->
