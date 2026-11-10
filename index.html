@@ -53,7 +53,16 @@
                     <p><strong>EPS:</strong> <span id="modal-eps"></span></p>
                 </div>
 
-                <div class="md:col-span-2">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Estado de Laboratorios</label>
+                    <select id="edit-estadoLaboratorios" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm bg-white font-semibold">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Completado">Completado</option>
+                        <option value="No Aplica / Pendiente">No Aplica / Pendiente</option>
+                    </select>
+                </div>
+
+                <div>
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Última Gestión / Intervención</label>
                     <select id="edit-ultimaGestion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm bg-white">
                         <option value="Sensibilización y asignación de cita">Sensibilización y asignación de cita</option>
@@ -284,11 +293,11 @@
                             </div>
                         </div>
 
-                        <!-- Próximas Acciones de Ruta (SELECCIÓN MÚLTIPLE AUTOMÁTICA AISLADA Y CON PERFILES COMPLETOS) -->
+                        <!-- Próximas Acciones de Ruta -->
                         <div class="md:col-span-4 bg-blue-50/70 p-4 rounded-xl border border-blue-200">
                             <label class="block text-xs font-bold text-blue-950 uppercase mb-2 flex items-center justify-between">
                                 <span><i class="fa-solid fa-list-check mr-1 text-blue-700"></i> Próximas Acciones de Ruta (Selección Múltiple Automatizada)</span>
-                                <span class="text-blue-800 text-[11px] font-medium">Sincronizado por género y perfiles (Lipídico, Glicémico, ITS, PSA)</span>
+                                <span class="text-blue-800 text-[11px] font-medium">Sincronizado por género y perfiles</span>
                             </label>
                             <div id="contenedor-acciones" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                                 <label class="flex items-center space-x-2 text-xs font-semibold bg-white p-2.5 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100/50">
@@ -385,10 +394,24 @@
             <section id="seccion-pacientes" class="hidden space-y-6">
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-12">
                     <div class="bg-slate-900 px-6 py-4 flex justify-between items-center text-white">
-                        <h3 class="font-bold text-sm uppercase"><i class="fa-solid fa-users-gear mr-2 text-amber-400"></i> Pacientes Registrados y Control de Demanda</h3>
-                        <button onclick="exportarExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-xs px-3 py-1.5 rounded-lg font-semibold transition">
-                            <i class="fa-solid fa-file-excel mr-1"></i> Exportar Datos
-                        </button>
+                        <div class="flex items-center space-x-3">
+                            <h3 class="font-bold text-sm uppercase"><i class="fa-solid fa-users-gear mr-2 text-amber-400"></i> Pacientes Registrados</h3>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <!-- Filtro de Laboratorios -->
+                            <div class="flex items-center space-x-2 text-xs">
+                                <span class="text-slate-300 font-semibold"><i class="fa-solid fa-vial mr-1"></i>Filtrar Laboratorios:</span>
+                                <select id="filtro-laboratorios" onchange="cargarRegistros()" class="bg-slate-800 text-amber-400 px-3 py-1.5 rounded-lg border border-slate-700 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-amber-500">
+                                    <option value="TODOS">Todos los laboratorios</option>
+                                    <option value="Pendiente">Pendientes de toma/resultado</option>
+                                    <option value="Completado">Completados / Al día</option>
+                                    <option value="No Aplica / Pendiente">No Aplica</option>
+                                </select>
+                            </div>
+                            <button onclick="exportarExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-xs px-3 py-1.5 rounded-lg font-semibold transition">
+                                <i class="fa-solid fa-file-excel mr-1"></i> Exportar
+                            </button>
+                        </div>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-xs">
@@ -398,6 +421,10 @@
                                     <th class="p-3">Edad / Ciclo Vital</th>
                                     <th class="p-3">EPS / Régimen</th>
                                     <th class="p-3">Brechas / Intervenciones</th>
+                                    <!-- COLUMNA EXCLUSIVA DE LABORATORIOS -->
+                                    <th class="p-3 bg-amber-100/70 text-amber-950 font-extrabold border-x border-amber-200">
+                                        <i class="fa-solid fa-flask text-amber-600 mr-1"></i> Laboratorios
+                                    </th>
                                     <th class="p-3">Próximas Acciones de Ruta</th>
                                     <th class="p-3">Doctor / Responsable</th>
                                     <th class="p-3">Estado Atención</th>
@@ -586,7 +613,6 @@
             sincronizarProximasAcciones();
         }
 
-        // SINCRONIZACIÓN MÚLTIPLE INTELIGENTE CON PERFILES COMPLETOS AISLADOS (LIPÍDICO, GLICÉMICO, ITS, PSA)
         function sincronizarProximasAcciones() {
             const brechasMarcadas = Array.from(document.querySelectorAll('input[name="brechas"]:checked')).map(cb => cb.value.toLowerCase());
             const sexo = document.getElementById('sexo').value;
@@ -597,7 +623,6 @@
             accionesCheckboxes.forEach(ac => {
                 const valAccion = ac.value.toLowerCase();
                 
-                // Reglas exclusivas para Hombres (Sin cruces con mujeres)
                 if (sexo === 'Masculino') {
                     if (brechasMarcadas.some(b => b.includes('tacto rectal')) && valAccion.includes('tacto rectal')) {
                         ac.checked = true;
@@ -607,14 +632,12 @@
                     }
                 }
 
-                // Reglas exclusivas para Mujeres (Sin cruces con hombres)
                 if (sexo === 'Femenino') {
                     if (brechasMarcadas.some(b => b.includes('ccu') || b.includes('mama') || b.includes('valoración')) && valAccion.includes('perfil femenino')) {
                         ac.checked = true;
                     }
                 }
 
-                // Reglas comunes preventivas aplicadas según ciclo vital y selección
                 if (brechasMarcadas.some(b => b.includes('valoración integral')) && valAccion.includes('médica general')) {
                     ac.checked = true;
                 }
@@ -649,11 +672,15 @@
             const cierreVerificado = document.getElementById('cierreVerificado').value;
             const fechaCierreDemanda = (estadoAtencion.includes('Asistió') || cierreVerificado.includes('Sí')) ? new Date().toISOString().slice(0, 10) : 'Pendiente';
 
+            const sexo = document.getElementById('sexo').value;
+            const requiereLab = accionesSeleccionadas.some(a => a.toLowerCase().includes('laboratorio'));
+            const estadoLaboratoriosDefault = requiereLab ? 'Pendiente' : 'No Aplica / Pendiente';
+
             const nuevoRegistro = {
                 id: Date.now(),
                 nombre: document.getElementById('nombre').value,
                 documento: document.getElementById('documento').value,
-                sexo: document.getElementById('sexo').value,
+                sexo: sexo,
                 fechaNacimiento: document.getElementById('fechaNacimiento').value,
                 edad: document.getElementById('edadCalculada').value,
                 cicloVital: document.getElementById('cicloVital').value,
@@ -662,6 +689,7 @@
                 entorno: document.getElementById('entorno').value,
                 fechaCaptacion: document.getElementById('fechaCaptacion').value,
                 intervencionFaltante: brechasSeleccionadas.length > 0 ? brechasSeleccionadas.join(', ') : 'Ninguna',
+                estadoLaboratorios: estadoLaboratoriosDefault,
                 ultimaGestion: document.getElementById('ultimaGestion').value,
                 proximaAccion: accionesSeleccionadas.length > 0 ? accionesSeleccionadas.join(' | ') : 'Seguimiento general',
                 fechaProgramada: document.getElementById('fechaProgramada').value,
@@ -691,11 +719,20 @@
             const tbody = document.getElementById('tabla-registros');
             tbody.innerHTML = "";
 
+            const filtroLabs = document.getElementById('filtro-laboratorios').value;
+            
+            let registrosFiltrados = registros.filter(r => {
+                if (filtroLabs === 'TODOS') return true;
+                if (filtroLabs === 'Pendiente') return r.estadoLaboratorios === 'Pendiente';
+                if (filtroLabs === 'Completado') return r.estadoLaboratorios === 'Completado';
+                if (filtroLabs === 'No Aplica / Pendiente') return r.estadoLaboratorios === 'No Aplica / Pendiente';
+                return true;
+            });
+
             let total = registros.length;
             let asistencias = registros.filter(r => r.estadoAtencion.includes('Asistió')).length;
             let inasistencias = registros.filter(r => r.estadoAtencion.includes('Inasistencia')).length;
             let desistieron = registros.filter(r => r.estadoAtencion.includes('Desistió')).length;
-            let pendientes = registros.filter(r => r.estadoAtencion === 'Pendiente' || r.estadoAtencion.includes('Gestionado')).length;
             let cerrados = registros.filter(r => r.cierreVerificado.includes('Sí')).length;
             let porcentajeCierre = total > 0 ? Math.round((cerrados / total) * 100) : 100;
 
@@ -705,12 +742,12 @@
             document.getElementById('kpi-desistieron').innerText = desistieron;
             document.getElementById('kpi-cierre').innerText = porcentajeCierre + "%";
 
-            if (total === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-slate-400">No hay registros cargados actualmente.</td></tr>`;
+            if (registrosFiltrados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" class="p-6 text-center text-slate-400 font-medium">No hay registros que coincidan con el filtro de laboratorios seleccionado.</td></tr>`;
                 return;
             }
 
-            registros.forEach((r) => {
+            registrosFiltrados.forEach((r) => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition";
                 
@@ -727,6 +764,16 @@
                         <span class="px-2 py-1 rounded bg-blue-50 text-blue-900 font-semibold text-[11px]">${r.entidadEps}</span>
                     </td>
                     <td class="p-3 font-medium text-amber-800 max-w-xs">${r.intervencionFaltante}</td>
+                    
+                    <!-- CELDA EXCLUSIVA DE LABORATORIOS CON DESPLEGABLE EDITABLE Y COLOR DINÁMICO -->
+                    <td class="p-3 bg-amber-50/50 border-x border-amber-200">
+                        <select onchange="actualizarLaboratoriosFila(${r.id}, this.value)" class="text-xs px-2.5 py-1.5 rounded-lg border font-bold shadow-sm ${r.estadoLaboratorios === 'Completado' ? 'bg-emerald-100 text-emerald-900 border-emerald-300' : (r.estadoLaboratorios === 'Pendiente' ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-slate-100 text-slate-600 border-slate-300')}">
+                            <option value="Pendiente" ${r.estadoLaboratorios === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
+                            <option value="Completado" ${r.estadoLaboratorios === 'Completado' ? 'selected' : ''}>✅ Completado</option>
+                            <option value="No Aplica / Pendiente" ${r.estadoLaboratorios === 'No Aplica / Pendiente' ? 'selected' : ''}>⚪ No Aplica</option>
+                        </select>
+                    </td>
+
                     <td class="p-3 max-w-xs">
                         <p class="font-medium text-blue-900 text-[11px]">${r.proximaAccion}</p>
                         <p class="text-[10px] text-slate-500">Cita: ${r.fechaProgramada || 'Sin agendar'}</p>
@@ -758,6 +805,18 @@
             });
         }
 
+        function actualizarLaboratoriosFila(id, nuevoEstadoLabs) {
+            registros = registros.map(r => {
+                if (r.id === id) {
+                    r.estadoLaboratorios = nuevoEstadoLabs;
+                }
+                return r;
+            });
+            localStorage.setItem('rpms_registros', JSON.stringify(registros));
+            cargarRegistros();
+            mostrarToast("Estado de laboratorios actualizado");
+        }
+
         function abrirModalEditar(id) {
             const paciente = registros.find(r => r.id === id);
             if (!paciente) return;
@@ -768,6 +827,7 @@
             document.getElementById('modal-ciclo').innerText = paciente.cicloVital;
             document.getElementById('modal-eps').innerText = paciente.entidadEps;
 
+            document.getElementById('edit-estadoLaboratorios').value = paciente.estadoLaboratorios || "Pendiente";
             document.getElementById('edit-ultimaGestion').value = paciente.ultimaGestion || "";
             document.getElementById('edit-proximaAccion').value = paciente.proximaAccion || "";
             document.getElementById('edit-fechaProgramada').value = paciente.fechaProgramada || "";
@@ -789,6 +849,7 @@
 
             registros = registros.map(r => {
                 if (r.id === id) {
+                    r.estadoLaboratorios = document.getElementById('edit-estadoLaboratorios').value;
                     r.ultimaGestion = document.getElementById('edit-ultimaGestion').value;
                     r.proximaAccion = document.getElementById('edit-proximaAccion').value;
                     r.fechaProgramada = document.getElementById('edit-fechaProgramada').value;
@@ -961,9 +1022,9 @@
         }
 
         function exportarExcel() {
-            let csv = "Nombre,Documento,Sexo,FechaNacimiento,Edad,CicloVital,EntidadEps,EstadoAfiliacion,Entorno,FechaCaptacion,IntervencionFaltante,UltimaGestion,ProximaAccion,FechaProgramada,Responsable,EstadoAtencion,CierreVerificado,FechaCierreDemanda\n";
+            let csv = "Nombre,Documento,Sexo,FechaNacimiento,Edad,CicloVital,EntidadEps,EstadoAfiliacion,Entorno,FechaCaptacion,IntervencionFaltante,EstadoLaboratorios,UltimaGestion,ProximaAccion,FechaProgramada,Responsable,EstadoAtencion,CierreVerificado,FechaCierreDemanda\n";
             registros.forEach(r => {
-                csv += `"${r.nombre}","${r.documento}","${r.sexo}","${r.fechaNacimiento}","${r.edad}","${r.cicloVital}","${r.entidadEps}","${r.estadoAfiliacion}","${r.entorno}","${r.fechaCaptacion}","${r.intervencionFaltante}","${r.ultimaGestion}","${r.proximaAccion}","${r.fechaProgramada}","${r.responsable}","${r.estadoAtencion}","${r.cierreVerificado}","${r.fechaCierreDemanda}"\n`;
+                csv += `"${r.nombre}","${r.documento}","${r.sexo}","${r.fechaNacimiento}","${r.edad}","${r.cicloVital}","${r.entidadEps}","${r.estadoAfiliacion}","${r.entorno}","${r.fechaCaptacion}","${r.intervencionFaltante}","${r.estadoLaboratorios}","${r.ultimaGestion}","${r.proximaAccion}","${r.fechaProgramada}","${r.responsable}","${r.estadoAtencion}","${r.cierreVerificado}","${r.fechaCierreDemanda}"\n`;
             });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
