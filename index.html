@@ -66,16 +66,8 @@
                 </div>
 
                 <div class="md:col-span-2">
-                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Próxima Acción de Ruta</label>
-                    <select id="edit-proximaAccion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm bg-white font-semibold text-blue-900">
-                        <option value="Asistir a tamizaje de tacto rectal y PSA">Asistir a tamizaje de tacto rectal y PSA</option>
-                        <option value="Asistir a toma de muestras / laboratorio (Citología / VPH / Mama)">Asistir a toma de muestras / laboratorio (Citología / VPH / Mama)</option>
-                        <option value="Asistir a consulta médica general / valoración">Asistir a consulta médica general / valoración</option>
-                        <option value="Asistir a cita de planificación familiar">Asistir a cita de planificación familiar</option>
-                        <option value="Asistir a consulta odontológica preventiva">Asistir a consulta odontológica preventiva</option>
-                        <option value="Seguimiento telefónico en 8 días">Seguimiento telefónico en 8 días</option>
-                        <option value="Cierre definitivo de ruta completado">Cierre definitivo de ruta completado</option>
-                    </select>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Próxima Acción de Ruta (Editar)</label>
+                    <input type="text" id="edit-proximaAccion" required class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm font-semibold text-blue-900">
                 </div>
 
                 <div>
@@ -258,41 +250,75 @@
                             <input type="date" id="fechaCaptacion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                         </div>
 
-                        <!-- Intervención Faltante en RPMS (SELECCIÓN MÚLTIPLE AUTOMATIZADA POR EDAD Y GÉNERO) -->
+                        <!-- Intervenciones Faltantes (SELECCIÓN MÚLTIPLE) -->
                         <div class="md:col-span-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
                             <label class="block text-xs font-bold text-slate-700 uppercase mb-2 flex items-center justify-between">
-                                <span>Intervenciones Faltantes en RPMS (Selección Múltiple Automática según Edad y Género)</span>
-                                <span class="text-amber-700 text-[11px] font-normal">Puedes ajustar o marcar opciones manualmente si es necesario</span>
+                                <span>Intervenciones Faltantes en RPMS (Selección Múltiple Auto según Edad/Sexo)</span>
+                                <span class="text-amber-700 text-[11px] font-normal">Sincronizado con Próxima Acción</span>
                             </label>
                             <div id="contenedor-brechas" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                                 <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" name="brechas" value="Tamizaje tacto rectal y PSA" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <input type="checkbox" name="brechas" value="Tamizaje tacto rectal y PSA" onchange="sincronizarProximasAcciones()" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
                                     <span>Tamizaje tacto rectal y PSA (Hombres)</span>
                                 </label>
                                 <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" name="brechas" value="Tamizaje CCU (Citología / ADN-VPH)" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <input type="checkbox" name="brechas" value="Tamizaje CCU (Citología / ADN-VPH)" onchange="sincronizarProximasAcciones()" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
                                     <span>Tamizaje CCU (Citología / ADN-VPH)</span>
                                 </label>
                                 <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" name="brechas" value="Tamizaje Cáncer de Mama (Mamografía)" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <input type="checkbox" name="brechas" value="Tamizaje Cáncer de Mama (Mamografía)" onchange="sincronizarProximasAcciones()" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
                                     <span>Tamizaje Cáncer de Mama (Mamografía)</span>
                                 </label>
                                 <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" name="brechas" value="Valoración Integral / Riesgo Cardiovascular" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <input type="checkbox" name="brechas" value="Valoración Integral / Riesgo Cardiovascular" onchange="sincronizarProximasAcciones()" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
                                     <span>Valoración Integral / Riesgo Cardiovascular</span>
                                 </label>
                                 <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" name="brechas" value="Salud Bucal / Higiene Oral Preventiva" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <input type="checkbox" name="brechas" value="Salud Bucal / Higiene Oral Preventiva" onchange="sincronizarProximasAcciones()" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
                                     <span>Salud Bucal / Higiene Oral Preventiva</span>
                                 </label>
                                 <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" name="brechas" value="Planificación Familiar / Asesoría Anticonceptiva" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <input type="checkbox" name="brechas" value="Planificación Familiar / Asesoría Anticonceptiva" onchange="sincronizarProximasAcciones()" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
                                     <span>Planificación Familiar / Asesoría Anticonceptiva</span>
                                 </label>
                             </div>
                         </div>
 
-                        <!-- Última Gestión / Intervención -->
+                        <!-- Próximas Acciones de Ruta (SELECCIÓN MÚLTIPLE AUTOMÁTICA SEGÚN INTERVENCIONES) -->
+                        <div class="md:col-span-4 bg-blue-50/70 p-4 rounded-xl border border-blue-200">
+                            <label class="block text-xs font-bold text-blue-950 uppercase mb-2 flex items-center justify-between">
+                                <span><i class="fa-solid fa-list-check mr-1 text-blue-700"></i> Próximas Acciones de Ruta (Selección Múltiple Automatizada)</span>
+                                <span class="text-blue-800 text-[11px] font-medium">Se marcan automáticamente según las intervenciones seleccionadas</span>
+                            </label>
+                            <div id="contenedor-acciones" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                <label class="flex items-center space-x-2 text-xs font-semibold bg-white p-2.5 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100/50">
+                                    <input type="checkbox" name="acciones_ruta" value="Asistir a tamizaje de tacto rectal y PSA" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Asistir a tamizaje de tacto rectal y PSA</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-semibold bg-white p-2.5 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100/50">
+                                    <input type="checkbox" name="acciones_ruta" value="Asistir a toma de muestras / laboratorio (Citología / VPH / Mama)" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Asistir a toma de muestras / laboratorio</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-semibold bg-white p-2.5 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100/50">
+                                    <input type="checkbox" name="acciones_ruta" value="Asistir a consulta médica general / valoración" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Asistir a consulta médica general / valoración</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-semibold bg-white p-2.5 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100/50">
+                                    <input type="checkbox" name="acciones_ruta" value="Asistir a cita de planificación familiar" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Asistir a cita de planificación familiar</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-semibold bg-white p-2.5 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100/50">
+                                    <input type="checkbox" name="acciones_ruta" value="Asistir a consulta odontológica preventiva" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Asistir a consulta odontológica preventiva</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-semibold bg-white p-2.5 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100/50">
+                                    <input type="checkbox" name="acciones_ruta" value="Seguimiento telefónico en 8 días" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Seguimiento telefónico en 8 días</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Última Gestión -->
                         <div class="md:col-span-2">
                             <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Última Gestión / Intervención</label>
                             <select id="ultimaGestion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
@@ -306,28 +332,13 @@
                             </select>
                         </div>
 
-                        <!-- Próxima Acción de Ruta -->
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Próxima Acción de Ruta</label>
-                            <select id="proximaAccion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-semibold text-blue-900">
-                                <option value="">Seleccione próxima acción...</option>
-                                <option value="Asistir a tamizaje de tacto rectal y PSA">Asistir a tamizaje de tacto rectal y PSA</option>
-                                <option value="Asistir a toma de muestras / laboratorio (Citología / VPH / Mama)">Asistir a toma de muestras / laboratorio (Citología / VPH / Mama)</option>
-                                <option value="Asistir a consulta médica general / valoración">Asistir a consulta médica general / valoración</option>
-                                <option value="Asistir a cita de planificación familiar">Asistir a cita de planificación familiar</option>
-                                <option value="Asistir a consulta odontológica preventiva">Asistir a consulta odontológica preventiva</option>
-                                <option value="Seguimiento telefónico en 8 días">Seguimiento telefónico en 8 días</option>
-                                <option value="Cierre definitivo de ruta completado">Cierre definitivo de ruta completado</option>
-                            </select>
-                        </div>
-
                         <!-- Fecha Programada -->
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Fecha Programada Atención</label>
                             <input type="date" id="fechaProgramada" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                         </div>
 
-                        <!-- Responsable del Seguimiento -->
+                        <!-- Responsable -->
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Responsable / Doctor Tratante</label>
                             <input type="text" id="responsable" placeholder="Ej. Dr. Carlos Mendoza" value="Laura Ramírez" 
@@ -346,7 +357,7 @@
                             </select>
                         </div>
 
-                        <!-- Cierre Verificado de Ruta -->
+                        <!-- Cierre Verificado -->
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Cierre Verificado de Ruta</label>
                             <select id="cierreVerificado" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
@@ -383,7 +394,7 @@
                                     <th class="p-3">Edad / Ciclo Vital</th>
                                     <th class="p-3">EPS / Régimen</th>
                                     <th class="p-3">Brechas / Intervenciones</th>
-                                    <th class="p-3">Próxima Acción / Cita</th>
+                                    <th class="p-3">Próximas Acciones de Ruta</th>
                                     <th class="p-3">Doctor / Responsable</th>
                                     <th class="p-3">Estado Atención</th>
                                     <th class="p-3">Fecha Cierre</th>
@@ -400,6 +411,7 @@
 
             <!-- SECCIÓN 3: ANALÍTICA Y GRÁFICAS -->
             <section id="seccion-analitica" class="hidden space-y-6">
+                <!-- Tarjetas KPI -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
                     <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
                         <div>
@@ -419,7 +431,7 @@
 
                     <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
                         <div>
-                            <p class="text-[11px] font-bold text-slate-400 uppercase">Inasistencias / Desistió</p>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase">Inasistencias / Faltaron</p>
                             <h3 id="kpi-inasistencias" class="text-2xl font-extrabold text-rose-600 mt-0.5">0</h3>
                         </div>
                         <div class="w-10 h-10 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-user-xmark"></i></div>
@@ -427,35 +439,38 @@
 
                     <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
                         <div>
-                            <p class="text-[11px] font-bold text-slate-400 uppercase">Pendientes / Brechas</p>
-                            <h3 id="kpi-pendientes" class="text-2xl font-extrabold text-amber-600 mt-0.5">0</h3>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase">Desistieron del Proceso</p>
+                            <h3 id="kpi-desistieron" class="text-2xl font-extrabold text-purple-700 mt-0.5">0</h3>
                         </div>
-                        <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-clock"></i></div>
+                        <div class="w-10 h-10 bg-purple-50 text-purple-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-user-slash"></i></div>
                     </div>
 
                     <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
                         <div>
-                            <p class="text-[11px] font-bold text-slate-400 uppercase">% Cierre Ruta</p>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase">% Cierre Efectivo</p>
                             <h3 id="kpi-cierre" class="text-2xl font-extrabold text-blue-600 mt-0.5">0%</h3>
                         </div>
                         <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-chart-line"></i></div>
                     </div>
                 </div>
 
+                <!-- GRÁFICAS -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                        <h3 class="text-xs font-bold text-slate-600 uppercase mb-4 flex items-center space-x-2">
-                            <i class="fa-solid fa-chart-pie text-blue-600"></i>
-                            <span>Estado de Atención y Cobertura de Rutas</span>
+                    <!-- GRÁFICA KPI: ESTADO DETALLADO DE ATENCIÓN DE PACIENTES -->
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2">
+                        <h3 class="text-xs font-bold text-slate-700 uppercase mb-4 flex items-center space-x-2">
+                            <i class="fa-solid fa-chart-bar text-blue-900"></i>
+                            <span>KPI: Distribución Detallada por Estado de Atención (Pendientes, Citados, Demanda Completa, Inasistencias y Desistidos)</span>
                         </h3>
-                        <div class="h-64 relative flex items-center justify-center">
-                            <canvas id="chartEstado"></canvas>
+                        <div class="h-72 relative flex items-center justify-center">
+                            <canvas id="chartEstadoDetallado"></canvas>
                         </div>
                     </div>
 
+                    <!-- Gráfica 2: Cobertura por EPS -->
                     <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
                         <h3 class="text-xs font-bold text-slate-600 uppercase mb-4 flex items-center space-x-2">
-                            <i class="fa-solid fa-chart-bar text-amber-500"></i>
+                            <i class="fa-solid fa-chart-pie text-amber-500"></i>
                             <span>Distribución de Pacientes por Entidad (EPS)</span>
                         </h3>
                         <div class="h-64 relative flex items-center justify-center">
@@ -463,12 +478,13 @@
                         </div>
                     </div>
 
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2">
+                    <!-- Gráfica 3: Pasas de Asistencia por Ciclo Vital -->
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
                         <h3 class="text-xs font-bold text-slate-600 uppercase mb-4 flex items-center space-x-2">
                             <i class="fa-solid fa-diagram-project text-emerald-600"></i>
-                            <span>Asistencia y Demanda Completa por Momento del Ciclo Vital</span>
+                            <span>Demanda Completa / Asistencia por Ciclo Vital</span>
                         </h3>
-                        <div class="h-72 relative flex items-center justify-center">
+                        <div class="h-64 relative flex items-center justify-center">
                             <canvas id="chartCicloVital"></canvas>
                         </div>
                     </div>
@@ -519,7 +535,6 @@
             }
         }
 
-        // Automatización inteligente por edad y género (Selección Múltiple de Brechas)
         function calcularEdadYBrechas() {
             const fechaNacVal = document.getElementById('fechaNacimiento').value;
             const sexo = document.getElementById('sexo').value;
@@ -552,63 +567,47 @@
 
             document.getElementById('cicloVital').value = ciclo;
 
-            // Obtener todos los checkboxes de brechas
             const checkboxes = document.querySelectorAll('input[name="brechas"]');
-            
-            // Desmarcar todos primero
-            checkboxes.log = checkboxes.forEach(cb => cb.checked = false);
+            checkboxes.forEach(cb => cb.checked = false);
 
-            // Reglas automatizadas basadas en la Resolución 3280 por edad y género
             checkboxes.forEach(cb => {
                 const val = cb.value.toLowerCase();
-
-                // Salud Bucal y Valoración Integral aplican prácticamente a todos los rangos preventivos
-                if (val.includes('salud bucal') || val.includes('valoración integral')) {
-                    cb.checked = true;
-                }
-
-                // Planificación Familiar (para mayores de 14 años hasta edad reproductiva/adultez)
-                if (val.includes('planificación') && edadAnios >= 14 && edadAnios <= 49) {
-                    cb.checked = true;
-                }
-
-                // Mujeres: Citología / VPH (desde los 25 años)
-                if (sexo === 'Femenino' && val.includes('ccu') && edadAnios >= 25) {
-                    cb.checked = true;
-                }
-
-                // Mujeres: Mamografía (desde los 50 hasta 69 años o adultez/vejez)
-                if (sexo === 'Femenino' && val.includes('mama') && edadAnios >= 50) {
-                    cb.checked = true;
-                }
-
-                // Hombres: Tamizaje tacto rectal y PSA (desde los 50 años en adelante)
-                if (sexo === 'Masculino' && val.includes('tacto rectal') && edadAnios >= 50) {
-                    cb.checked = true;
-                }
+                if (val.includes('salud bucal') || val.includes('valoración integral')) cb.checked = true;
+                if (val.includes('planificación') && edadAnios >= 14 && edadAnios <= 49) cb.checked = true;
+                if (sexo === 'Femenino' && val.includes('ccu') && edadAnios >= 25) cb.checked = true;
+                if (sexo === 'Femenino' && val.includes('mama') && edadAnios >= 50) cb.checked = true;
+                if (sexo === 'Masculino' && val.includes('tacto rectal') && edadAnios >= 50) cb.checked = true;
             });
 
-            actualizarProximaAccionSugerida();
+            sincronizarProximasAcciones();
         }
 
-        function actualizarProximaAccionSugerida() {
-            const checkboxes = document.querySelectorAll('input[name="brechas"]:checked');
-            const selectAccion = document.getElementById('proximaAccion');
+        // SINCRONIZACIÓN MÚLTIPLE DE PRÓXIMAS ACCIONES
+        function sincronizarProximasAcciones() {
+            const brechasMarcadas = Array.from(document.querySelectorAll('input[name="brechas"]:checked')).map(cb => cb.value.toLowerCase());
+            const accionesCheckboxes = document.querySelectorAll('input[name="acciones_ruta"]');
+            
+            accionesCheckboxes.forEach(ac => ac.checked = false);
 
-            if (checkboxes.length > 0) {
-                const primeraBrecha = checkboxes[0].value.toLowerCase();
-                if (primeraBrecha.includes('tacto rectal')) {
-                    selectAccion.value = "Asistir a tamizaje de tacto rectal y PSA";
-                } else if (primeraBrecha.includes('ccu') || primeraBrecha.includes('mama')) {
-                    selectAccion.value = "Asistir a toma de muestras / laboratorio (Citología / VPH / Mama)";
-                } else if (primeraBrecha.includes('valoración')) {
-                    selectAccion.value = "Asistir a consulta médica general / valoración";
-                } else if (primeraBrecha.includes('salud bucal')) {
-                    selectAccion.value = "Asistir a consulta odontológica preventiva";
-                } else if (primeraBrecha.includes('planificación')) {
-                    selectAccion.value = "Asistir a cita de planificación familiar";
+            accionesCheckboxes.forEach(ac => {
+                const valAccion = ac.value.toLowerCase();
+                
+                if (brechasMarcadas.some(b => b.includes('tacto rectal')) && valAccion.includes('tacto rectal')) {
+                    ac.checked = true;
                 }
-            }
+                if (brechasMarcadas.some(b => b.includes('ccu') || b.includes('mama')) && valAccion.includes('muestras')) {
+                    ac.checked = true;
+                }
+                if (brechasMarcadas.some(b => b.includes('valoración integral')) && valAccion.includes('médica general')) {
+                    ac.checked = true;
+                }
+                if (brechasMarcadas.some(b => b.includes('salud bucal')) && valAccion.includes('odontológica')) {
+                    ac.checked = true;
+                }
+                if (brechasMarcadas.some(b => b.includes('planificación')) && valAccion.includes('planificación')) {
+                    ac.checked = true;
+                }
+            });
         }
 
         function verificarCierreAutomatico() {
@@ -616,7 +615,6 @@
             const selectCierre = document.getElementById('cierreVerificado');
             if (estadoAtencion.includes('Asistió / Demanda Completa')) {
                 selectCierre.value = "Sí (Cerrado)";
-                document.getElementById('proximaAccion').value = "Cierre definitivo de ruta completado";
             } else {
                 selectCierre.value = "No (Abierto)";
             }
@@ -627,13 +625,8 @@
         function handleSubmit(event) {
             event.preventDefault();
             
-            // Recopilar las brechas seleccionadas por selección múltiple
-            const brechasSeleccionadas = [];
-            document.querySelectorAll('input[name="brechas"]:checked').forEach(cb => {
-                brechasSeleccionadas.push(cb.value);
-            });
-
-            const intervencionesTexto = brechasSeleccionadas.length > 0 ? brechasSeleccionadas.join(', ') : 'Ninguna seleccionada';
+            const brechasSeleccionadas = Array.from(document.querySelectorAll('input[name="brechas"]:checked')).map(cb => cb.value);
+            const accionesSeleccionadas = Array.from(document.querySelectorAll('input[name="acciones_ruta"]:checked')).map(cb => cb.value);
 
             const estadoAtencion = document.getElementById('estadoAtencion').value;
             const cierreVerificado = document.getElementById('cierreVerificado').value;
@@ -651,9 +644,9 @@
                 estadoAfiliacion: document.getElementById('estadoAfiliacion').value,
                 entorno: document.getElementById('entorno').value,
                 fechaCaptacion: document.getElementById('fechaCaptacion').value,
-                intervencionFaltante: intervencionesTexto,
+                intervencionFaltante: brechasSeleccionadas.length > 0 ? brechasSeleccionadas.join(', ') : 'Ninguna',
                 ultimaGestion: document.getElementById('ultimaGestion').value,
-                proximaAccion: document.getElementById('proximaAccion').value,
+                proximaAccion: accionesSeleccionadas.length > 0 ? accionesSeleccionadas.join(' | ') : 'Seguimiento general',
                 fechaProgramada: document.getElementById('fechaProgramada').value,
                 responsable: document.getElementById('responsable').value,
                 estadoAtencion: estadoAtencion,
@@ -664,13 +657,14 @@
             registros.unshift(nuevoRegistro);
             localStorage.setItem('rpms_registros', JSON.stringify(registros));
             
-            mostrarToast("Registro guardado exitosamente.");
+            mostrarToast("Registro guardado con éxito.");
             document.getElementById('rpms-form').reset();
             document.getElementById('fechaCaptacion').valueAsDate = new Date();
             document.getElementById('responsable').value = "Laura Ramírez";
             document.getElementById('edadCalculada').value = "";
             document.getElementById('cicloVital').value = "";
             document.querySelectorAll('input[name="brechas"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('input[name="acciones_ruta"]').forEach(cb => cb.checked = false);
             
             cargarRegistros();
             cambiarSeccion('pacientes');
@@ -682,7 +676,8 @@
 
             let total = registros.length;
             let asistencias = registros.filter(r => r.estadoAtencion.includes('Asistió')).length;
-            let inasistencias = registros.filter(r => r.estadoAtencion.includes('Inasistencia') || r.estadoAtencion.includes('Desistió')).length;
+            let inasistencias = registros.filter(r => r.estadoAtencion.includes('Inasistencia')).length;
+            let desistieron = registros.filter(r => r.estadoAtencion.includes('Desistió')).length;
             let pendientes = registros.filter(r => r.estadoAtencion === 'Pendiente' || r.estadoAtencion.includes('Gestionado')).length;
             let cerrados = registros.filter(r => r.cierreVerificado.includes('Sí')).length;
             let porcentajeCierre = total > 0 ? Math.round((cerrados / total) * 100) : 100;
@@ -690,7 +685,7 @@
             document.getElementById('kpi-total').innerText = total;
             document.getElementById('kpi-asistencias').innerText = asistencias;
             document.getElementById('kpi-inasistencias').innerText = inasistencias;
-            document.getElementById('kpi-pendientes').innerText = pendientes;
+            document.getElementById('kpi-desistieron').innerText = desistieron;
             document.getElementById('kpi-cierre').innerText = porcentajeCierre + "%";
 
             if (total === 0) {
@@ -714,9 +709,9 @@
                     <td class="p-3">
                         <span class="px-2 py-1 rounded bg-blue-50 text-blue-900 font-semibold text-[11px]">${r.entidadEps}</span>
                     </td>
-                    <td class="p-3 font-medium text-amber-800">${r.intervencionFaltante}</td>
-                    <td class="p-3">
-                        <p class="font-medium text-blue-900">${r.proximaAccion}</p>
+                    <td class="p-3 font-medium text-amber-800 max-w-xs">${r.intervencionFaltante}</td>
+                    <td class="p-3 max-w-xs">
+                        <p class="font-medium text-blue-900 text-[11px]">${r.proximaAccion}</p>
                         <p class="text-[10px] text-slate-500">Cita: ${r.fechaProgramada || 'Sin agendar'}</p>
                     </td>
                     <td class="p-3 text-slate-700 font-medium">${r.responsable}</td>
@@ -839,10 +834,13 @@
             mostrarToast("Estado de ruta modificado");
         }
 
+        // RENDERIZADO DE GRÁFICAS DETALLADAS POR ESTADO Y KPI
         function renderizarGraficasDatos() {
-            let asistencias = registros.filter(r => r.estadoAtencion.includes('Asistió')).length;
-            let inasistencias = registros.filter(r => r.estadoAtencion.includes('Inasistencia') || r.estadoAtencion.includes('Desistió')).length;
-            let pendientes = registros.filter(r => r.estadoAtencion === 'Pendiente' || r.estadoAtencion.includes('Gestionado')).length;
+            let pendientes = registros.filter(r => r.estadoAtencion === 'Pendiente').length;
+            let citados = registros.filter(r => r.estadoAtencion.includes('Gestionado')).length;
+            let completados = registros.filter(r => r.estadoAtencion.includes('Asistió')).length;
+            let inasistencias = registros.filter(r => r.estadoAtencion.includes('Inasistencia')).length;
+            let desistieron = registros.filter(r => r.estadoAtencion.includes('Desistió')).length;
 
             let conteoEps = {};
             let conteoCicloAsistidos = {
@@ -865,36 +863,18 @@
                 }
             });
 
-            const ctxEstado = document.getElementById('chartEstado').getContext('2d');
+            // Gráfica KPI 1: Estado Detallado
+            const ctxEstado = document.getElementById('chartEstadoDetallado').getContext('2d');
             if (chartEstadoInstance) chartEstadoInstance.destroy();
 
             chartEstadoInstance = new Chart(ctxEstado, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Demanda Completa', 'Inasistencias / Desistió', 'Pendientes'],
-                    datasets: [{
-                        data: [asistencias, inasistencias, pendientes],
-                        backgroundColor: ['#10b981', '#f43f5e', '#f59e0b']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom' } }
-                }
-            });
-
-            const ctxEps = document.getElementById('chartEps').getContext('2d');
-            if (chartEpsInstance) chartEpsInstance.destroy();
-
-            chartEpsInstance = new Chart(ctxEps, {
                 type: 'bar',
                 data: {
-                    labels: Object.keys(conteoEps),
+                    labels: ['Pendientes', 'Citados / En Proceso', 'Demanda Completa (Asistió)', 'Inasistencia (No Asistió)', 'Desistió del Proceso'],
                     datasets: [{
-                        label: 'Pacientes Captados',
-                        data: Object.values(conteoEps),
-                        backgroundColor: '#1e40af'
+                        label: 'Número de Pacientes',
+                        data: [pendientes, citados, completados, inasistencias, desistieron],
+                        backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#f43f5e', '#a855f7']
                     }]
                 },
                 options: {
@@ -905,6 +885,27 @@
                 }
             });
 
+            // Gráfica 2: EPS
+            const ctxEps = document.getElementById('chartEps').getContext('2d');
+            if (chartEpsInstance) chartEpsInstance.destroy();
+
+            chartEpsInstance = new Chart(ctxEps, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(conteoEps),
+                    datasets: [{
+                        data: Object.values(conteoEps),
+                        backgroundColor: ['#1e40af', '#0284c7', '#0d9488', '#4f46e5', '#d97706']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+
+            // Gráfica 3: Ciclo Vital
             const ctxCiclo = document.getElementById('chartCicloVital').getContext('2d');
             if (chartCicloInstance) chartCicloInstance.destroy();
 
@@ -913,7 +914,7 @@
                 data: {
                     labels: Object.keys(conteoCicloAsistidos),
                     datasets: [{
-                        label: 'Pacientes con Demanda Completa / Asistencia',
+                        label: 'Demanda Completa',
                         data: Object.values(conteoCicloAsistidos),
                         backgroundColor: '#059669'
                     }]
@@ -922,7 +923,7 @@
                     indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: true, position: 'bottom' } },
+                    plugins: { legend: { display: false } },
                     scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } }
                 }
             });
