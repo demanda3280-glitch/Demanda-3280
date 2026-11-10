@@ -78,7 +78,7 @@
 
                 <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
                     <div>
-                        <p class="text-[11px] font-bold text-slate-400 uppercase">Inasistencias</p>
+                        <p class="text-[11px] font-bold text-slate-400 uppercase">Inasistencias / Desistió</p>
                         <h3 id="kpi-inasistencias" class="text-2xl font-extrabold text-rose-600 mt-0.5">0</h3>
                     </div>
                     <div class="w-10 h-10 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-user-xmark"></i></div>
@@ -101,7 +101,7 @@
                 </div>
             </div>
 
-            <!-- EVIDENCIA GRÁFICA / ANALÍTICA (NUEVO) -->
+            <!-- EVIDENCIA GRÁFICA / ANALÍTICA -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                 <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
                     <h3 class="text-xs font-bold text-slate-600 uppercase mb-4 flex items-center space-x-2">
@@ -157,16 +157,16 @@
                         </select>
                     </div>
 
-                    <!-- Año de Nacimiento -->
+                    <!-- Fecha de Nacimiento Completa (NUEVO) -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Año de Nacimiento</label>
-                        <input type="number" id="AnioNacimiento" required min="1900" max="2026" placeholder="Ej. 1995" oninput="calcularEdadYCiclo()" onchange="calcularEdadYCiclo()"
-                               class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Fecha de Nacimiento</label>
+                        <input type="date" id="fechaNacimiento" required onchange="calcularEdadExacta()" 
+                               class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
                     </div>
 
-                    <!-- Edad calculada -->
+                    <!-- Edad calculada exacta -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Edad Calculada</label>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Edad Exacta</label>
                         <input type="text" id="edadCalculada" readonly placeholder="Automática" 
                                class="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 bg-slate-100 text-slate-600 text-sm font-bold">
                     </div>
@@ -174,7 +174,7 @@
                     <!-- Momento del Ciclo Vital -->
                     <div class="md:col-span-2">
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Momento del Ciclo Vital (Auto)</label>
-                        <input type="text" id="cicloVital" readonly placeholder="Se calcula según el año de nacimiento" 
+                        <input type="text" id="cicloVital" readonly placeholder="Se calcula según fecha de nacimiento" 
                                class="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 bg-slate-100 text-blue-900 font-semibold text-sm">
                     </div>
 
@@ -251,7 +251,7 @@
                         </select>
                     </div>
 
-                    <!-- Próxima Acción de Ruta (AUTOMÁTICA SEGÚN INTERVENCIÓN) -->
+                    <!-- Próxima Acción de Ruta -->
                     <div class="md:col-span-2">
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Próxima Acción de Ruta (Automática)</label>
                         <select id="proximaAccion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-semibold text-blue-900">
@@ -272,14 +272,14 @@
                         <input type="date" id="fechaProgramada" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                     </div>
 
-                    <!-- Responsable del Seguimiento (EDITABLE SEGÚN EL DOCTOR) -->
+                    <!-- Responsable del Seguimiento -->
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Responsable / Doctor Tratante</label>
-                        <input type="text" id="responsable" placeholder="Ej. Dr. Carlos Mendoza / Laura Ramírez" value="Laura Ramírez" 
+                        <input type="text" id="responsable" placeholder="Ej. Dr. Carlos Mendoza" value="Laura Ramírez" 
                                class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                     </div>
 
-                    <!-- Estado de Atención RPMS / Demanda Completa -->
+                    <!-- Estado de Atención RPMS -->
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Estado de Atención / Demanda</label>
                         <select id="estadoAtencion" onchange="verificarCierreAutomatico()" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-medium">
@@ -287,6 +287,7 @@
                             <option value="Gestionado / Citado">Gestionado / Citado</option>
                             <option value="Asistió / Demanda Completa">Asistió / Demanda Completa</option>
                             <option value="Inasistencia / No asistió">Inasistencia / No asistió</option>
+                            <option value="Desistió del proceso">Desistió del proceso</option>
                         </select>
                     </div>
 
@@ -326,8 +327,8 @@
                                 <th class="p-3">EPS / Régimen</th>
                                 <th class="p-3">Brecha / Intervención</th>
                                 <th class="p-3">Doctor / Responsable</th>
-                                <th class="p-3">Estado Atención</th>
-                                <th class="p-3 text-center">Acciones</th>
+                                <th class="p-3">Estado Atención (Editable)</th>
+                                <th class="p-3 text-center">Acciones (Proceso Ruta)</th>
                             </tr>
                         </thead>
                         <tbody id="tabla-registros" class="divide-y divide-slate-100">
@@ -357,35 +358,43 @@
 
         document.getElementById('fechaCaptacion').valueAsDate = new Date();
 
-        function calcularEdadYCiclo() {
-            const anioNac = parseInt(document.getElementById('AnioNacimiento').value);
-            const anioActual = new Date().getFullYear();
+        function calcularEdadExacta() {
+            const fechaNacVal = document.getElementById('fechaNacimiento').value;
+            if (!fechaNacVal) return;
+
+            const hoy = new Date();
+            const nac = new Date(fechaNacVal);
             
-            if (!anioNac || anioNac < 1900 || anioNac > anioActual) {
+            let edadAnios = hoy.getFullYear() - nac.getFullYear();
+            let m = hoy.getMonth() - nac.getMonth();
+            if (m < 0 || (m === 0 && hoy.getDate() < nac.getDate())) {
+                edadAnios--;
+            }
+
+            if (edadAnios < 0) {
                 document.getElementById('edadCalculada').value = "";
                 document.getElementById('cicloVital').value = "";
                 return;
             }
 
-            const edad = anioActual - anioNac;
-            document.getElementById('edadCalculada').value = edad + " años";
+            document.getElementById('edadCalculada').value = edadAnios + " años";
 
             let ciclo = "";
             let brechaSugerida = "";
 
-            if (edad >= 0 && edad <= 5) {
+            if (edadAnios >= 0 && edadAnios <= 5) {
                 ciclo = "Primera Infancia (0-5 años)";
                 brechaSugerida = "Vacunación";
-            } else if (edad >= 6 && edad <= 11) {
+            } else if (edadAnios >= 6 && edadAnios <= 11) {
                 ciclo = "Infancia (6-11 años)";
                 brechaSugerida = "Salud Bucal";
-            } else if (edad >= 12 && edad <= 17) {
+            } else if (edadAnios >= 12 && edadAnios <= 17) {
                 ciclo = "Adolescencia (12-17 años)";
                 brechaSugerida = "Planificación";
-            } else if (edad >= 18 && edad <= 28) {
+            } else if (edadAnios >= 18 && edadAnios <= 28) {
                 ciclo = "Juventud (18-28 años)";
                 brechaSugerida = "Tamizaje CCU";
-            } else if (edad >= 29 && edad <= 59) {
+            } else if (edadAnios >= 29 && edadAnios <= 59) {
                 ciclo = "Adultez (29-59 años)";
                 brechaSugerida = "Cáncer de Mama";
             } else {
@@ -395,7 +404,6 @@
 
             document.getElementById('cicloVital').value = ciclo;
             
-            // Selección automática de brecha
             const selectIntervencion = document.getElementById('intervencionFaltante');
             for (let i = 0; i < selectIntervencion.options.length; i++) {
                 if (selectIntervencion.options[i].value.toLowerCase().includes(brechaSugerida.toLowerCase())) {
@@ -404,11 +412,9 @@
                 }
             }
 
-            // Automatizar la Próxima Acción basada en la brecha autodiseñada
             actualizarProximaAccion();
         }
 
-        // Vincular Próxima Acción de Ruta automáticamente según la Intervención Faltante
         function actualizarProximaAccion() {
             const intervencion = document.getElementById('intervencionFaltante').value;
             const selectAccion = document.getElementById('proximaAccion');
@@ -426,7 +432,6 @@
             }
         }
 
-        // Cambiar el Cierre Verificado automáticamente cuando complete la Demanda
         function verificarCierreAutomatico() {
             const estadoAtencion = document.getElementById('estadoAtencion').value;
             const selectCierre = document.getElementById('cierreVerificado');
@@ -448,7 +453,7 @@
                 nombre: document.getElementById('nombre').value,
                 documento: document.getElementById('documento').value,
                 sexo: document.getElementById('sexo').value,
-                anioNacimiento: document.getElementById('AnioNacimiento').value,
+                fechaNacimiento: document.getElementById('fechaNacimiento').value,
                 edad: document.getElementById('edadCalculada').value,
                 cicloVital: document.getElementById('cicloVital').value,
                 entidadEps: document.getElementById('entidadEps').value,
@@ -482,7 +487,7 @@
 
             let total = registros.length;
             let asistencias = registros.filter(r => r.estadoAtencion.includes('Asistió')).length;
-            let inasistencias = registros.filter(r => r.estadoAtencion.includes('Inasistencia')).length;
+            let inasistencias = registros.filter(r => r.estadoAtencion.includes('Inasistencia') || r.estadoAtencion.includes('Desistió')).length;
             let pendientes = registros.filter(r => r.estadoAtencion === 'Pendiente' || r.estadoAtencion.includes('Gestionado')).length;
             let cerrados = registros.filter(r => r.cierreVerificado.includes('Sí')).length;
             let porcentajeCierre = total > 0 ? Math.round((cerrados / total) * 100) : 100;
@@ -499,7 +504,6 @@
                 return;
             }
 
-            // Agrupar EPS para la gráfica
             let conteoEps = {};
             registros.forEach(r => {
                 let eps = r.entidadEps || 'No Especificado';
@@ -510,10 +514,6 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition";
                 
-                let badgeColor = "bg-amber-100 text-amber-800";
-                if (r.estadoAtencion.includes('Asistió')) badgeColor = "bg-emerald-100 text-emerald-800 font-bold";
-                if (r.estadoAtencion.includes('Inasistencia')) badgeColor = "bg-rose-100 text-rose-800 font-bold";
-
                 tr.innerHTML = `
                     <td class="p-3">
                         <p class="font-bold text-slate-900">${r.nombre}</p>
@@ -530,11 +530,19 @@
                     <td class="p-3 font-medium text-amber-800">${r.intervencionFaltante}</td>
                     <td class="p-3 text-slate-700 font-medium">${r.responsable}</td>
                     <td class="p-3">
-                        <span class="px-2 py-0.5 rounded-full text-[10px] ${badgeColor}">
-                            ${r.estadoAtencion}
-                        </span>
+                        <select onchange="actualizarEstadoFila(${r.id}, this.value)" class="text-xs px-2 py-1 rounded border border-slate-300 bg-white font-medium">
+                            <option value="Pendiente" ${r.estadoAtencion === 'Pendiente' ? 'selected' : ''}>Pendiente</option>
+                            <option value="Gestionado / Citado" ${r.estadoAtencion === 'Gestionado / Citado' ? 'selected' : ''}>Gestionado / Citado</option>
+                            <option value="Asistió / Demanda Completa" ${r.estadoAtencion === 'Asistió / Demanda Completa' ? 'selected' : ''}>Asistió / Demanda Completa</option>
+                            <option value="Inasistencia / No asistió" ${r.estadoAtencion === 'Inasistencia / No asistió' ? 'selected' : ''}>Inasistencia / No asistió</option>
+                            <option value="Desistió del proceso" ${r.estadoAtencion === 'Desistió del proceso' ? 'selected' : ''}>Desistió del proceso</option>
+                        </select>
                     </td>
-                    <td class="p-3 text-center">
+                    <td class="p-3 text-center space-x-2">
+                        <button onclick="alternarCompletado(${r.id})" class="px-2.5 py-1 rounded text-[11px] font-bold ${r.cierreVerificado.includes('Sí') ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-amber-100 text-amber-800 hover:bg-amber-200'}" title="Hacer clic para cambiar estado de proceso">
+                            <i class="fa-solid ${r.cierreVerificado.includes('Sí') ? 'fa-circle-check' : 'fa-clock'} mr-1"></i>
+                            ${r.cierreVerificado.includes('Sí') ? 'Completado' : 'Incompleto'}
+                        </button>
                         <button onclick="eliminarRegistro(${r.id})" class="text-red-500 hover:text-red-700 p-1" title="Eliminar registro">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
@@ -546,15 +554,50 @@
             renderGraficas(asistencias, inasistencias, pendientes, conteoEps);
         }
 
+        // Modificar el estado de atención directamente en la tabla
+        function actualizarEstadoFila(id, nuevoEstado) {
+            registros = registros.map(r => {
+                if (r.id === id) {
+                    r.estadoAtencion = nuevoEstado;
+                    if (nuevoEstado.includes('Asistió / Demanda Completa')) {
+                        r.cierreVerificado = "Sí (Cerrado)";
+                    } else if (nuevoEstado.includes('Inasistencia') || nuevoEstado.includes('Desistió')) {
+                        r.cierreVerificado = "No (Abierto)";
+                    }
+                }
+                return r;
+            });
+            localStorage.setItem('rpms_registros', JSON.stringify(registros));
+            cargarRegistros();
+            mostrarToast("Estado actualizado correctamente");
+        }
+
+        // Alternar si completó o no el proceso en las acciones
+        function alternarCompletado(id) {
+            registros = registros.map(r => {
+                if (r.id === id) {
+                    if (r.cierreVerificado.includes('Sí')) {
+                        r.cierreVerificado = "No (Abierto)";
+                    } else {
+                        r.cierreVerificado = "Sí (Cerrado)";
+                        r.estadoAtencion = "Asistió / Demanda Completa";
+                    }
+                }
+                return r;
+            });
+            localStorage.setItem('rpms_registros', JSON.stringify(registros));
+            cargarRegistros();
+            mostrarToast("Estado de ruta modificado");
+        }
+
         function renderGraficas(asistencias, inasistencias, pendientes, conteoEps) {
-            // Gráfica de Estado de Atenciones
             const ctxEstado = document.getElementById('chartEstado').getContext('2d');
             if (chartEstadoInstance) chartEstadoInstance.destroy();
 
             chartEstadoInstance = new Chart(ctxEstado, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Demanda Completa', 'Inasistencias', 'Pendientes'],
+                    labels: ['Demanda Completa', 'Inasistencias / Desistió', 'Pendientes'],
                     datasets: [{
                         data: [asistencias, inasistencias, pendientes],
                         backgroundColor: ['#10b981', '#f43f5e', '#f59e0b']
@@ -567,7 +610,6 @@
                 }
             });
 
-            // Gráfica de Cobertura por EPS
             const ctxEps = document.getElementById('chartEps').getContext('2d');
             if (chartEpsInstance) chartEpsInstance.destroy();
 
@@ -609,9 +651,9 @@
         }
 
         function exportarExcel() {
-            let csv = "Nombre,Documento,Sexo,AnioNacimiento,Edad,CicloVital,EntidadEps,EstadoAfiliacion,Entorno,FechaCaptacion,IntervencionFaltante,UltimaGestion,ProximaAccion,FechaProgramada,Responsable,EstadoAtencion,CierreVerificado\n";
+            let csv = "Nombre,Documento,Sexo,FechaNacimiento,Edad,CicloVital,EntidadEps,EstadoAfiliacion,Entorno,FechaCaptacion,IntervencionFaltante,UltimaGestion,ProximaAccion,FechaProgramada,Responsable,EstadoAtencion,CierreVerificado\n";
             registros.forEach(r => {
-                csv += `"${r.nombre}","${r.documento}","${r.sexo}","${r.anioNacimiento}","${r.edad}","${r.cicloVital}","${r.entidadEps}","${r.estadoAfiliacion}","${r.entorno}","${r.fechaCaptacion}","${r.intervencionFaltante}","${r.ultimaGestion}","${r.proximaAccion}","${r.fechaProgramada}","${r.responsable}","${r.estadoAtencion}","${r.cierreVerificado}"\n`;
+                csv += `"${r.nombre}","${r.documento}","${r.sexo}","${r.fechaNacimiento}","${r.edad}","${r.cicloVital}","${r.entidadEps}","${r.estadoAfiliacion}","${r.entorno}","${r.fechaCaptacion}","${r.intervencionFaltante}","${r.ultimaGestion}","${r.proximaAccion}","${r.fechaProgramada}","${r.responsable}","${r.estadoAtencion}","${r.cierreVerificado}"\n`;
             });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
