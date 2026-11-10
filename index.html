@@ -34,7 +34,7 @@
         </div>
     </div>
 
-    <!-- MODAL PARA EDITAR SEGUIMIENTO Y PRÓXIMAS ACCIONES (NUEVO) -->
+    <!-- MODAL PARA EDITAR SEGUIMIENTO Y PRÓXIMAS ACCIONES -->
     <div id="edit-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border-t-4 border-blue-900">
             <div class="bg-slate-900 px-6 py-4 flex justify-between items-center text-white">
@@ -68,8 +68,8 @@
                 <div class="md:col-span-2">
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Próxima Acción de Ruta</label>
                     <select id="edit-proximaAccion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm bg-white font-semibold text-blue-900">
-                        <option value="Asistir a tamizaje de próstata / urología">Asistir a tamizaje de próstata / urología</option>
-                        <option value="Asistir a toma de muestras / laboratorio">Asistir a toma de muestras / laboratorio</option>
+                        <option value="Asistir a tamizaje de tacto rectal y PSA">Asistir a tamizaje de tacto rectal y PSA</option>
+                        <option value="Asistir a toma de muestras / laboratorio (Citología / VPH / Mama)">Asistir a toma de muestras / laboratorio (Citología / VPH / Mama)</option>
                         <option value="Asistir a consulta médica general / valoración">Asistir a consulta médica general / valoración</option>
                         <option value="Asistir a cita de planificación familiar">Asistir a cita de planificación familiar</option>
                         <option value="Asistir a consulta odontológica preventiva">Asistir a consulta odontológica preventiva</option>
@@ -138,7 +138,7 @@
             </div>
         </header>
 
-        <!-- NAVEGACIÓN POR PESTAÑAS / SECCIONES INTERACTIVAS -->
+        <!-- NAVEGACIÓN POR PESTAÑAS -->
         <nav class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-40">
             <div class="max-w-7xl mx-auto px-4 flex space-x-4">
                 <button onclick="cambiarSeccion('captacion')" id="nav-captacion" class="py-3 px-4 font-bold text-sm border-b-2 border-blue-900 text-blue-900 flex items-center space-x-2 transition">
@@ -158,7 +158,7 @@
 
         <main class="max-w-7xl mx-auto px-4 py-6">
 
-            <!-- SECCIÓN 1: CAPTACIÓN Y SEGUIMIENTO (FORMULARIO) -->
+            <!-- SECCIÓN 1: CAPTACIÓN Y SEGUIMIENTO -->
             <section id="seccion-captacion" class="space-y-6">
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
                     <div class="bg-slate-900 px-6 py-4 flex items-center space-x-3 text-white">
@@ -258,18 +258,38 @@
                             <input type="date" id="fechaCaptacion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                         </div>
 
-                        <!-- Intervención Faltante en RPMS -->
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Intervención Faltante en RPMS (Brechas Auto)</label>
-                            <select id="intervencionFaltante" onchange="actualizarProximaAccion()" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-medium text-amber-700">
-                                <option value="">-- Autodetectado por Edad y Sexo --</option>
-                                <option value="Tamizaje Próstata (Antígeno / Urología)">Tamizaje Próstata (Antígeno / Urología)</option>
-                                <option value="Tamizaje CCU (Citología / ADN-VPH)">Tamizaje CCU (Citología / ADN-VPH)</option>
-                                <option value="Tamizaje Cáncer de Mama (Mamografía)">Tamizaje Cáncer de Mama (Mamografía)</option>
-                                <option value="Valoración Integral / Riesgo Cardiovascular">Valoración Integral / Riesgo Cardiovascular</option>
-                                <option value="Salud Bucal / Higiene Oral Preventiva">Salud Bucal / Higiene Oral Preventiva</option>
-                                <option value="Planificación Familiar / Asesoría Anticonceptiva">Planificación Familiar / Asesoría Anticonceptiva</option>
-                            </select>
+                        <!-- Intervención Faltante en RPMS (SELECCIÓN MÚLTIPLE AUTOMATIZADA POR EDAD Y GÉNERO) -->
+                        <div class="md:col-span-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-2 flex items-center justify-between">
+                                <span>Intervenciones Faltantes en RPMS (Selección Múltiple Automática según Edad y Género)</span>
+                                <span class="text-amber-700 text-[11px] font-normal">Puedes ajustar o marcar opciones manualmente si es necesario</span>
+                            </label>
+                            <div id="contenedor-brechas" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" name="brechas" value="Tamizaje tacto rectal y PSA" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Tamizaje tacto rectal y PSA (Hombres)</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" name="brechas" value="Tamizaje CCU (Citología / ADN-VPH)" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Tamizaje CCU (Citología / ADN-VPH)</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" name="brechas" value="Tamizaje Cáncer de Mama (Mamografía)" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Tamizaje Cáncer de Mama (Mamografía)</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" name="brechas" value="Valoración Integral / Riesgo Cardiovascular" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Valoración Integral / Riesgo Cardiovascular</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" name="brechas" value="Salud Bucal / Higiene Oral Preventiva" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Salud Bucal / Higiene Oral Preventiva</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" name="brechas" value="Planificación Familiar / Asesoría Anticonceptiva" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Planificación Familiar / Asesoría Anticonceptiva</span>
+                                </label>
+                            </div>
                         </div>
 
                         <!-- Última Gestión / Intervención -->
@@ -288,11 +308,11 @@
 
                         <!-- Próxima Acción de Ruta -->
                         <div class="md:col-span-2">
-                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Próxima Acción de Ruta (Automática)</label>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Próxima Acción de Ruta</label>
                             <select id="proximaAccion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-semibold text-blue-900">
                                 <option value="">Seleccione próxima acción...</option>
-                                <option value="Asistir a tamizaje de próstata / urología">Asistir a tamizaje de próstata / urología</option>
-                                <option value="Asistir a toma de muestras / laboratorio">Asistir a toma de muestras / laboratorio</option>
+                                <option value="Asistir a tamizaje de tacto rectal y PSA">Asistir a tamizaje de tacto rectal y PSA</option>
+                                <option value="Asistir a toma de muestras / laboratorio (Citología / VPH / Mama)">Asistir a toma de muestras / laboratorio (Citología / VPH / Mama)</option>
                                 <option value="Asistir a consulta médica general / valoración">Asistir a consulta médica general / valoración</option>
                                 <option value="Asistir a cita de planificación familiar">Asistir a cita de planificación familiar</option>
                                 <option value="Asistir a consulta odontológica preventiva">Asistir a consulta odontológica preventiva</option>
@@ -346,7 +366,7 @@
                 </div>
             </section>
 
-            <!-- SECCIÓN 2: PACIENTES REGISTRADOS (TABLA CON EDICIÓN INTERACTIVA) -->
+            <!-- SECCIÓN 2: PACIENTES REGISTRADOS -->
             <section id="seccion-pacientes" class="hidden space-y-6">
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-12">
                     <div class="bg-slate-900 px-6 py-4 flex justify-between items-center text-white">
@@ -362,7 +382,7 @@
                                     <th class="p-3">Paciente / Documento</th>
                                     <th class="p-3">Edad / Ciclo Vital</th>
                                     <th class="p-3">EPS / Régimen</th>
-                                    <th class="p-3">Brecha / Intervención</th>
+                                    <th class="p-3">Brechas / Intervenciones</th>
                                     <th class="p-3">Próxima Acción / Cita</th>
                                     <th class="p-3">Doctor / Responsable</th>
                                     <th class="p-3">Estado Atención</th>
@@ -378,9 +398,8 @@
                 </div>
             </section>
 
-            <!-- SECCIÓN 3: ANALÍTICA Y GRÁFICAS (INCLUYE GRÁFICA POR CICLO VITAL) -->
+            <!-- SECCIÓN 3: ANALÍTICA Y GRÁFICAS -->
             <section id="seccion-analitica" class="hidden space-y-6">
-                <!-- Dashboard KPI Tarjetas Resumen -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
                     <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
                         <div>
@@ -423,9 +442,7 @@
                     </div>
                 </div>
 
-                <!-- Gráficas Interactivas -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                    <!-- Gráfica 1: Estado de Atenciones -->
                     <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
                         <h3 class="text-xs font-bold text-slate-600 uppercase mb-4 flex items-center space-x-2">
                             <i class="fa-solid fa-chart-pie text-blue-600"></i>
@@ -436,7 +453,6 @@
                         </div>
                     </div>
 
-                    <!-- Gráfica 2: Cobertura por EPS -->
                     <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
                         <h3 class="text-xs font-bold text-slate-600 uppercase mb-4 flex items-center space-x-2">
                             <i class="fa-solid fa-chart-bar text-amber-500"></i>
@@ -447,7 +463,6 @@
                         </div>
                     </div>
 
-                    <!-- Gráfica 3: Pacientes Atendidos por Ciclo Vital (NUEVA) -->
                     <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2">
                         <h3 class="text-xs font-bold text-slate-600 uppercase mb-4 flex items-center space-x-2">
                             <i class="fa-solid fa-diagram-project text-emerald-600"></i>
@@ -504,6 +519,7 @@
             }
         }
 
+        // Automatización inteligente por edad y género (Selección Múltiple de Brechas)
         function calcularEdadYBrechas() {
             const fechaNacVal = document.getElementById('fechaNacimiento').value;
             const sexo = document.getElementById('sexo').value;
@@ -527,63 +543,71 @@
             document.getElementById('edadCalculada').value = edadAnios + " años";
 
             let ciclo = "";
-            let brechaSugerida = "";
-
-            if (edadAnios >= 0 && edadAnios <= 5) {
-                ciclo = "Primera Infancia (0-5 años)";
-                brechaSugerida = "Valoración Integral";
-            } else if (edadAnios >= 6 && edadAnios <= 11) {
-                ciclo = "Infancia (6-11 años)";
-                brechaSugerida = "Salud Bucal";
-            } else if (edadAnios >= 12 && edadAnios <= 17) {
-                ciclo = "Adolescencia (12-17 años)";
-                brechaSugerida = "Planificación";
-            } else if (edadAnios >= 18 && edadAnios <= 28) {
-                ciclo = "Juventud (18-28 años)";
-                brechaSugerida = sexo === 'Femenino' ? "Tamizaje CCU" : "Valoración Integral";
-            } else if (edadAnios >= 29 && edadAnios <= 59) {
-                ciclo = "Adultez (29-59 años)";
-                if (sexo === 'Femenino') {
-                    brechaSugerida = "Cáncer de Mama";
-                } else {
-                    brechaSugerida = "Valoración Integral";
-                }
-            } else {
-                ciclo = "Vejez (60+ años)";
-                if (sexo === 'Masculino') {
-                    brechaSugerida = "Tamizaje Próstata";
-                } else {
-                    brechaSugerida = "Valoración Integral";
-                }
-            }
+            if (edadAnios >= 0 && edadAnios <= 5) ciclo = "Primera Infancia (0-5 años)";
+            else if (edadAnios >= 6 && edadAnios <= 11) ciclo = "Infancia (6-11 años)";
+            else if (edadAnios >= 12 && edadAnios <= 17) ciclo = "Adolescencia (12-17 años)";
+            else if (edadAnios >= 18 && edadAnios <= 28) ciclo = "Juventud (18-28 años)";
+            else if (edadAnios >= 29 && edadAnios <= 59) ciclo = "Adultez (29-59 años)";
+            else ciclo = "Vejez (60+ años)";
 
             document.getElementById('cicloVital').value = ciclo;
-            
-            const selectIntervencion = document.getElementById('intervencionFaltante');
-            for (let i = 0; i < selectIntervencion.options.length; i++) {
-                if (selectIntervencion.options[i].value.toLowerCase().includes(brechaSugerida.toLowerCase())) {
-                    selectIntervencion.selectedIndex = i;
-                    break;
-                }
-            }
 
-            actualizarProximaAccion();
+            // Obtener todos los checkboxes de brechas
+            const checkboxes = document.querySelectorAll('input[name="brechas"]');
+            
+            // Desmarcar todos primero
+            checkboxes.log = checkboxes.forEach(cb => cb.checked = false);
+
+            // Reglas automatizadas basadas en la Resolución 3280 por edad y género
+            checkboxes.forEach(cb => {
+                const val = cb.value.toLowerCase();
+
+                // Salud Bucal y Valoración Integral aplican prácticamente a todos los rangos preventivos
+                if (val.includes('salud bucal') || val.includes('valoración integral')) {
+                    cb.checked = true;
+                }
+
+                // Planificación Familiar (para mayores de 14 años hasta edad reproductiva/adultez)
+                if (val.includes('planificación') && edadAnios >= 14 && edadAnios <= 49) {
+                    cb.checked = true;
+                }
+
+                // Mujeres: Citología / VPH (desde los 25 años)
+                if (sexo === 'Femenino' && val.includes('ccu') && edadAnios >= 25) {
+                    cb.checked = true;
+                }
+
+                // Mujeres: Mamografía (desde los 50 hasta 69 años o adultez/vejez)
+                if (sexo === 'Femenino' && val.includes('mama') && edadAnios >= 50) {
+                    cb.checked = true;
+                }
+
+                // Hombres: Tamizaje tacto rectal y PSA (desde los 50 años en adelante)
+                if (sexo === 'Masculino' && val.includes('tacto rectal') && edadAnios >= 50) {
+                    cb.checked = true;
+                }
+            });
+
+            actualizarProximaAccionSugerida();
         }
 
-        function actualizarProximaAccion() {
-            const intervencion = document.getElementById('intervencionFaltante').value;
+        function actualizarProximaAccionSugerida() {
+            const checkboxes = document.querySelectorAll('input[name="brechas"]:checked');
             const selectAccion = document.getElementById('proximaAccion');
 
-            if (intervencion.includes('Próstata')) {
-                selectAccion.value = "Asistir a tamizaje de próstata / urología";
-            } else if (intervencion.includes('Tamizaje CCU') || intervencion.includes('Mama')) {
-                selectAccion.value = "Asistir a toma de muestras / laboratorio";
-            } else if (intervencion.includes('Cardiovascular') || intervencion.includes('Valoración Integral')) {
-                selectAccion.value = "Asistir a consulta médica general / valoración";
-            } else if (intervencion.includes('Salud Bucal')) {
-                selectAccion.value = "Asistir a consulta odontológica preventiva";
-            } else if (intervencion.includes('Planificación')) {
-                selectAccion.value = "Asistir a cita de planificación familiar";
+            if (checkboxes.length > 0) {
+                const primeraBrecha = checkboxes[0].value.toLowerCase();
+                if (primeraBrecha.includes('tacto rectal')) {
+                    selectAccion.value = "Asistir a tamizaje de tacto rectal y PSA";
+                } else if (primeraBrecha.includes('ccu') || primeraBrecha.includes('mama')) {
+                    selectAccion.value = "Asistir a toma de muestras / laboratorio (Citología / VPH / Mama)";
+                } else if (primeraBrecha.includes('valoración')) {
+                    selectAccion.value = "Asistir a consulta médica general / valoración";
+                } else if (primeraBrecha.includes('salud bucal')) {
+                    selectAccion.value = "Asistir a consulta odontológica preventiva";
+                } else if (primeraBrecha.includes('planificación')) {
+                    selectAccion.value = "Asistir a cita de planificación familiar";
+                }
             }
         }
 
@@ -603,6 +627,14 @@
         function handleSubmit(event) {
             event.preventDefault();
             
+            // Recopilar las brechas seleccionadas por selección múltiple
+            const brechasSeleccionadas = [];
+            document.querySelectorAll('input[name="brechas"]:checked').forEach(cb => {
+                brechasSeleccionadas.push(cb.value);
+            });
+
+            const intervencionesTexto = brechasSeleccionadas.length > 0 ? brechasSeleccionadas.join(', ') : 'Ninguna seleccionada';
+
             const estadoAtencion = document.getElementById('estadoAtencion').value;
             const cierreVerificado = document.getElementById('cierreVerificado').value;
             const fechaCierreDemanda = (estadoAtencion.includes('Asistió') || cierreVerificado.includes('Sí')) ? new Date().toISOString().slice(0, 10) : 'Pendiente';
@@ -619,7 +651,7 @@
                 estadoAfiliacion: document.getElementById('estadoAfiliacion').value,
                 entorno: document.getElementById('entorno').value,
                 fechaCaptacion: document.getElementById('fechaCaptacion').value,
-                intervencionFaltante: document.getElementById('intervencionFaltante').value,
+                intervencionFaltante: intervencionesTexto,
                 ultimaGestion: document.getElementById('ultimaGestion').value,
                 proximaAccion: document.getElementById('proximaAccion').value,
                 fechaProgramada: document.getElementById('fechaProgramada').value,
@@ -638,6 +670,7 @@
             document.getElementById('responsable').value = "Laura Ramírez";
             document.getElementById('edadCalculada').value = "";
             document.getElementById('cicloVital').value = "";
+            document.querySelectorAll('input[name="brechas"]').forEach(cb => cb.checked = false);
             
             cargarRegistros();
             cambiarSeccion('pacientes');
@@ -713,7 +746,6 @@
             });
         }
 
-        // EDICIÓN MODAL DE PACIENTE (NUEVO)
         function abrirModalEditar(id) {
             const paciente = registros.find(r => r.id === id);
             if (!paciente) return;
@@ -826,7 +858,6 @@
                 let eps = r.entidadEps || 'No Especificado';
                 conteoEps[eps] = (conteoEps[eps] || 0) + 1;
 
-                // Contabilizar solo los que asistieron o completaron la demanda por ciclo vital
                 if (r.estadoAtencion.includes('Asistió') || r.cierreVerificado.includes('Sí')) {
                     if (conteoCicloAsistidos[r.cicloVital] !== undefined) {
                         conteoCicloAsistidos[r.cicloVital]++;
@@ -834,7 +865,6 @@
                 }
             });
 
-            // Gráfica 1: Estado de Atenciones
             const ctxEstado = document.getElementById('chartEstado').getContext('2d');
             if (chartEstadoInstance) chartEstadoInstance.destroy();
 
@@ -854,7 +884,6 @@
                 }
             });
 
-            // Gráfica 2: Cobertura por EPS
             const ctxEps = document.getElementById('chartEps').getContext('2d');
             if (chartEpsInstance) chartEpsInstance.destroy();
 
@@ -876,7 +905,6 @@
                 }
             });
 
-            // Gráfica 3: Asistencias por Ciclo Vital (NUEVA)
             const ctxCiclo = document.getElementById('chartCicloVital').getContext('2d');
             if (chartCicloInstance) chartCicloInstance.destroy();
 
@@ -891,7 +919,7 @@
                     }]
                 },
                 options: {
-                    indexAxis: 'y', // Barra horizontal para mejor visualización
+                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: { legend: { display: true, position: 'bottom' } },
