@@ -34,6 +34,87 @@
         </div>
     </div>
 
+    <!-- MODAL PARA EDITAR SEGUIMIENTO Y PRÓXIMAS ACCIONES (NUEVO) -->
+    <div id="edit-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border-t-4 border-blue-900">
+            <div class="bg-slate-900 px-6 py-4 flex justify-between items-center text-white">
+                <h3 class="font-bold text-sm uppercase flex items-center space-x-2">
+                    <i class="fa-solid fa-user-pen text-amber-400"></i>
+                    <span>Editar Seguimiento de Ruta - <span id="modal-paciente-nombre" class="text-amber-300 font-normal"></span></span>
+                </h3>
+                <button onclick="cerrarModalEditar()" class="text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="guardarEdicionModal(event)" class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="hidden" id="edit-id">
+
+                <div class="md:col-span-2 bg-blue-50 p-3 rounded-xl text-xs text-blue-900 font-medium border border-blue-100 flex justify-between">
+                    <p><strong>Documento:</strong> <span id="modal-documento"></span></p>
+                    <p><strong>Ciclo Vital:</strong> <span id="modal-ciclo"></span></p>
+                    <p><strong>EPS:</strong> <span id="modal-eps"></span></p>
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Última Gestión / Intervención</label>
+                    <select id="edit-ultimaGestion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm bg-white">
+                        <option value="Sensibilización y asignación de cita">Sensibilización y asignación de cita</option>
+                        <option value="Llamada telefónica de seguimiento realizada">Llamada telefónica de seguimiento realizada</option>
+                        <option value="Visita domiciliaria EBS efectuada">Visita domiciliaria EBS efectuada</option>
+                        <option value="Revisión de historia clínica y verificación de brechas">Revisión de historia clínica y verificación de brechas</option>
+                        <option value="Charla educativa en sala de espera impartida">Charla educativa en sala de espera impartida</option>
+                        <option value="Paciente localizado, pendiente aceptación de ruta">Paciente localizado, pendiente aceptación de ruta</option>
+                    </select>
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Próxima Acción de Ruta</label>
+                    <select id="edit-proximaAccion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm bg-white font-semibold text-blue-900">
+                        <option value="Asistir a tamizaje de próstata / urología">Asistir a tamizaje de próstata / urología</option>
+                        <option value="Asistir a toma de muestras / laboratorio">Asistir a toma de muestras / laboratorio</option>
+                        <option value="Asistir a consulta médica general / valoración">Asistir a consulta médica general / valoración</option>
+                        <option value="Asistir a cita de planificación familiar">Asistir a cita de planificación familiar</option>
+                        <option value="Asistir a consulta odontológica preventiva">Asistir a consulta odontológica preventiva</option>
+                        <option value="Seguimiento telefónico en 8 días">Seguimiento telefónico en 8 días</option>
+                        <option value="Cierre definitivo de ruta completado">Cierre definitivo de ruta completado</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Fecha Programada Atención</label>
+                    <input type="date" id="edit-fechaProgramada" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Doctor / Responsable Tratante</label>
+                    <input type="text" id="edit-responsable" required class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Estado de Atención</label>
+                    <select id="edit-estadoAtencion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm bg-white font-medium">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Gestionado / Citado">Gestionado / Citado</option>
+                        <option value="Asistió / Demanda Completa">Asistió / Demanda Completa</option>
+                        <option value="Inasistencia / No asistió">Inasistencia / No asistió</option>
+                        <option value="Desistió del proceso">Desistió del proceso</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Cierre Verificado de Ruta</label>
+                    <select id="edit-cierreVerificado" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm bg-white">
+                        <option value="No (Abierto)">No (Abierto)</option>
+                        <option value="Sí (Cerrado)">Sí (Cerrado)</option>
+                    </select>
+                </div>
+
+                <div class="md:col-span-2 flex justify-end space-x-3 mt-4">
+                    <button type="button" onclick="cerrarModalEditar()" class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-600 text-sm font-semibold hover:bg-slate-50">Cancelar</button>
+                    <button type="submit" class="bg-blue-900 hover:bg-blue-800 text-white font-bold px-6 py-2.5 rounded-xl text-sm shadow">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- APLICACIÓN PRINCIPAL -->
     <div id="app-container" class="hidden">
         <!-- Notificación Toast -->
@@ -101,7 +182,7 @@
                                    class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                         </div>
 
-                        <!-- Sexo / Género (Afecta automatización de brechas) -->
+                        <!-- Sexo / Género -->
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Sexo / Género</label>
                             <select id="sexo" onchange="calcularEdadYBrechas()" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-medium">
@@ -177,14 +258,14 @@
                             <input type="date" id="fechaCaptacion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                         </div>
 
-                        <!-- Intervención Faltante en RPMS (Automatizada por Edad y Sexo - Incluye Próstata para hombres mayores) -->
+                        <!-- Intervención Faltante en RPMS -->
                         <div class="md:col-span-2">
                             <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Intervención Faltante en RPMS (Brechas Auto)</label>
                             <select id="intervencionFaltante" onchange="actualizarProximaAccion()" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-medium text-amber-700">
                                 <option value="">-- Autodetectado por Edad y Sexo --</option>
-                                <option value="Tamizaje Próstata (Antígeno / Urología)">Tamizaje Próstata (Antígeno / Urología) [Hombre Adulto/Mayor]</option>
-                                <option value="Tamizaje CCU (Citología / ADN-VPH)">Tamizaje CCU (Citología / ADN-VPH) [Mujer]</option>
-                                <option value="Tamizaje Cáncer de Mama (Mamografía)">Tamizaje Cáncer de Mama (Mamografía) [Mujer Adultez/Vejez]</option>
+                                <option value="Tamizaje Próstata (Antígeno / Urología)">Tamizaje Próstata (Antígeno / Urología)</option>
+                                <option value="Tamizaje CCU (Citología / ADN-VPH)">Tamizaje CCU (Citología / ADN-VPH)</option>
+                                <option value="Tamizaje Cáncer de Mama (Mamografía)">Tamizaje Cáncer de Mama (Mamografía)</option>
                                 <option value="Valoración Integral / Riesgo Cardiovascular">Valoración Integral / Riesgo Cardiovascular</option>
                                 <option value="Salud Bucal / Higiene Oral Preventiva">Salud Bucal / Higiene Oral Preventiva</option>
                                 <option value="Planificación Familiar / Asesoría Anticonceptiva">Planificación Familiar / Asesoría Anticonceptiva</option>
@@ -205,7 +286,7 @@
                             </select>
                         </div>
 
-                        <!-- Próxima Acción de Ruta (Automatizada según intervención) -->
+                        <!-- Próxima Acción de Ruta -->
                         <div class="md:col-span-2">
                             <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Próxima Acción de Ruta (Automática)</label>
                             <select id="proximaAccion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-semibold text-blue-900">
@@ -265,7 +346,7 @@
                 </div>
             </section>
 
-            <!-- SECCIÓN 2: PACIENTES REGISTRADOS (TABLA CON FECHA DE CIERRE DE DEMANDA) -->
+            <!-- SECCIÓN 2: PACIENTES REGISTRADOS (TABLA CON EDICIÓN INTERACTIVA) -->
             <section id="seccion-pacientes" class="hidden space-y-6">
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-12">
                     <div class="bg-slate-900 px-6 py-4 flex justify-between items-center text-white">
@@ -282,10 +363,11 @@
                                     <th class="p-3">Edad / Ciclo Vital</th>
                                     <th class="p-3">EPS / Régimen</th>
                                     <th class="p-3">Brecha / Intervención</th>
+                                    <th class="p-3">Próxima Acción / Cita</th>
                                     <th class="p-3">Doctor / Responsable</th>
                                     <th class="p-3">Estado Atención</th>
-                                    <th class="p-3">Fecha Cierre Demanda</th>
-                                    <th class="p-3 text-center">Acciones (Proceso Ruta)</th>
+                                    <th class="p-3">Fecha Cierre</th>
+                                    <th class="p-3 text-center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="tabla-registros" class="divide-y divide-slate-100">
@@ -296,7 +378,7 @@
                 </div>
             </section>
 
-            <!-- SECCIÓN 3: ANALÍTICA Y GRÁFICAS -->
+            <!-- SECCIÓN 3: ANALÍTICA Y GRÁFICAS (INCLUYE GRÁFICA POR CICLO VITAL) -->
             <section id="seccion-analitica" class="hidden space-y-6">
                 <!-- Dashboard KPI Tarjetas Resumen -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
@@ -343,6 +425,7 @@
 
                 <!-- Gráficas Interactivas -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <!-- Gráfica 1: Estado de Atenciones -->
                     <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
                         <h3 class="text-xs font-bold text-slate-600 uppercase mb-4 flex items-center space-x-2">
                             <i class="fa-solid fa-chart-pie text-blue-600"></i>
@@ -353,6 +436,7 @@
                         </div>
                     </div>
 
+                    <!-- Gráfica 2: Cobertura por EPS -->
                     <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
                         <h3 class="text-xs font-bold text-slate-600 uppercase mb-4 flex items-center space-x-2">
                             <i class="fa-solid fa-chart-bar text-amber-500"></i>
@@ -360,6 +444,17 @@
                         </h3>
                         <div class="h-64 relative flex items-center justify-center">
                             <canvas id="chartEps"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Gráfica 3: Pacientes Atendidos por Ciclo Vital (NUEVA) -->
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2">
+                        <h3 class="text-xs font-bold text-slate-600 uppercase mb-4 flex items-center space-x-2">
+                            <i class="fa-solid fa-diagram-project text-emerald-600"></i>
+                            <span>Asistencia y Demanda Completa por Momento del Ciclo Vital</span>
+                        </h3>
+                        <div class="h-72 relative flex items-center justify-center">
+                            <canvas id="chartCicloVital"></canvas>
                         </div>
                     </div>
                 </div>
@@ -371,6 +466,7 @@
     <script>
         let chartEstadoInstance = null;
         let chartEpsInstance = null;
+        let chartCicloInstance = null;
 
         function handleLogin(event) {
             event.preventDefault();
@@ -386,7 +482,6 @@
 
         document.getElementById('fechaCaptacion').valueAsDate = new Date();
 
-        // Cambiar entre pestañas de forma interactiva
         function cambiarSeccion(seccion) {
             document.getElementById('seccion-captacion').classList.add('hidden');
             document.getElementById('seccion-pacientes').classList.add('hidden');
@@ -409,7 +504,6 @@
             }
         }
 
-        // Automatización por Edad y Sexo (Incluye Próstata para hombres mayores)
         function calcularEdadYBrechas() {
             const fechaNacVal = document.getElementById('fechaNacimiento').value;
             const sexo = document.getElementById('sexo').value;
@@ -476,7 +570,6 @@
             actualizarProximaAccion();
         }
 
-        // Próxima Acción automática según intervención faltante
         function actualizarProximaAccion() {
             const intervencion = document.getElementById('intervencionFaltante').value;
             const selectAccion = document.getElementById('proximaAccion');
@@ -539,7 +632,7 @@
             registros.unshift(nuevoRegistro);
             localStorage.setItem('rpms_registros', JSON.stringify(registros));
             
-            mostrarToast("Registro guardado. Redirigiendo a Pacientes Registrados...");
+            mostrarToast("Registro guardado exitosamente.");
             document.getElementById('rpms-form').reset();
             document.getElementById('fechaCaptacion').valueAsDate = new Date();
             document.getElementById('responsable').value = "Laura Ramírez";
@@ -547,7 +640,7 @@
             document.getElementById('cicloVital').value = "";
             
             cargarRegistros();
-            cambiarSeccion('pacientes'); // Redirige automáticamente al apartado de pacientes registrados
+            cambiarSeccion('pacientes');
         }
 
         function cargarRegistros() {
@@ -568,7 +661,7 @@
             document.getElementById('kpi-cierre').innerText = porcentajeCierre + "%";
 
             if (total === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">No hay registros cargados actualmente.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-slate-400">No hay registros cargados actualmente.</td></tr>`;
                 return;
             }
 
@@ -587,9 +680,12 @@
                     </td>
                     <td class="p-3">
                         <span class="px-2 py-1 rounded bg-blue-50 text-blue-900 font-semibold text-[11px]">${r.entidadEps}</span>
-                        <p class="text-[10px] text-slate-500 mt-0.5">Afiliación: ${r.estadoAfiliacion}</p>
                     </td>
                     <td class="p-3 font-medium text-amber-800">${r.intervencionFaltante}</td>
+                    <td class="p-3">
+                        <p class="font-medium text-blue-900">${r.proximaAccion}</p>
+                        <p class="text-[10px] text-slate-500">Cita: ${r.fechaProgramada || 'Sin agendar'}</p>
+                    </td>
                     <td class="p-3 text-slate-700 font-medium">${r.responsable}</td>
                     <td class="p-3">
                         <select onchange="actualizarEstadoFila(${r.id}, this.value)" class="text-xs px-2 py-1 rounded border border-slate-300 bg-white font-medium">
@@ -601,18 +697,74 @@
                         </select>
                     </td>
                     <td class="p-3 font-semibold text-emerald-700">${r.fechaCierreDemanda}</td>
-                    <td class="p-3 text-center space-x-2">
-                        <button onclick="alternarCompletado(${r.id})" class="px-2.5 py-1 rounded text-[11px] font-bold ${r.cierreVerificado.includes('Sí') ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-amber-100 text-amber-800 hover:bg-amber-200'}" title="Hacer clic para cambiar estado de proceso">
-                            <i class="fa-solid ${r.cierreVerificado.includes('Sí') ? 'fa-circle-check' : 'fa-clock'} mr-1"></i>
-                            ${r.cierreVerificado.includes('Sí') ? 'Completado' : 'Incompleto'}
+                    <td class="p-3 text-center space-x-1">
+                        <button onclick="abrirModalEditar(${r.id})" class="text-blue-600 hover:text-blue-800 p-1.5 bg-blue-50 rounded-lg" title="Editar paciente y seguimiento">
+                            <i class="fa-solid fa-pen-to-square"></i>
                         </button>
-                        <button onclick="eliminarRegistro(${r.id})" class="text-red-500 hover:text-red-700 p-1" title="Eliminar registro">
+                        <button onclick="alternarCompletado(${r.id})" class="px-2 py-1 rounded text-[11px] font-bold ${r.cierreVerificado.includes('Sí') ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}" title="Cambiar estado de cierre">
+                            <i class="fa-solid ${r.cierreVerificado.includes('Sí') ? 'fa-circle-check' : 'fa-clock'}"></i>
+                        </button>
+                        <button onclick="eliminarRegistro(${r.id})" class="text-red-500 hover:text-red-700 p-1.5 bg-red-50 rounded-lg" title="Eliminar registro">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
+        }
+
+        // EDICIÓN MODAL DE PACIENTE (NUEVO)
+        function abrirModalEditar(id) {
+            const paciente = registros.find(r => r.id === id);
+            if (!paciente) return;
+
+            document.getElementById('edit-id').value = paciente.id;
+            document.getElementById('modal-paciente-nombre').innerText = paciente.nombre;
+            document.getElementById('modal-documento').innerText = paciente.documento;
+            document.getElementById('modal-ciclo').innerText = paciente.cicloVital;
+            document.getElementById('modal-eps').innerText = paciente.entidadEps;
+
+            document.getElementById('edit-ultimaGestion').value = paciente.ultimaGestion || "";
+            document.getElementById('edit-proximaAccion').value = paciente.proximaAccion || "";
+            document.getElementById('edit-fechaProgramada').value = paciente.fechaProgramada || "";
+            document.getElementById('edit-responsable').value = paciente.responsable || "";
+            document.getElementById('edit-estadoAtencion').value = paciente.estadoAtencion || "Pendiente";
+            document.getElementById('edit-cierreVerificado').value = paciente.cierreVerificado || "No (Abierto)";
+
+            document.getElementById('edit-modal').classList.remove('hidden');
+        }
+
+        function cerrarModalEditar() {
+            document.getElementById('edit-modal').classList.add('hidden');
+        }
+
+        function guardarEdicionModal(event) {
+            event.preventDefault();
+            const id = parseInt(document.getElementById('edit-id').value);
+            const hoyStr = new Date().toISOString().slice(0, 10);
+
+            registros = registros.map(r => {
+                if (r.id === id) {
+                    r.ultimaGestion = document.getElementById('edit-ultimaGestion').value;
+                    r.proximaAccion = document.getElementById('edit-proximaAccion').value;
+                    r.fechaProgramada = document.getElementById('edit-fechaProgramada').value;
+                    r.responsable = document.getElementById('edit-responsable').value;
+                    r.estadoAtencion = document.getElementById('edit-estadoAtencion').value;
+                    r.cierreVerificado = document.getElementById('edit-cierreVerificado').value;
+
+                    if (r.estadoAtencion.includes('Asistió') || r.cierreVerificado.includes('Sí')) {
+                        r.fechaCierreDemanda = hoyStr;
+                    } else {
+                        r.fechaCierreDemanda = "Pendiente";
+                    }
+                }
+                return r;
+            });
+
+            localStorage.setItem('rpms_registros', JSON.stringify(registros));
+            cerrarModalEditar();
+            cargarRegistros();
+            mostrarToast("Datos del paciente actualizados");
         }
 
         function actualizarEstadoFila(id, nuevoEstado) {
@@ -632,7 +784,7 @@
             });
             localStorage.setItem('rpms_registros', JSON.stringify(registros));
             cargarRegistros();
-            mostrarToast("Estado y fecha de cierre actualizados");
+            mostrarToast("Estado actualizado correctamente");
         }
 
         function alternarCompletado(id) {
@@ -661,11 +813,28 @@
             let pendientes = registros.filter(r => r.estadoAtencion === 'Pendiente' || r.estadoAtencion.includes('Gestionado')).length;
 
             let conteoEps = {};
+            let conteoCicloAsistidos = {
+                "Primera Infancia (0-5 años)": 0,
+                "Infancia (6-11 años)": 0,
+                "Adolescencia (12-17 años)": 0,
+                "Juventud (18-28 años)": 0,
+                "Adultez (29-59 años)": 0,
+                "Vejez (60+ años)": 0
+            };
+
             registros.forEach(r => {
                 let eps = r.entidadEps || 'No Especificado';
                 conteoEps[eps] = (conteoEps[eps] || 0) + 1;
+
+                // Contabilizar solo los que asistieron o completaron la demanda por ciclo vital
+                if (r.estadoAtencion.includes('Asistió') || r.cierreVerificado.includes('Sí')) {
+                    if (conteoCicloAsistidos[r.cicloVital] !== undefined) {
+                        conteoCicloAsistidos[r.cicloVital]++;
+                    }
+                }
             });
 
+            // Gráfica 1: Estado de Atenciones
             const ctxEstado = document.getElementById('chartEstado').getContext('2d');
             if (chartEstadoInstance) chartEstadoInstance.destroy();
 
@@ -685,6 +854,7 @@
                 }
             });
 
+            // Gráfica 2: Cobertura por EPS
             const ctxEps = document.getElementById('chartEps').getContext('2d');
             if (chartEpsInstance) chartEpsInstance.destroy();
 
@@ -703,6 +873,29 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                }
+            });
+
+            // Gráfica 3: Asistencias por Ciclo Vital (NUEVA)
+            const ctxCiclo = document.getElementById('chartCicloVital').getContext('2d');
+            if (chartCicloInstance) chartCicloInstance.destroy();
+
+            chartCicloInstance = new Chart(ctxCiclo, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(conteoCicloAsistidos),
+                    datasets: [{
+                        label: 'Pacientes con Demanda Completa / Asistencia',
+                        data: Object.values(conteoCicloAsistidos),
+                        backgroundColor: '#059669'
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', // Barra horizontal para mejor visualización
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: true, position: 'bottom' } },
+                    scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } }
                 }
             });
         }
