@@ -69,7 +69,7 @@
                     <select id="edit-ultimaGestion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm bg-white">
                         <option value="Asignación de cita">Asignación de cita</option>
                         <option value="Llamada telefónica de seguimiento">Llamada telefónica de seguimiento</option>
-                        <option value="Visita domiciliaria EBS efectuada">Visita domiciliaria EBS efectuada</option>
+                        <option value="Atención primaria en salud EBS">Atención primaria en salud EBS</option>
                     </select>
                 </div>
 
@@ -249,14 +249,13 @@
                             </select>
                         </div>
 
-                        <!-- Entorno de Captación -->
+                        <!-- Entorno de Captación (EBS 1, EBS 2 y Consulta Externa) -->
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Entorno / Origen</label>
-                            <select id="entorno" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
-                                <option value="Equipos Básicos de Salud (EBS)">Equipos Básicos de Salud (EBS)</option>
+                            <select id="entorno" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-semibold text-blue-900">
+                                <option value="Equipos Básicos de Salud 1">Equipos Básicos de Salud 1</option>
+                                <option value="Equipos Básicos de Salud 2">Equipos Básicos de Salud 2</option>
                                 <option value="Consulta Externa">Consulta Externa</option>
-                                <option value="Urgencias">Urgencias</option>
-                                <option value="Demanda Inducida / Jornada">Demanda Inducida / Jornada</option>
                             </select>
                         </div>
 
@@ -321,10 +320,6 @@
                                     <span>Examen clínico de mama</span>
                                 </label>
                                 <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" name="brechas" value="Tamizaje de psa" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
-                                    <span>Tamizaje de psa</span>
-                                </label>
-                                <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
                                     <input type="checkbox" name="brechas" value="Tamizaje de tacto rectal" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
                                     <span>Tamizaje de tacto rectal</span>
                                 </label>
@@ -360,14 +355,14 @@
                             </div>
                         </div>
 
-                        <!-- Última Gestión -->
+                        <!-- Última Gestión (ACTUALIZADO: ATENCIÓN PRIMARIA EN SALUD EBS) -->
                         <div class="md:col-span-2">
                             <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Última Gestión / Intervención</label>
                             <select id="ultimaGestion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
                                 <option value="">Seleccione última gestión realizada...</option>
                                 <option value="Asignación de cita">Asignación de cita</option>
                                 <option value="Llamada telefónica de seguimiento">Llamada telefónica de seguimiento</option>
-                                <option value="Visita domiciliaria EBS efectuada">Visita domiciliaria EBS efectuada</option>
+                                <option value="Atención primaria en salud EBS">Atención primaria en salud EBS</option>
                             </select>
                         </div>
 
@@ -1313,14 +1308,13 @@
             setTimeout(() => { toast.classList.add('translate-x-full'); }, 3000);
         }
 
-        // EXPORTACIÓN PROFESIONAL A EXCEL CON TODAS LAS COLUMNAS NUEVAS Y ORDENADAS, PERMITIENDO EDICIÓN
+        // EXPORTACIÓN PROFESIONAL A EXCEL
         function exportarExcelProfesional() {
             if (registros.length === 0) {
                 alert("No hay registros disponibles para exportar.");
                 return;
             }
 
-            // Mapeo ordenado de todas las columnas (incluyendo Entorno / Origen y detalle de laboratorios)
             let datosExportar = registros.map(r => ({
                 "Nombre Completo": r.nombre,
                 "Documento": r.documento,
@@ -1348,7 +1342,6 @@
             let workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte RPMS Hospital Ambalema");
 
-            // Cálculo automático de anchos de columna para una visualización ordenada
             let anchosColumnas = [];
             Object.keys(datosExportar[0]).forEach(key => {
                 let maxLen = key.length;
