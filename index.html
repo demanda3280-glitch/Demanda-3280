@@ -65,12 +65,9 @@
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Última Gestión / Intervención</label>
                     <select id="edit-ultimaGestion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm bg-white">
-                        <option value="Sensibilización y asignación de cita">Sensibilización y asignación de cita</option>
-                        <option value="Llamada telefónica de seguimiento realizada">Llamada telefónica de seguimiento realizada</option>
+                        <option value="Asignación de cita">Asignación de cita</option>
+                        <option value="Llamada telefónica de seguimiento">Llamada telefónica de seguimiento</option>
                         <option value="Visita domiciliaria EBS efectuada">Visita domiciliaria EBS efectuada</option>
-                        <option value="Revisión de historia clínica y verificación de brechas">Revisión de historia clínica y verificación de brechas</option>
-                        <option value="Charla educativa en sala de espera impartida">Charla educativa en sala de espera impartida</option>
-                        <option value="Paciente localizado, pendiente aceptación de ruta">Paciente localizado, pendiente aceptación de ruta</option>
                     </select>
                 </div>
 
@@ -186,7 +183,7 @@
                         <!-- Sexo / Género -->
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Sexo / Género</label>
-                            <select id="sexo" onchange="calcularEdadYBrechas()" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-medium">
+                            <select id="sexo" onchange="calcularEdad()" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-medium">
                                 <option value="Masculino">Masculino</option>
                                 <option value="Femenino">Femenino</option>
                                 <option value="Otro">Otro</option>
@@ -196,7 +193,7 @@
                         <!-- Fecha de Nacimiento -->
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Fecha de Nacimiento</label>
-                            <input type="date" id="fechaNacimiento" required onchange="calcularEdadYBrechas()" 
+                            <input type="date" id="fechaNacimiento" required onchange="calcularEdad()" 
                                    class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
                         </div>
 
@@ -259,74 +256,96 @@
                             <input type="date" id="fechaCaptacion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                         </div>
 
-                        <!-- Intervenciones Faltantes (SELECCIÓN MÚLTIPLE) -->
+                        <!-- Intervenciones Faltantes en RPMS (MANUAL) -->
                         <div class="md:col-span-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <label class="block text-xs font-bold text-slate-700 uppercase mb-2 flex items-center justify-between">
-                                <span>Intervenciones Faltantes en RPMS (Selección Múltiple Auto según Edad/Sexo)</span>
-                                <span class="text-amber-700 text-[11px] font-normal">Sincronizado con Próxima Acción</span>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-2">
+                                Intervenciones a seguir
                             </label>
                             <div id="contenedor-brechas" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                                 <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" name="brechas" value="Tamizaje tacto rectal y PSA" onchange="sincronizarProximasAcciones()" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
-                                    <span>Tamizaje tacto rectal y PSA (Hombres)</span>
+                                    <input type="checkbox" name="brechas" value="Tamizaje de anemia" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Tamizaje de anemia</span>
                                 </label>
                                 <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" name="brechas" value="Tamizaje CCU (Citología / ADN-VPH)" onchange="sincronizarProximasAcciones()" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
-                                    <span>Tamizaje CCU (Citología / ADN-VPH)</span>
+                                    <input type="checkbox" name="brechas" value="Valoración integral (medicina)" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Valoración integral (medicina)</span>
                                 </label>
                                 <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" name="brechas" value="Tamizaje Cáncer de Mama (Mamografía)" onchange="sincronizarProximasAcciones()" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
-                                    <span>Tamizaje Cáncer de Mama (Mamografía)</span>
+                                    <input type="checkbox" name="brechas" value="Valoración integral (enfermería)" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Valoración integral (enfermería)</span>
                                 </label>
                                 <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" name="brechas" value="Valoración Integral / Riesgo Cardiovascular" onchange="sincronizarProximasAcciones()" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
-                                    <span>Valoración Integral / Riesgo Cardiovascular</span>
+                                    <input type="checkbox" name="brechas" value="Educación para la salud" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Educación para la salud</span>
                                 </label>
                                 <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" name="brechas" value="Salud Bucal / Higiene Oral Preventiva" onchange="sincronizarProximasAcciones()" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
-                                    <span>Salud Bucal / Higiene Oral Preventiva</span>
+                                    <input type="checkbox" name="brechas" value="Tamizaje de ITS" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Tamizaje de ITS</span>
                                 </label>
                                 <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" name="brechas" value="Planificación Familiar / Asesoría Anticonceptiva" onchange="sincronizarProximasAcciones()" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
-                                    <span>Planificación Familiar / Asesoría Anticonceptiva</span>
+                                    <input type="checkbox" name="brechas" value="Prueba de embarazo" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Prueba de embarazo</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" name="brechas" value="Planificación familiar (medicina)" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Planificación familiar (medicina)</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" name="brechas" value="Planificación familiar (enfermería)" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Planificación familiar (enfermería)</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" name="brechas" value="Educación para la salud (medicina)" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Educación para la salud (medicina)</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" name="brechas" value="Educación para la salud (enfermería)" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Educación para la salud (enfermería)</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" name="brechas" value="Tamizaje riesgo cardiovascular" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Tamizaje riesgo cardiovascular</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" name="brechas" value="Tamizaje de cuello uterino" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Tamizaje de cuello uterino</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" name="brechas" value="Examen clínico de mama" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Examen clínico de mama</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" name="brechas" value="Tamizaje de psa" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Tamizaje de psa</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" name="brechas" value="Tamizaje de colon y recto (especializado)" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Tamizaje de colon y recto (especializado)</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" name="brechas" value="Odontología" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Odontología</span>
                                 </label>
                             </div>
                         </div>
 
                         <!-- Próximas Acciones de Ruta -->
                         <div class="md:col-span-4 bg-blue-50/70 p-4 rounded-xl border border-blue-200">
-                            <label class="block text-xs font-bold text-blue-950 uppercase mb-2 flex items-center justify-between">
-                                <span><i class="fa-solid fa-list-check mr-1 text-blue-700"></i> Próximas Acciones de Ruta (Selección Múltiple Automatizada)</span>
-                                <span class="text-blue-800 text-[11px] font-medium">Sincronizado por género y perfiles</span>
+                            <label class="block text-xs font-bold text-blue-950 uppercase mb-2">
+                                <span><i class="fa-solid fa-list-check mr-1 text-blue-700"></i> Próximas Acciones de Ruta</span>
                             </label>
                             <div id="contenedor-acciones" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                                <label class="flex items-center space-x-2 text-xs font-semibold bg-white p-2.5 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100/50">
-                                    <input type="checkbox" name="acciones_ruta" value="Asistir a tamizaje de tacto rectal y PSA" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
-                                    <span>Asistir a tamizaje de tacto rectal y PSA</span>
-                                </label>
-                                <label class="flex items-center space-x-2 text-xs font-semibold bg-white p-2.5 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100/50">
-                                    <input type="checkbox" name="acciones_ruta" value="Laboratorio Perfil Masculino (PSA, Lipídico, Glicemia, ITS)" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
-                                    <span>Laboratorio Perfil Masculino (PSA/Lipídico/Glicemia/ITS)</span>
-                                </label>
-                                <label class="flex items-center space-x-2 text-xs font-semibold bg-white p-2.5 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100/50">
-                                    <input type="checkbox" name="acciones_ruta" value="Laboratorio Perfil Femenino (Citología/VPH/Mama/Lipídico/Glicemia/ITS)" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
-                                    <span>Laboratorio Perfil Femenino (Citología/VPH/Mama/Lipídico/ITS)</span>
-                                </label>
                                 <label class="flex items-center space-x-2 text-xs font-semibold bg-white p-2.5 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100/50">
                                     <input type="checkbox" name="acciones_ruta" value="Asistir a consulta médica general / valoración" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
                                     <span>Asistir a consulta médica general / valoración</span>
                                 </label>
                                 <label class="flex items-center space-x-2 text-xs font-semibold bg-white p-2.5 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100/50">
-                                    <input type="checkbox" name="acciones_ruta" value="Asistir a cita de planificación familiar" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
-                                    <span>Asistir a cita de planificación familiar</span>
+                                    <input type="checkbox" name="acciones_ruta" value="Asistir a cita de planificación familiar/asesoría" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Asistir a cita de planificación familiar/asesoría</span>
                                 </label>
                                 <label class="flex items-center space-x-2 text-xs font-semibold bg-white p-2.5 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100/50">
                                     <input type="checkbox" name="acciones_ruta" value="Asistir a consulta odontológica preventiva" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
                                     <span>Asistir a consulta odontológica preventiva</span>
-                                </label>
-                                <label class="flex items-center space-x-2 text-xs font-semibold bg-white p-2.5 rounded-lg border border-blue-200 shadow-sm cursor-pointer hover:bg-blue-100/50">
-                                    <input type="checkbox" name="acciones_ruta" value="Seguimiento telefónico en 8 días" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
-                                    <span>Seguimiento telefónico en 8 días</span>
                                 </label>
                             </div>
                         </div>
@@ -336,12 +355,9 @@
                             <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Última Gestión / Intervención</label>
                             <select id="ultimaGestion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
                                 <option value="">Seleccione última gestión realizada...</option>
-                                <option value="Sensibilización y asignación de cita">Sensibilización y asignación de cita</option>
-                                <option value="Llamada telefónica de seguimiento realizada">Llamada telefónica de seguimiento realizada</option>
+                                <option value="Asignación de cita">Asignación de cita</option>
+                                <option value="Llamada telefónica de seguimiento">Llamada telefónica de seguimiento</option>
                                 <option value="Visita domiciliaria EBS efectuada">Visita domiciliaria EBS efectuada</option>
-                                <option value="Revisión de historia clínica y verificación de brechas">Revisión de historia clínica y verificación de brechas</option>
-                                <option value="Charla educativa en sala de espera impartida">Charla educativa en sala de espera impartida</option>
-                                <option value="Paciente localizado, pendiente aceptación de ruta">Paciente localizado, pendiente aceptación de ruta</option>
                             </select>
                         </div>
 
@@ -393,23 +409,30 @@
             <!-- SECCIÓN 2: PACIENTES REGISTRADOS -->
             <section id="seccion-pacientes" class="hidden space-y-6">
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-12">
-                    <div class="bg-slate-900 px-6 py-4 flex justify-between items-center text-white">
+                    <div class="bg-slate-900 px-6 py-4 flex flex-wrap justify-between items-center text-white gap-3">
                         <div class="flex items-center space-x-3">
                             <h3 class="font-bold text-sm uppercase"><i class="fa-solid fa-users-gear mr-2 text-amber-400"></i> Pacientes Registrados</h3>
                         </div>
-                        <div class="flex items-center space-x-3">
-                            <!-- Filtro de Laboratorios -->
+                        <div class="flex flex-wrap items-center gap-3">
+                            <!-- Filtro combinado por EPS -->
                             <div class="flex items-center space-x-2 text-xs">
-                                <span class="text-slate-300 font-semibold"><i class="fa-solid fa-vial mr-1"></i>Filtrar Laboratorios:</span>
-                                <select id="filtro-laboratorios" onchange="cargarRegistros()" class="bg-slate-800 text-amber-400 px-3 py-1.5 rounded-lg border border-slate-700 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-amber-500">
-                                    <option value="TODOS">Todos los laboratorios</option>
-                                    <option value="Pendiente">Pendientes de toma/resultado</option>
-                                    <option value="Completado">Completados / Al día</option>
+                                <span class="text-slate-300 font-semibold"><i class="fa-solid fa-hospital mr-1"></i>EPS:</span>
+                                <select id="filtro-eps" onchange="cargarRegistros()" class="bg-slate-800 text-white px-2.5 py-1.5 rounded-lg border border-slate-700 text-xs font-medium">
+                                    <option value="TODOS">Todas las EPS</option>
+                                </select>
+                            </div>
+                            <!-- Filtro combinado por Estado de Laboratorios -->
+                            <div class="flex items-center space-x-2 text-xs">
+                                <span class="text-slate-300 font-semibold"><i class="fa-solid fa-vial mr-1"></i>Labs:</span>
+                                <select id="filtro-laboratorios" onchange="cargarRegistros()" class="bg-slate-800 text-amber-400 px-2.5 py-1.5 rounded-lg border border-slate-700 text-xs font-bold">
+                                    <option value="TODOS">Todos</option>
+                                    <option value="Pendiente">Pendientes</option>
+                                    <option value="Completado">Completados</option>
                                     <option value="No Aplica / Pendiente">No Aplica</option>
                                 </select>
                             </div>
                             <button onclick="exportarExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-xs px-3 py-1.5 rounded-lg font-semibold transition">
-                                <i class="fa-solid fa-file-excel mr-1"></i> Exportar
+                                <i class="fa-solid fa-file-excel mr-1"></i> Exportar Excel
                             </button>
                         </div>
                     </div>
@@ -418,10 +441,11 @@
                             <thead>
                                 <tr class="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold uppercase">
                                     <th class="p-3">Paciente / Documento</th>
+                                    <th class="p-3">Fecha Captación</th>
                                     <th class="p-3">Edad / Ciclo Vital</th>
                                     <th class="p-3">EPS / Régimen</th>
-                                    <th class="p-3">Brechas / Intervenciones</th>
-                                    <!-- COLUMNA EXCLUSIVA DE LABORATORIOS -->
+                                    <th class="p-3">Intervenciones a seguir</th>
+                                    <!-- CELDA DE LABORATORIOS CON ESTADO Y FECHA -->
                                     <th class="p-3 bg-amber-100/70 text-amber-950 font-extrabold border-x border-amber-200">
                                         <i class="fa-solid fa-flask text-amber-600 mr-1"></i> Laboratorios
                                     </th>
@@ -566,9 +590,8 @@
             }
         }
 
-        function calcularEdadYBrechas() {
+        function calcularEdad() {
             const fechaNacVal = document.getElementById('fechaNacimiento').value;
-            const sexo = document.getElementById('sexo').value;
             if (!fechaNacVal) return;
 
             const hoy = new Date();
@@ -597,57 +620,6 @@
             else ciclo = "Vejez (60+ años)";
 
             document.getElementById('cicloVital').value = ciclo;
-
-            const checkboxes = document.querySelectorAll('input[name="brechas"]');
-            checkboxes.forEach(cb => cb.checked = false);
-
-            checkboxes.forEach(cb => {
-                const val = cb.value.toLowerCase();
-                if (val.includes('salud bucal') || val.includes('valoración integral')) cb.checked = true;
-                if (val.includes('planificación') && edadAnios >= 14 && edadAnios <= 49) cb.checked = true;
-                if (sexo === 'Femenino' && val.includes('ccu') && edadAnios >= 25) cb.checked = true;
-                if (sexo === 'Femenino' && val.includes('mama') && edadAnios >= 50) cb.checked = true;
-                if (sexo === 'Masculino' && val.includes('tacto rectal') && edadAnios >= 50) cb.checked = true;
-            });
-
-            sincronizarProximasAcciones();
-        }
-
-        function sincronizarProximasAcciones() {
-            const brechasMarcadas = Array.from(document.querySelectorAll('input[name="brechas"]:checked')).map(cb => cb.value.toLowerCase());
-            const sexo = document.getElementById('sexo').value;
-            const accionesCheckboxes = document.querySelectorAll('input[name="acciones_ruta"]');
-            
-            accionesCheckboxes.forEach(ac => ac.checked = false);
-
-            accionesCheckboxes.forEach(ac => {
-                const valAccion = ac.value.toLowerCase();
-                
-                if (sexo === 'Masculino') {
-                    if (brechasMarcadas.some(b => b.includes('tacto rectal')) && valAccion.includes('tacto rectal')) {
-                        ac.checked = true;
-                    }
-                    if (brechasMarcadas.some(b => b.includes('valoración integral') || b.includes('tacto')) && valAccion.includes('perfil masculino')) {
-                        ac.checked = true;
-                    }
-                }
-
-                if (sexo === 'Femenino') {
-                    if (brechasMarcadas.some(b => b.includes('ccu') || b.includes('mama') || b.includes('valoración')) && valAccion.includes('perfil femenino')) {
-                        ac.checked = true;
-                    }
-                }
-
-                if (brechasMarcadas.some(b => b.includes('valoración integral')) && valAccion.includes('médica general')) {
-                    ac.checked = true;
-                }
-                if (brechasMarcadas.some(b => b.includes('salud bucal')) && valAccion.includes('odontológica')) {
-                    ac.checked = true;
-                }
-                if (brechasMarcadas.some(b => b.includes('planificación')) && valAccion.includes('planificación')) {
-                    ac.checked = true;
-                }
-            });
         }
 
         function verificarCierreAutomatico() {
@@ -672,15 +644,11 @@
             const cierreVerificado = document.getElementById('cierreVerificado').value;
             const fechaCierreDemanda = (estadoAtencion.includes('Asistió') || cierreVerificado.includes('Sí')) ? new Date().toISOString().slice(0, 10) : 'Pendiente';
 
-            const sexo = document.getElementById('sexo').value;
-            const requiereLab = accionesSeleccionadas.some(a => a.toLowerCase().includes('laboratorio'));
-            const estadoLaboratoriosDefault = requiereLab ? 'Pendiente' : 'No Aplica / Pendiente';
-
             const nuevoRegistro = {
                 id: Date.now(),
                 nombre: document.getElementById('nombre').value,
                 documento: document.getElementById('documento').value,
-                sexo: sexo,
+                sexo: document.getElementById('sexo').value,
                 fechaNacimiento: document.getElementById('fechaNacimiento').value,
                 edad: document.getElementById('edadCalculada').value,
                 cicloVital: document.getElementById('cicloVital').value,
@@ -689,7 +657,8 @@
                 entorno: document.getElementById('entorno').value,
                 fechaCaptacion: document.getElementById('fechaCaptacion').value,
                 intervencionFaltante: brechasSeleccionadas.length > 0 ? brechasSeleccionadas.join(', ') : 'Ninguna',
-                estadoLaboratorios: estadoLaboratoriosDefault,
+                estadoLaboratorios: 'Pendiente',
+                fechaFinalidadLabs: 'Pendiente',
                 ultimaGestion: document.getElementById('ultimaGestion').value,
                 proximaAccion: accionesSeleccionadas.length > 0 ? accionesSeleccionadas.join(' | ') : 'Seguimiento general',
                 fechaProgramada: document.getElementById('fechaProgramada').value,
@@ -715,18 +684,42 @@
             cambiarSeccion('pacientes');
         }
 
+        function poblarFiltroEps() {
+            const selectEps = document.getElementById('filtro-eps');
+            const epsActual = selectEps.value;
+            
+            let epsList = [...new Set(registros.map(r => r.entidadEps).filter(Boolean))];
+            
+            let optionsHTML = `<option value="TODOS">Todas las EPS</option>`;
+            epsList.forEach(eps => {
+                optionsHTML += `<option value="${eps}" ${eps === epsActual ? 'selected' : ''}>${eps}</option>`;
+            });
+            selectEps.innerHTML = optionsHTML;
+        }
+
         function cargarRegistros() {
+            poblarFiltroEps();
             const tbody = document.getElementById('tabla-registros');
             tbody.innerHTML = "";
 
             const filtroLabs = document.getElementById('filtro-laboratorios').value;
+            const filtroEps = document.getElementById('filtro-eps').value;
             
             let registrosFiltrados = registros.filter(r => {
-                if (filtroLabs === 'TODOS') return true;
-                if (filtroLabs === 'Pendiente') return r.estadoLaboratorios === 'Pendiente';
-                if (filtroLabs === 'Completado') return r.estadoLaboratorios === 'Completado';
-                if (filtroLabs === 'No Aplica / Pendiente') return r.estadoLaboratorios === 'No Aplica / Pendiente';
-                return true;
+                let matchLabs = true;
+                let matchEps = true;
+
+                if (filtroLabs !== 'TODOS') {
+                    if (filtroLabs === 'Pendiente') matchLabs = (r.estadoLaboratorios === 'Pendiente');
+                    else if (filtroLabs === 'Completado') matchLabs = (r.estadoLaboratorios === 'Completado');
+                    else if (filtroLabs === 'No Aplica / Pendiente') matchLabs = (r.estadoLaboratorios === 'No Aplica / Pendiente');
+                }
+
+                if (filtroEps !== 'TODOS') {
+                    matchEps = (r.entidadEps === filtroEps);
+                }
+
+                return matchLabs && matchEps;
             });
 
             let total = registros.length;
@@ -743,7 +736,7 @@
             document.getElementById('kpi-cierre').innerText = porcentajeCierre + "%";
 
             if (registrosFiltrados.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" class="p-6 text-center text-slate-400 font-medium">No hay registros que coincidan con el filtro de laboratorios seleccionado.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="11" class="p-6 text-center text-slate-400 font-medium">No hay registros que coincidan con los filtros seleccionados.</td></tr>`;
                 return;
             }
 
@@ -756,6 +749,7 @@
                         <p class="font-bold text-slate-900">${r.nombre}</p>
                         <p class="text-slate-500 text-[11px]">CC: ${r.documento}</p>
                     </td>
+                    <td class="p-3 font-semibold text-slate-700">${r.fechaCaptacion || 'No registrada'}</td>
                     <td class="p-3">
                         <p class="font-medium text-slate-800">${r.edad}</p>
                         <p class="text-[11px] text-blue-800 font-semibold">${r.cicloVital}</p>
@@ -765,13 +759,16 @@
                     </td>
                     <td class="p-3 font-medium text-amber-800 max-w-xs">${r.intervencionFaltante}</td>
                     
-                    <!-- CELDA EXCLUSIVA DE LABORATORIOS CON DESPLEGABLE EDITABLE Y COLOR DINÁMICO -->
+                    <!-- CELDA DE LABORATORIOS CON ESTADO Y FECHA DE FINALIDAD -->
                     <td class="p-3 bg-amber-50/50 border-x border-amber-200">
-                        <select onchange="actualizarLaboratoriosFila(${r.id}, this.value)" class="text-xs px-2.5 py-1.5 rounded-lg border font-bold shadow-sm ${r.estadoLaboratorios === 'Completado' ? 'bg-emerald-100 text-emerald-900 border-emerald-300' : (r.estadoLaboratorios === 'Pendiente' ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-slate-100 text-slate-600 border-slate-300')}">
-                            <option value="Pendiente" ${r.estadoLaboratorios === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
-                            <option value="Completado" ${r.estadoLaboratorios === 'Completado' ? 'selected' : ''}>✅ Completado</option>
-                            <option value="No Aplica / Pendiente" ${r.estadoLaboratorios === 'No Aplica / Pendiente' ? 'selected' : ''}>⚪ No Aplica</option>
-                        </select>
+                        <div class="space-y-1">
+                            <select onchange="actualizarLaboratoriosFila(${r.id}, this.value)" class="text-xs px-2.5 py-1 rounded-lg border font-bold shadow-sm ${r.estadoLaboratorios === 'Completado' ? 'bg-emerald-100 text-emerald-900 border-emerald-300' : (r.estadoLaboratorios === 'Pendiente' ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-slate-100 text-slate-600 border-slate-300')}">
+                                <option value="Pendiente" ${r.estadoLaboratorios === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
+                                <option value="Completado" ${r.estadoLaboratorios === 'Completado' ? 'selected' : ''}>✅ Completado</option>
+                                <option value="No Aplica / Pendiente" ${r.estadoLaboratorios === 'No Aplica / Pendiente' ? 'selected' : ''}>⚪ No Aplica</option>
+                            </select>
+                            <p class="text-[10px] text-slate-500 font-medium">Finalidad: <span class="text-emerald-700 font-bold">${r.fechaFinalidadLabs}</span></p>
+                        </div>
                     </td>
 
                     <td class="p-3 max-w-xs">
@@ -806,15 +803,23 @@
         }
 
         function actualizarLaboratoriosFila(id, nuevoEstadoLabs) {
+            const hoyStr = new Date().toISOString().slice(0, 10);
             registros = registros.map(r => {
                 if (r.id === id) {
                     r.estadoLaboratorios = nuevoEstadoLabs;
+                    if (nuevoEstadoLabs === 'Completado') {
+                        r.fechaFinalidadLabs = hoyStr;
+                    } else if (nuevoEstadoLabs === 'Pendiente') {
+                        r.fechaFinalidadLabs = 'Pendiente';
+                    } else {
+                        r.fechaFinalidadLabs = 'No Aplica';
+                    }
                 }
                 return r;
             });
             localStorage.setItem('rpms_registros', JSON.stringify(registros));
             cargarRegistros();
-            mostrarToast("Estado de laboratorios actualizado");
+            mostrarToast("Estado y fecha de laboratorios actualizada");
         }
 
         function abrirModalEditar(id) {
@@ -828,7 +833,7 @@
             document.getElementById('modal-eps').innerText = paciente.entidadEps;
 
             document.getElementById('edit-estadoLaboratorios').value = paciente.estadoLaboratorios || "Pendiente";
-            document.getElementById('edit-ultimaGestion').value = paciente.ultimaGestion || "";
+            document.getElementById('edit-ultimaGestion').value = paciente.ultimaGestion || "Asignación de cita";
             document.getElementById('edit-proximaAccion').value = paciente.proximaAccion || "";
             document.getElementById('edit-fechaProgramada').value = paciente.fechaProgramada || "";
             document.getElementById('edit-responsable').value = paciente.responsable || "";
@@ -849,7 +854,13 @@
 
             registros = registros.map(r => {
                 if (r.id === id) {
-                    r.estadoLaboratorios = document.getElementById('edit-estadoLaboratorios').value;
+                    const nuevoEstadoLabs = document.getElementById('edit-estadoLaboratorios').value;
+                    if (r.estadoLaboratorios !== 'Completado' && nuevoEstadoLabs === 'Completado') {
+                        r.fechaFinalidadLabs = hoyStr;
+                    } else if (nuevoEstadoLabs !== 'Completado') {
+                        r.fechaFinalidadLabs = (nuevoEstadoLabs === 'Pendiente') ? 'Pendiente' : 'No Aplica';
+                    }
+                    r.estadoLaboratorios = nuevoEstadoLabs;
                     r.ultimaGestion = document.getElementById('edit-ultimaGestion').value;
                     r.proximaAccion = document.getElementById('edit-proximaAccion').value;
                     r.fechaProgramada = document.getElementById('edit-fechaProgramada').value;
@@ -1022,9 +1033,9 @@
         }
 
         function exportarExcel() {
-            let csv = "Nombre,Documento,Sexo,FechaNacimiento,Edad,CicloVital,EntidadEps,EstadoAfiliacion,Entorno,FechaCaptacion,IntervencionFaltante,EstadoLaboratorios,UltimaGestion,ProximaAccion,FechaProgramada,Responsable,EstadoAtencion,CierreVerificado,FechaCierreDemanda\n";
+            let csv = "Nombre,Documento,Sexo,FechaNacimiento,Edad,CicloVital,EntidadEps,EstadoAfiliacion,Entorno,FechaCaptacion,Intervenciones a seguir,Estado Laboratorios,Fecha Finalidad Labs,UltimaGestion,ProximaAccion,FechaProgramada,Responsable,EstadoAtencion,CierreVerificado,FechaCierreDemanda\n";
             registros.forEach(r => {
-                csv += `"${r.nombre}","${r.documento}","${r.sexo}","${r.fechaNacimiento}","${r.edad}","${r.cicloVital}","${r.entidadEps}","${r.estadoAfiliacion}","${r.entorno}","${r.fechaCaptacion}","${r.intervencionFaltante}","${r.estadoLaboratorios}","${r.ultimaGestion}","${r.proximaAccion}","${r.fechaProgramada}","${r.responsable}","${r.estadoAtencion}","${r.cierreVerificado}","${r.fechaCierreDemanda}"\n`;
+                csv += `"${r.nombre}","${r.documento}","${r.sexo}","${r.fechaNacimiento}","${r.edad}","${r.cicloVital}","${r.entidadEps}","${r.estadoAfiliacion}","${r.entorno}","${r.fechaCaptacion}","${r.intervencionFaltante}","${r.estadoLaboratorios}","${r.fechaFinalidadLabs}","${r.ultimaGestion}","${r.proximaAccion}","${r.fechaProgramada}","${r.responsable}","${r.estadoAtencion}","${r.cierreVerificado}","${r.fechaCierreDemanda}"\n`;
             });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
