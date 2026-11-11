@@ -6,7 +6,7 @@
     <title>RPMS Res. 3280 - Hospital San Antonio E.S.E.</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Librería profesional para exportación limpia a Excel (.xlsx) -->
+    <!-- Librería para exportación profesional a Excel (.xlsx) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -138,9 +138,9 @@
             </div>
         </header>
 
-        <!-- NAVEGACIÓN POR PESTAÑAS -->
-        <nav class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-40">
-            <div class="max-w-7xl mx-auto px-4 flex space-x-4">
+        <!-- NAVEGACIÓN POR PESTAÑAS (5 SECCIONES) -->
+        <nav class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-40 overflow-x-auto">
+            <div class="max-w-7xl mx-auto px-4 flex space-x-2 whitespace-nowrap">
                 <button onclick="cambiarSeccion('captacion')" id="nav-captacion" class="py-3 px-4 font-bold text-sm border-b-2 border-blue-900 text-blue-900 flex items-center space-x-2 transition">
                     <i class="fa-solid fa-address-card"></i>
                     <span>1. Captación y Seguimiento</span>
@@ -152,6 +152,14 @@
                 <button onclick="cambiarSeccion('analitica')" id="nav-analitica" class="py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center space-x-2 transition">
                     <i class="fa-solid fa-chart-pie"></i>
                     <span>3. Analítica y Gráficas</span>
+                </button>
+                <button onclick="cambiarSeccion('observaciones')" id="nav-observaciones" class="py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center space-x-2 transition">
+                    <i class="fa-solid fa-clipboard-list"></i>
+                    <span>4. Puntos Críticos y Observaciones</span>
+                </button>
+                <button onclick="cambiarSeccion('mejoras')" id="nav-mejoras" class="py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center space-x-2 transition">
+                    <i class="fa-solid fa-ranking-star"></i>
+                    <span>5. Acciones de Mejora</span>
                 </button>
             </div>
         </nav>
@@ -258,7 +266,7 @@
                             <input type="date" id="fechaCaptacion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                         </div>
 
-                        <!-- Intervenciones Faltantes en RPMS (MANUAL) -->
+                        <!-- Intervenciones a seguir -->
                         <div class="md:col-span-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
                             <label class="block text-xs font-bold text-slate-700 uppercase mb-2">
                                 Intervenciones a seguir
@@ -275,10 +283,6 @@
                                 <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
                                     <input type="checkbox" name="brechas" value="Valoración integral (enfermería)" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
                                     <span>Valoración integral (enfermería)</span>
-                                </label>
-                                <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" name="brechas" value="Educación para la salud" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
-                                    <span>Educación para la salud</span>
                                 </label>
                                 <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
                                     <input type="checkbox" name="brechas" value="Tamizaje de ITS" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
@@ -321,8 +325,12 @@
                                     <span>Tamizaje de psa</span>
                                 </label>
                                 <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" name="brechas" value="Tamizaje de colon y recto (especializado)" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
-                                    <span>Tamizaje de colon y recto (especializado)</span>
+                                    <input type="checkbox" name="brechas" value="Tamizaje de tacto rectal" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Tamizaje de tacto rectal</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" name="brechas" value="Agudeza visual" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Agudeza visual</span>
                                 </label>
                                 <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
                                     <input type="checkbox" name="brechas" value="Odontología" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
@@ -410,12 +418,36 @@
 
             <!-- SECCIÓN 2: PACIENTES REGISTRADOS -->
             <section id="seccion-pacientes" class="hidden space-y-6">
+                
+                <!-- BANNER DE ALTA VISIBILIDAD / ALERTA DÍA 20 DE CADA MES -->
+                <div id="alerta-dia-20" class="hidden bg-amber-500 text-slate-950 p-4 rounded-2xl shadow-md border-2 border-amber-600 flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-slate-950 text-amber-400 p-3 rounded-xl text-xl font-bold">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-sm uppercase">¡Alerta Institucional - Campaña de Laboratorios (Día 20)!</h4>
+                            <p class="text-xs font-semibold text-slate-900">Hoy es 20 del mes. Se activa la jornada de llamado a usuarios pendientes de laboratorios tomando como base la fecha de captación.</p>
+                        </div>
+                    </div>
+                    <button onclick="filtrarPendientesLaboratoriosDia20()" class="bg-slate-950 hover:bg-slate-900 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition">
+                        <i class="fa-solid fa-filter mr-1"></i> Filtrar Pendientes de Laboratorios
+                    </button>
+                </div>
+
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-12">
                     <div class="bg-slate-900 px-6 py-4 flex flex-wrap justify-between items-center text-white gap-3">
                         <div class="flex items-center space-x-3">
                             <h3 class="font-bold text-sm uppercase"><i class="fa-solid fa-users-gear mr-2 text-amber-400"></i> Pacientes Registrados</h3>
                         </div>
                         <div class="flex flex-wrap items-center gap-3">
+                            <!-- Filtro por Entorno / Origen -->
+                            <div class="flex items-center space-x-2 text-xs">
+                                <span class="text-slate-300 font-semibold"><i class="fa-solid fa-building-user mr-1"></i>Entorno:</span>
+                                <select id="filtro-entorno" onchange="cargarRegistros()" class="bg-slate-800 text-white px-2.5 py-1.5 rounded-lg border border-slate-700 text-xs font-medium">
+                                    <option value="TODOS">Todos los Entornos</option>
+                                </select>
+                            </div>
                             <!-- Filtro combinado por EPS -->
                             <div class="flex items-center space-x-2 text-xs">
                                 <span class="text-slate-300 font-semibold"><i class="fa-solid fa-hospital mr-1"></i>EPS:</span>
@@ -446,8 +478,10 @@
                                     <th class="p-3">Fecha Captación</th>
                                     <th class="p-3">Edad / Ciclo Vital</th>
                                     <th class="p-3">EPS / Régimen</th>
+                                    <th class="p-3 bg-blue-100/70 text-blue-950 font-extrabold border-x border-blue-200">
+                                        <i class="fa-solid fa-building-user text-blue-700 mr-1"></i> Entorno / Origen
+                                    </th>
                                     <th class="p-3">Intervenciones a seguir</th>
-                                    <!-- CELDA DE LABORATORIOS CON ESTADO Y FECHA -->
                                     <th class="p-3 bg-amber-100/70 text-amber-950 font-extrabold border-x border-amber-200">
                                         <i class="fa-solid fa-flask text-amber-600 mr-1"></i> Laboratorios
                                     </th>
@@ -513,7 +547,6 @@
 
                 <!-- GRÁFICAS -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                    <!-- GRÁFICA KPI: ESTADO DETALLADO DE ATENCIÓN DE PACIENTES -->
                     <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2">
                         <h3 class="text-xs font-bold text-slate-700 uppercase mb-4 flex items-center space-x-2">
                             <i class="fa-solid fa-chart-bar text-blue-900"></i>
@@ -524,7 +557,6 @@
                         </div>
                     </div>
 
-                    <!-- Gráfica 2: Cobertura por EPS -->
                     <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
                         <h3 class="text-xs font-bold text-slate-600 uppercase mb-4 flex items-center space-x-2">
                             <i class="fa-solid fa-chart-pie text-amber-500"></i>
@@ -535,7 +567,6 @@
                         </div>
                     </div>
 
-                    <!-- Gráfica 3: Pasas de Asistencia por Ciclo Vital -->
                     <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
                         <h3 class="text-xs font-bold text-slate-600 uppercase mb-4 flex items-center space-x-2">
                             <i class="fa-solid fa-diagram-project text-emerald-600"></i>
@@ -543,6 +574,114 @@
                         </h3>
                         <div class="h-64 relative flex items-center justify-center">
                             <canvas id="chartCicloVital"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 4: PUNTOS CRÍTICOS Y OBSERVACIONES -->
+            <section id="seccion-observaciones" class="hidden space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
+                    <div class="bg-slate-900 px-6 py-4 flex items-center justify-between text-white">
+                        <h3 class="font-bold text-sm uppercase flex items-center space-x-2">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
+                            <span>Puntos Críticos Institucionales a Solventar (RPMS)</span>
+                        </h3>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex flex-wrap gap-3">
+                            <input type="text" id="nuevo-punto-critico" placeholder="Describa el punto crítico o cuello de botella detectado..." 
+                                   class="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                            <button onclick="agregarPuntoCritico()" class="bg-blue-900 hover:bg-blue-800 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition">
+                                <i class="fa-solid fa-plus mr-1"></i> Registrar Punto Crítico
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                               <thead>
+                                    <tr class="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold uppercase">
+                                        <th class="p-3">Descripción del Punto Crítico</th>
+                                        <th class="p-3">Fecha de Registro</th>
+                                        <th class="p-3 text-center">Estado de Solución</th>
+                                        <th class="p-3 text-center">Acción</th>
+                                    </tr>
+                               </thead>
+                               <tbody id="tabla-puntos-criticos" class="divide-y divide-slate-100">
+                                   <!-- Dinámico -->
+                               </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
+                    <div class="bg-slate-900 px-6 py-4 flex items-center justify-between text-white">
+                        <h3 class="font-bold text-sm uppercase flex items-center space-x-2">
+                            <i class="fa-solid fa-notes-medical text-amber-400"></i>
+                            <span>Bitácora de Observaciones Clínicas y Notas de Seguimiento</span>
+                        </h3>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <input type="text" id="obs-paciente" placeholder="Nombre o Documento del Paciente" class="px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none">
+                            <input type="text" id="obs-texto" placeholder="Escriba la observación u nota relevante..." class="md:col-span-2 px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none">
+                        </div>
+                        <div class="flex justify-end">
+                            <button onclick="agregarObservacionPaciente()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition">
+                                <i class="fa-solid fa-floppy-disk mr-1"></i> Guardar Observación
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto mt-4">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold uppercase">
+                                        <th class="p-3">Paciente / Ref</th>
+                                        <th class="p-3">Observación Registrada</th>
+                                        <th class="p-3">Fecha</th>
+                                        <th class="p-3 text-center">Eliminar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-observaciones-pacientes" class="divide-y divide-slate-100">
+                                    <!-- Dinámico -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 5: ACCIONES DE MEJORA -->
+            <section id="seccion-mejoras" class="hidden space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-12">
+                    <div class="bg-slate-900 px-6 py-4 flex items-center justify-between text-white">
+                        <h3 class="font-bold text-sm uppercase flex items-center space-x-2">
+                            <i class="fa-solid fa-ranking-star text-amber-400"></i>
+                            <span>Plan de Acciones de Mejora (Ruta RPMS Res. 3280)</span>
+                        </h3>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <input type="text" id="mejora-titulo" placeholder="Título de la acción de mejora" class="px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none">
+                            <input type="text" id="mejora-responsable" placeholder="Responsable o Área encargada" class="px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none">
+                            <button onclick="agregarAccionMejora()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition">
+                                <i class="fa-solid fa-plus mr-1"></i> Agregar Acción de Mejora
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto mt-4">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold uppercase">
+                                        <th class="p-3">Acción de Mejora</th>
+                                        <th class="p-3">Responsable</th>
+                                        <th class="p-3">Fecha Registro</th>
+                                        <th class="p-3 text-center">Estado de Ejecución</th>
+                                        <th class="p-3 text-center">Eliminar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-acciones-mejora" class="divide-y divide-slate-100">
+                                    <!-- Dinámico -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -562,7 +701,11 @@
             if (pass === "Hospital3280") {
                 document.getElementById('login-modal').classList.add('hidden');
                 document.getElementById('app-container').classList.remove('hidden');
+                verificarAlertaDia20();
                 cargarRegistros();
+                cargarPuntosCriticos();
+                cargarObservacionesPacientes();
+                cargarAccionesMejora();
             } else {
                 document.getElementById('login-error').classList.remove('hidden');
             }
@@ -570,24 +713,29 @@
 
         document.getElementById('fechaCaptacion').valueAsDate = new Date();
 
+        function verificarAlertaDia20() {
+            const hoy = new Date();
+            if (hoy.getDate() === 20) {
+                document.getElementById('alerta-dia-20').classList.remove('hidden');
+            }
+        }
+
+        function filtrarPendientesLaboratoriosDia20() {
+            document.getElementById('filtro-laboratorios').value = "Pendiente";
+            cargarRegistros();
+            mostrarToast("Filtro aplicado: Mostrando pacientes con laboratorios pendientes");
+        }
+
         function cambiarSeccion(seccion) {
-            document.getElementById('seccion-captacion').classList.add('hidden');
-            document.getElementById('seccion-pacientes').classList.add('hidden');
-            document.getElementById('seccion-analitica').classList.add('hidden');
+            ['captacion', 'pacientes', 'analitica', 'observaciones', 'mejoras'].forEach(s => {
+                document.getElementById(`seccion-${s}`).classList.add('hidden');
+                document.getElementById(`nav-${s}`).className = "py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center space-x-2 transition";
+            });
 
-            document.getElementById('nav-captacion').className = "py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center space-x-2 transition";
-            document.getElementById('nav-pacientes').className = "py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center space-x-2 transition";
-            document.getElementById('nav-analitica').className = "py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center space-x-2 transition";
+            document.getElementById(`seccion-${seccion}`).classList.remove('hidden');
+            document.getElementById(`nav-${seccion}`).className = "py-3 px-4 font-bold text-sm border-b-2 border-blue-900 text-blue-900 flex items-center space-x-2 transition";
 
-            if (seccion === 'captacion') {
-                document.getElementById('seccion-captacion').classList.remove('hidden');
-                document.getElementById('nav-captacion').className = "py-3 px-4 font-bold text-sm border-b-2 border-blue-900 text-blue-900 flex items-center space-x-2 transition";
-            } else if (seccion === 'pacientes') {
-                document.getElementById('seccion-pacientes').classList.remove('hidden');
-                document.getElementById('nav-pacientes').className = "py-3 px-4 font-bold text-sm border-b-2 border-blue-900 text-blue-900 flex items-center space-x-2 transition";
-            } else if (seccion === 'analitica') {
-                document.getElementById('seccion-analitica').classList.remove('hidden');
-                document.getElementById('nav-analitica').className = "py-3 px-4 font-bold text-sm border-b-2 border-blue-900 text-blue-900 flex items-center space-x-2 transition";
+            if (seccion === 'analitica') {
                 renderizarGraficasDatos();
             }
         }
@@ -635,6 +783,9 @@
         }
 
         let registros = JSON.parse(localStorage.getItem('rpms_registros')) || [];
+        let puntosCriticos = JSON.parse(localStorage.getItem('rpms_puntos_criticos')) || [];
+        let obsPacientes = JSON.parse(localStorage.getItem('rpms_obs_pacientes')) || [];
+        let accionesMejora = JSON.parse(localStorage.getItem('rpms_acciones_mejora')) || [];
 
         function handleSubmit(event) {
             event.preventDefault();
@@ -686,42 +837,40 @@
             cambiarSeccion('pacientes');
         }
 
-        function poblarFiltroEps() {
+        function poblarFiltros() {
             const selectEps = document.getElementById('filtro-eps');
             const epsActual = selectEps.value;
-            
             let epsList = [...new Set(registros.map(r => r.entidadEps).filter(Boolean))];
-            
-            let optionsHTML = `<option value="TODOS">Todas las EPS</option>`;
+            let optionsEpsHTML = `<option value="TODOS">Todas las EPS</option>`;
             epsList.forEach(eps => {
-                optionsHTML += `<option value="${eps}" ${eps === epsActual ? 'selected' : ''}>${eps}</option>`;
+                optionsEpsHTML += `<option value="${eps}" ${eps === epsActual ? 'selected' : ''}>${eps}</option>`;
             });
-            selectEps.innerHTML = optionsHTML;
+            selectEps.innerHTML = optionsEpsHTML;
+
+            const selectEntorno = document.getElementById('filtro-entorno');
+            const entornoActual = selectEntorno.value;
+            let entornoList = [...new Set(registros.map(r => r.entorno).filter(Boolean))];
+            let optionsEntornoHTML = `<option value="TODOS">Todos los Entornos</option>`;
+            entornoList.forEach(ent => {
+                optionsEntornoHTML += `<option value="${ent}" ${ent === entornoActual ? 'selected' : ''}>${ent}</option>`;
+            });
+            selectEntorno.innerHTML = optionsEntornoHTML;
         }
 
         function cargarRegistros() {
-            poblarFiltroEps();
+            poblarFiltros();
             const tbody = document.getElementById('tabla-registros');
             tbody.innerHTML = "";
 
             const filtroLabs = document.getElementById('filtro-laboratorios').value;
             const filtroEps = document.getElementById('filtro-eps').value;
+            const filtroEntorno = document.getElementById('filtro-entorno').value;
             
             let registrosFiltrados = registros.filter(r => {
-                let matchLabs = true;
-                let matchEps = true;
-
-                if (filtroLabs !== 'TODOS') {
-                    if (filtroLabs === 'Pendiente') matchLabs = (r.estadoLaboratorios === 'Pendiente');
-                    else if (filtroLabs === 'Completado') matchLabs = (r.estadoLaboratorios === 'Completado');
-                    else if (filtroLabs === 'No Aplica / Pendiente') matchLabs = (r.estadoLaboratorios === 'No Aplica / Pendiente');
-                }
-
-                if (filtroEps !== 'TODOS') {
-                    matchEps = (r.entidadEps === filtroEps);
-                }
-
-                return matchLabs && matchEps;
+                let matchLabs = (filtroLabs === 'TODOS' || r.estadoLaboratorios === filtroLabs);
+                let matchEps = (filtroEps === 'TODOS' || r.entidadEps === filtroEps);
+                let matchEntorno = (filtroEntorno === 'TODOS' || r.entorno === filtroEntorno);
+                return matchLabs && matchEps && matchEntorno;
             });
 
             let total = registros.length;
@@ -738,7 +887,7 @@
             document.getElementById('kpi-cierre').innerText = porcentajeCierre + "%";
 
             if (registrosFiltrados.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="11" class="p-6 text-center text-slate-400 font-medium">No hay registros que coincidan con los filtros seleccionados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="12" class="p-6 text-center text-slate-400 font-medium">No hay registros que coincidan con los filtros seleccionados.</td></tr>`;
                 return;
             }
 
@@ -759,9 +908,11 @@
                     <td class="p-3">
                         <span class="px-2 py-1 rounded bg-blue-50 text-blue-900 font-semibold text-[11px]">${r.entidadEps}</span>
                     </td>
+                    <td class="p-3 bg-blue-50/50 border-x border-blue-200">
+                        <span class="font-bold text-blue-950 text-[11px]">${r.entorno || 'No especificado'}</span>
+                    </td>
                     <td class="p-3 font-medium text-amber-800 max-w-xs">${r.intervencionFaltante}</td>
                     
-                    <!-- CELDA DE LABORATORIOS CON ESTADO Y FECHA DE FINALIDAD -->
                     <td class="p-3 bg-amber-50/50 border-x border-amber-200">
                         <div class="space-y-1">
                             <select onchange="actualizarLaboratoriosFila(${r.id}, this.value)" class="text-xs px-2.5 py-1 rounded-lg border font-bold shadow-sm ${r.estadoLaboratorios === 'Completado' ? 'bg-emerald-100 text-emerald-900 border-emerald-300' : (r.estadoLaboratorios === 'Pendiente' ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-slate-100 text-slate-600 border-slate-300')}">
@@ -789,13 +940,13 @@
                     </td>
                     <td class="p-3 font-semibold text-emerald-700">${r.fechaCierreDemanda}</td>
                     <td class="p-3 text-center space-x-1">
-                        <button onclick="abrirModalEditar(${r.id})" class="text-blue-600 hover:text-blue-800 p-1.5 bg-blue-50 rounded-lg" title="Editar paciente y seguimiento">
+                        <button onclick="abrirModalEditar(${r.id})" class="text-blue-600 hover:text-blue-800 p-1.5 bg-blue-50 rounded-lg" title="Editar paciente">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
-                        <button onclick="alternarCompletado(${r.id})" class="px-2 py-1 rounded text-[11px] font-bold ${r.cierreVerificado.includes('Sí') ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}" title="Cambiar estado de cierre">
+                        <button onclick="alternarCompletado(${r.id})" class="px-2 py-1 rounded text-[11px] font-bold ${r.cierreVerificado.includes('Sí') ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}" title="Estado de cierre">
                             <i class="fa-solid ${r.cierreVerificado.includes('Sí') ? 'fa-circle-check' : 'fa-clock'}"></i>
                         </button>
-                        <button onclick="eliminarRegistro(${r.id})" class="text-red-500 hover:text-red-700 p-1.5 bg-red-50 rounded-lg" title="Eliminar registro">
+                        <button onclick="eliminarRegistro(${r.id})" class="text-red-500 hover:text-red-700 p-1.5 bg-red-50 rounded-lg" title="Eliminar">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </td>
@@ -809,19 +960,13 @@
             registros = registros.map(r => {
                 if (r.id === id) {
                     r.estadoLaboratorios = nuevoEstadoLabs;
-                    if (nuevoEstadoLabs === 'Completado') {
-                        r.fechaFinalidadLabs = hoyStr;
-                    } else if (nuevoEstadoLabs === 'Pendiente') {
-                        r.fechaFinalidadLabs = 'Pendiente';
-                    } else {
-                        r.fechaFinalidadLabs = 'No Aplica';
-                    }
+                    r.fechaFinalidadLabs = (nuevoEstadoLabs === 'Completado') ? hoyStr : ((nuevoEstadoLabs === 'Pendiente') ? 'Pendiente' : 'No Aplica');
                 }
                 return r;
             });
             localStorage.setItem('rpms_registros', JSON.stringify(registros));
             cargarRegistros();
-            mostrarToast("Estado y fecha de laboratorios actualizada");
+            mostrarToast("Laboratorios actualizados");
         }
 
         function abrirModalEditar(id) {
@@ -869,12 +1014,7 @@
                     r.responsable = document.getElementById('edit-responsable').value;
                     r.estadoAtencion = document.getElementById('edit-estadoAtencion').value;
                     r.cierreVerificado = document.getElementById('edit-cierreVerificado').value;
-
-                    if (r.estadoAtencion.includes('Asistió') || r.cierreVerificado.includes('Sí')) {
-                        r.fechaCierreDemanda = hoyStr;
-                    } else {
-                        r.fechaCierreDemanda = "Pendiente";
-                    }
+                    r.fechaCierreDemanda = (r.estadoAtencion.includes('Asistió') || r.cierreVerificado.includes('Sí')) ? hoyStr : "Pendiente";
                 }
                 return r;
             });
@@ -882,7 +1022,7 @@
             localStorage.setItem('rpms_registros', JSON.stringify(registros));
             cerrarModalEditar();
             cargarRegistros();
-            mostrarToast("Datos del paciente actualizados");
+            mostrarToast("Paciente actualizado");
         }
 
         function actualizarEstadoFila(id, nuevoEstado) {
@@ -902,7 +1042,7 @@
             });
             localStorage.setItem('rpms_registros', JSON.stringify(registros));
             cargarRegistros();
-            mostrarToast("Estado actualizado correctamente");
+            mostrarToast("Estado actualizado");
         }
 
         function alternarCompletado(id) {
@@ -922,7 +1062,7 @@
             });
             localStorage.setItem('rpms_registros', JSON.stringify(registros));
             cargarRegistros();
-            mostrarToast("Estado de ruta modificado");
+            mostrarToast("Estado de cierre modificado");
         }
 
         function renderizarGraficasDatos() {
@@ -1016,12 +1156,153 @@
             });
         }
 
+        // GESTIÓN DE PUNTOS CRÍTICOS (Pestaña 4)
+        function agregarPuntoCritico() {
+            const txt = document.getElementById('nuevo-punto-critico').value.trim();
+            if (!txt) return;
+            puntosCriticos.unshift({ id: Date.now(), texto: txt, fecha: new Date().toISOString().slice(0, 10), completado: false });
+            localStorage.setItem('rpms_puntos_criticos', JSON.stringify(puntosCriticos));
+            document.getElementById('nuevo-punto-critico').value = "";
+            cargarPuntosCriticos();
+            mostrarToast("Punto crítico registrado");
+        }
+
+        function cargarPuntosCriticos() {
+            const tbody = document.getElementById('tabla-puntos-criticos');
+            tbody.innerHTML = "";
+            if (puntosCriticos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">No hay puntos críticos registrados.</td></tr>`;
+                return;
+            }
+            puntosCriticos.forEach(pc => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 font-medium text-slate-900">${pc.texto}</td>
+                        <td class="p-3 text-slate-600">${pc.fecha}</td>
+                        <td class="p-3 text-center">
+                            <button onclick="alternarPuntoCritico(${pc.id})" class="px-3 py-1 rounded-full text-xs font-bold ${pc.completado ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                                ${pc.completado ? '✅ Solucionado' : '⏳ Pendiente'}
+                            </button>
+                        </td>
+                        <td class="p-3 text-center">
+                            <button onclick="eliminarPuntoCritico(${pc.id})" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function alternarPuntoCritico(id) {
+            puntosCriticos = puntosCriticos.map(pc => { if (pc.id === id) pc.completado = !pc.completado; return pc; });
+            localStorage.setItem('rpms_puntos_criticos', JSON.stringify(puntosCriticos));
+            cargarPuntosCriticos();
+        }
+
+        function eliminarPuntoCritico(id) {
+            puntosCriticos = puntosCriticos.filter(pc => pc.id !== id);
+            localStorage.setItem('rpms_puntos_criticos', JSON.stringify(puntosCriticos));
+            cargarPuntosCriticos();
+        }
+
+        // GESTIÓN DE OBSERVACIONES DE PACIENTES (Pestaña 4)
+        function agregarObservacionPaciente() {
+            const pac = document.getElementById('obs-paciente').value.trim();
+            const txt = document.getElementById('obs-texto').value.trim();
+            if (!pac || !txt) return;
+            obsPacientes.unshift({ id: Date.now(), paciente: pac, texto: txt, fecha: new Date().toISOString().slice(0, 10) });
+            localStorage.setItem('rpms_obs_pacientes', JSON.stringify(obsPacientes));
+            document.getElementById('obs-paciente').value = "";
+            document.getElementById('obs-texto').value = "";
+            cargarObservacionesPacientes();
+            mostrarToast("Observación guardada");
+        }
+
+        function cargarObservacionesPacientes() {
+            const tbody = document.getElementById('tabla-observaciones-pacientes');
+            tbody.innerHTML = "";
+            if (obsPacientes.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">No hay observaciones registradas.</td></tr>`;
+                return;
+            }
+            obsPacientes.forEach(op => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 font-bold text-blue-900">${op.paciente}</td>
+                        <td class="p-3 text-slate-700">${op.texto}</td>
+                        <td class="p-3 text-slate-500">${op.fecha}</td>
+                        <td class="p-3 text-center">
+                            <button onclick="eliminarObsPaciente(${op.id})" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function eliminarObsPaciente(id) {
+            obsPacientes = obsPacientes.filter(op => op.id !== id);
+            localStorage.setItem('rpms_obs_pacientes', JSON.stringify(obsPacientes));
+            cargarObservacionesPacientes();
+        }
+
+        // GESTIÓN DE ACCIONES DE MEJORA (Pestaña 5)
+        function agregarAccionMejora() {
+            const tit = document.getElementById('mejora-titulo').value.trim();
+            const resp = document.getElementById('mejora-responsable').value.trim();
+            if (!tit || !resp) return;
+            accionesMejora.unshift({ id: Date.now(), titulo: tit, responsable: resp, fecha: new Date().toISOString().slice(0, 10), estado: 'En Proceso' });
+            localStorage.setItem('rpms_acciones_mejora', JSON.stringify(accionesMejora));
+            document.getElementById('mejora-titulo').value = "";
+            document.getElementById('mejora-responsable').value = "";
+            cargarAccionesMejora();
+            mostrarToast("Acción de mejora agregada");
+        }
+
+        function cargarAccionesMejora() {
+            const tbody = document.getElementById('tabla-acciones-mejora');
+            tbody.innerHTML = "";
+            if (accionesMejora.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">No hay acciones de mejora registradas.</td></tr>`;
+                return;
+            }
+            accionesMejora.forEach(am => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 font-bold text-slate-900">${am.titulo}</td>
+                        <td class="p-3 text-slate-700">${am.responsable}</td>
+                        <td class="p-3 text-slate-500">${am.fecha}</td>
+                        <td class="p-3 text-center">
+                            <select onchange="cambiarEstadoMejora(${am.id}, this.value)" class="text-xs px-2 py-1 rounded border font-bold ${am.estado === 'Completada' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                                <option value="En Proceso" ${am.estado === 'En Proceso' ? 'selected' : ''}>⏳ En Proceso</option>
+                                <option value="Completada" ${am.estado === 'Completada' ? 'selected' : ''}>✅ Completada</option>
+                            </select>
+                        </td>
+                        <td class="p-3 text-center">
+                            <button onclick="eliminarAccionMejora(${am.id})" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function cambiarEstadoMejora(id, nuevoEstado) {
+            accionesMejora = accionesMejora.map(am => { if (am.id === id) am.estado = nuevoEstado; return am; });
+            localStorage.setItem('rpms_acciones_mejora', JSON.stringify(accionesMejora));
+            cargarAccionesMejora();
+            mostrarToast("Estado de mejora actualizado");
+        }
+
+        function eliminarAccionMejora(id) {
+            accionesMejora = accionesMejora.filter(am => am.id !== id);
+            localStorage.setItem('rpms_acciones_mejora', JSON.stringify(accionesMejora));
+            cargarAccionesMejora();
+        }
+
         function eliminarRegistro(id) {
             if (confirm("¿Estás segura de eliminar este registro del sistema?")) {
                 registros = registros.filter(r => r.id !== id);
                 localStorage.setItem('rpms_registros', JSON.stringify(registros));
                 cargarRegistros();
-                mostrarToast("Registro eliminado correctamente");
+                mostrarToast("Registro eliminado");
             }
         }
 
@@ -1029,19 +1310,17 @@
             const toast = document.getElementById('toast');
             document.getElementById('toast-msg').innerText = msg;
             toast.classList.remove('translate-x-full');
-            setTimeout(() => {
-                toast.classList.add('translate-x-full');
-            }, 3000);
+            setTimeout(() => { toast.classList.add('translate-x-full'); }, 3000);
         }
 
-        // EXPORTACIÓN PROFESIONAL A EXCEL (.XLSX) CON FORMATO, COLUMNAS ORDENADAS Y DISEÑO INSTITUCIONAL
+        // EXPORTACIÓN PROFESIONAL A EXCEL CON TODAS LAS COLUMNAS NUEVAS Y ORDENADAS, PERMITIENDO EDICIÓN
         function exportarExcelProfesional() {
             if (registros.length === 0) {
                 alert("No hay registros disponibles para exportar.");
                 return;
             }
 
-            // Preparar los datos estructurados en formato de filas y columnas limpias
+            // Mapeo ordenado de todas las columnas (incluyendo Entorno / Origen y detalle de laboratorios)
             let datosExportar = registros.map(r => ({
                 "Nombre Completo": r.nombre,
                 "Documento": r.documento,
@@ -1051,7 +1330,7 @@
                 "Ciclo Vital": r.cicloVital,
                 "Entidad (EPS)": r.entidadEps,
                 "Estado Afiliación": r.estadoAfiliacion,
-                "Entorno": r.entorno,
+                "Entorno / Origen": r.entorno || "No especificado",
                 "Fecha Captación": r.fechaCaptacion || "No registrada",
                 "Intervenciones a seguir": r.intervencionFaltante,
                 "Estado Laboratorios": r.estadoLaboratorios,
@@ -1065,12 +1344,11 @@
                 "Fecha Cierre Demanda": r.fechaCierreDemanda
             }));
 
-            // Crear libro de trabajo (Workbook) y hoja (Worksheet) usando SheetJS
             let worksheet = XLSX.utils.json_to_sheet(datosExportar);
             let workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte RPMS");
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte RPMS Hospital Ambalema");
 
-            // Ajustar automáticamente el ancho de las columnas para que no queden textos cortados
+            // Cálculo automático de anchos de columna para una visualización ordenada
             let anchosColumnas = [];
             Object.keys(datosExportar[0]).forEach(key => {
                 let maxLen = key.length;
@@ -1078,17 +1356,14 @@
                     let val = String(row[key] || "");
                     if (val.length > maxLen) maxLen = val.length;
                 });
-                anchosColumnas.push({ wch: Math.min(Math.max(maxLen + 3, 12), 40) });
+                anchosColumnas.push({ wch: Math.min(Math.max(maxLen + 3, 12), 45) });
             });
             worksheet['!cols'] = anchosColumnas;
 
-            // Generar archivo descargable con formato .xlsx real
             let nombreArchivo = `Reporte_RPMS_Hospital_Ambalema_${new Date().toISOString().slice(0,10)}.xlsx`;
             XLSX.writeFile(workbook, nombreArchivo);
-            mostrarToast("Archivo Excel exportado con éxito en formato profesional.");
+            mostrarToast("Archivo Excel exportado en orden y totalmente editable.");
         }
-
-        cargarRegistros();
     </script>
 </body>
 </html>
