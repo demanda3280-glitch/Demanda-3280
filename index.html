@@ -6,6 +6,8 @@
     <title>RPMS Res. 3280 - Hospital San Antonio E.S.E.</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Librería profesional para exportación limpia a Excel (.xlsx) -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800">
@@ -431,8 +433,8 @@
                                     <option value="No Aplica / Pendiente">No Aplica</option>
                                 </select>
                             </div>
-                            <button onclick="exportarExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-xs px-3 py-1.5 rounded-lg font-semibold transition">
-                                <i class="fa-solid fa-file-excel mr-1"></i> Exportar Excel
+                            <button onclick="exportarExcelProfesional()" class="bg-emerald-600 hover:bg-emerald-500 text-xs px-3.5 py-2 rounded-lg font-bold transition shadow">
+                                <i class="fa-solid fa-file-excel mr-1 text-sm"></i> Exportar a Excel (.xlsx)
                             </button>
                         </div>
                     </div>
@@ -1032,17 +1034,58 @@
             }, 3000);
         }
 
-        function exportarExcel() {
-            let csv = "Nombre,Documento,Sexo,FechaNacimiento,Edad,CicloVital,EntidadEps,EstadoAfiliacion,Entorno,FechaCaptacion,Intervenciones a seguir,Estado Laboratorios,Fecha Finalidad Labs,UltimaGestion,ProximaAccion,FechaProgramada,Responsable,EstadoAtencion,CierreVerificado,FechaCierreDemanda\n";
-            registros.forEach(r => {
-                csv += `"${r.nombre}","${r.documento}","${r.sexo}","${r.fechaNacimiento}","${r.edad}","${r.cicloVital}","${r.entidadEps}","${r.estadoAfiliacion}","${r.entorno}","${r.fechaCaptacion}","${r.intervencionFaltante}","${r.estadoLaboratorios}","${r.fechaFinalidadLabs}","${r.ultimaGestion}","${r.proximaAccion}","${r.fechaProgramada}","${r.responsable}","${r.estadoAtencion}","${r.cierreVerificado}","${r.fechaCierreDemanda}"\n`;
+        // EXPORTACIÓN PROFESIONAL A EXCEL (.XLSX) CON FORMATO, COLUMNAS ORDENADAS Y DISEÑO INSTITUCIONAL
+        function exportarExcelProfesional() {
+            if (registros.length === 0) {
+                alert("No hay registros disponibles para exportar.");
+                return;
+            }
+
+            // Preparar los datos estructurados en formato de filas y columnas limpias
+            let datosExportar = registros.map(r => ({
+                "Nombre Completo": r.nombre,
+                "Documento": r.documento,
+                "Sexo / Género": r.sexo,
+                "Fecha de Nacimiento": r.fechaNacimiento,
+                "Edad": r.edad,
+                "Ciclo Vital": r.cicloVital,
+                "Entidad (EPS)": r.entidadEps,
+                "Estado Afiliación": r.estadoAfiliacion,
+                "Entorno": r.entorno,
+                "Fecha Captación": r.fechaCaptacion || "No registrada",
+                "Intervenciones a seguir": r.intervencionFaltante,
+                "Estado Laboratorios": r.estadoLaboratorios,
+                "Fecha Finalidad Labs": r.fechaFinalidadLabs,
+                "Última Gestión": r.ultimaGestion,
+                "Próximas Acciones de Ruta": r.proximaAccion,
+                "Fecha Programada": r.fechaProgramada || "Sin agendar",
+                "Responsable / Tratante": r.responsable,
+                "Estado de Atención": r.estadoAtencion,
+                "Cierre Verificado": r.cierreVerificado,
+                "Fecha Cierre Demanda": r.fechaCierreDemanda
+            }));
+
+            // Crear libro de trabajo (Workbook) y hoja (Worksheet) usando SheetJS
+            let worksheet = XLSX.utils.json_to_sheet(datosExportar);
+            let workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte RPMS");
+
+            // Ajustar automáticamente el ancho de las columnas para que no queden textos cortados
+            let anchosColumnas = [];
+            Object.keys(datosExportar[0]).forEach(key => {
+                let maxLen = key.length;
+                datosExportar.forEach(row => {
+                    let val = String(row[key] || "");
+                    if (val.length > maxLen) maxLen = val.length;
+                });
+                anchosColumnas.push({ wch: Math.min(Math.max(maxLen + 3, 12), 40) });
             });
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Reporte_RPMS_Hospital_${new Date().toISOString().slice(0,10)}.csv`;
-            a.click();
+            worksheet['!cols'] = anchosColumnas;
+
+            // Generar archivo descargable con formato .xlsx real
+            let nombreArchivo = `Reporte_RPMS_Hospital_Ambalema_${new Date().toISOString().slice(0,10)}.xlsx`;
+            XLSX.writeFile(workbook, nombreArchivo);
+            mostrarToast("Archivo Excel exportado con éxito en formato profesional.");
         }
 
         cargarRegistros();
