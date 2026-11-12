@@ -6,7 +6,7 @@
     <title>RPMS Res. 3280 - Hospital San Antonio E.S.E.</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Librería para exportación profesional a Excel (.xlsx) -->
+    <!-- Librería para exportación e importación profesional a Excel (.xlsx) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -466,11 +466,23 @@
                                     <option value="No Aplica / Pendiente">No Aplica</option>
                                 </select>
                             </div>
-                            <button onclick="exportarExcelProfesional()" class="bg-emerald-600 hover:bg-emerald-500 text-xs px-3.5 py-2 rounded-lg font-bold transition shadow">
-                                <i class="fa-solid fa-file-excel mr-1 text-sm"></i> Exportar a Excel (.xlsx)
-                            </button>
+                            
+                            <!-- BOTONES DE EXPORTAR E IMPORTAR -->
+                            <div class="flex items-center space-x-2">
+                                <button onclick="exportarExcelProfesional()" class="bg-emerald-600 hover:bg-emerald-500 text-xs px-3.5 py-2 rounded-lg font-bold transition shadow flex items-center space-x-1">
+                                    <i class="fa-solid fa-file-excel text-sm"></i> 
+                                    <span>Exportar Excel</span>
+                                </button>
+                                
+                                <input type="file" id="input-importar-excel" accept=".xlsx, .xls, .csv" class="hidden" onchange="importarExcelProfesional(event)">
+                                <button onclick="document.getElementById('input-importar-excel').click()" class="bg-sky-600 hover:bg-sky-500 text-xs px-3.5 py-2 rounded-lg font-bold transition shadow flex items-center space-x-1">
+                                    <i class="fa-solid fa-file-arrow-up text-sm"></i> 
+                                    <span>Importar Excel</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
+                    
                     <!-- CONTENEDOR CON SCROLL HORIZONTAL FLUIDO -->
                     <div class="overflow-x-auto w-full">
                         <table class="w-full text-left border-collapse text-xs min-w-[1300px]">
@@ -1395,6 +1407,66 @@
             let nombreArchivo = `Reporte_RPMS_Hospital_Ambalema_${new Date().toISOString().slice(0,10)}.xlsx`;
             XLSX.writeFile(workbook, nombreArchivo);
             mostrarToast("Archivo Excel exportado en orden y totalmente editable.");
+        }
+
+        // IMPORTACIÓN PROFESIONAL DESDE EXCEL
+        function importarExcelProfesional(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const jsonRows = XLSX.utils.sheet_to_json(worksheet);
+
+                    if (jsonRows.length === 0) {
+                        alert("El archivo Excel está vacío o no contiene registros válidos.");
+                        return;
+                    }
+
+                    let nuevosRegistrosImportados = jsonRows.map((row, index) => {
+                        return {
+                            id: Date.now() + index,
+                            nombre: row["Nombre Completo"] || "Sin Nombre",
+                            documento: String(row["Documento"] || "S/N"),
+                            sexo: row["Sexo / Género"] || "Otro",
+                            fechaNacimiento: row["Fecha de Nacimiento"] || new Date().toISOString().slice(0, 10),
+                            edad: row["Edad"] || "0 años",
+                            cicloVital: row["Ciclo Vital"] || "Adulto",
+                            entidadEps: row["Entidad (EPS)"] || "Otra",
+                            estadoAfiliacion: row["Estado Afiliación"] || "Activo",
+                            entorno: row["Entorno / Origen"] || "Consulta Externa",
+                            fechaCaptacion: row["Fecha Captación"] || new Date().toISOString().slice(0, 10),
+                            intervencionFaltante: row["Intervenciones a seguir"] || "Ninguna",
+                            estadoLaboratorios: row["Estado Laboratorios"] || "Pendiente",
+                            fechaFinalidadLabs: row["Fecha Finalidad Labs"] || "",
+                            ultimaGestion: row["Última Gestión"] || "Asignación de cita",
+                            proximaAccion: row["Próximas Acciones de Ruta"] || "Seguimiento general",
+                            fechaProgramada: row["Fecha Programada"] || "",
+                            responsable: row["Responsable / Tratante"] || "Laura Ramírez",
+                            estadoAtencion: row["Estado de Atención"] || "Pendiente",
+                            cierreVerificado: row["Cierre Verificado"] || "No (Abierto)",
+                            fechaCierreDemanda: row["Fecha Cierre Demanda"] || "Pendiente"
+                        };
+                    });
+
+                    registros = [...nuevosRegistrosImportados, ...registros];
+                    localStorage.setItem('rpms_registros', JSON.stringify(registros));
+
+                    cargarRegistros();
+                    mostrarToast(`¡Importación exitosa! Se cargaron ${nuevosRegistrosImportados.length} registros ordenados.`);
+                } catch (error) {
+                    console.error(error);
+                    alert("Ocurrió un error al leer el archivo Excel. Asegúrate de que tenga el formato correcto.");
+                } finally {
+                    event.target.value = "";
+                }
+            };
+            reader.readAsArrayBuffer(file);
         }
     </script>
 </body>
