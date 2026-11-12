@@ -265,7 +265,7 @@
                             <input type="date" id="fechaCaptacion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                         </div>
 
-                        <!-- Intervenciones a seguir (Con Sangre oculta materia fecal) -->
+                        <!-- Intervenciones a seguir -->
                         <div class="md:col-span-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
                             <label class="block text-xs font-bold text-slate-700 uppercase mb-2">
                                 Intervenciones a seguir
@@ -482,7 +482,7 @@
                                     </th>
                                     <th class="p-3">Intervenciones a seguir</th>
                                     <th class="p-3 bg-amber-100/70 text-amber-950 font-extrabold border-x border-amber-200">
-                                        <i class="fa-solid fa-flask text-amber-600 mr-1"></i> Laboratorios
+                                        <i class="fa-solid fa-flask text-amber-600 mr-1"></i> Laboratorios y Fecha
                                     </th>
                                     <th class="p-3">Próximas Acciones de Ruta</th>
                                     <th class="p-3">Doctor / Responsable</th>
@@ -810,7 +810,7 @@
                 fechaCaptacion: document.getElementById('fechaCaptacion').value,
                 intervencionFaltante: brechasSeleccionadas.length > 0 ? brechasSeleccionadas.join(', ') : 'Ninguna',
                 estadoLaboratorios: 'Pendiente',
-                fechaFinalidadLabs: 'Pendiente',
+                fechaFinalidadLabs: '',
                 ultimaGestion: document.getElementById('ultimaGestion').value,
                 proximaAccion: accionesSeleccionadas.length > 0 ? accionesSeleccionadas.join(' | ') : 'Seguimiento general',
                 fechaProgramada: document.getElementById('fechaProgramada').value,
@@ -894,6 +894,9 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition";
                 
+                // Determinamos si la fecha ya está fijada/bloqueada (si ya tiene valor y está completado)
+                let esCompletadoBloqueado = (r.estadoLaboratorios === 'Completado' && r.fechaFinalidadLabs && r.fechaFinalidadLabs !== 'Pendiente' && r.fechaFinalidadLabs !== 'No Aplica');
+                
                 tr.innerHTML = `
                     <td class="p-3">
                         <p class="font-bold text-slate-900">${r.nombre}</p>
@@ -913,13 +916,19 @@
                     <td class="p-3 font-medium text-amber-800 max-w-xs">${r.intervencionFaltante}</td>
                     
                     <td class="p-3 bg-amber-50/50 border-x border-amber-200">
-                        <div class="space-y-1">
-                            <select onchange="actualizarLaboratoriosFila(${r.id}, this.value)" class="text-xs px-2.5 py-1 rounded-lg border font-bold shadow-sm ${r.estadoLaboratorios === 'Completado' ? 'bg-emerald-100 text-emerald-900 border-emerald-300' : (r.estadoLaboratorios === 'Pendiente' ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-slate-100 text-slate-600 border-slate-300')}">
+                        <div class="space-y-1.5">
+                            <select onchange="actualizarEstadoLaboratoriosFila(${r.id}, this.value)" class="text-xs px-2.5 py-1 rounded-lg border font-bold shadow-sm ${r.estadoLaboratorios === 'Completado' ? 'bg-emerald-100 text-emerald-900 border-emerald-300' : (r.estadoLaboratorios === 'Pendiente' ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-slate-100 text-slate-600 border-slate-300')}">
                                 <option value="Pendiente" ${r.estadoLaboratorios === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
                                 <option value="Completado" ${r.estadoLaboratorios === 'Completado' ? 'selected' : ''}>✅ Completado</option>
                                 <option value="No Aplica / Pendiente" ${r.estadoLaboratorios === 'No Aplica / Pendiente' ? 'selected' : ''}>⚪ No Aplica</option>
                             </select>
-                            <p class="text-[10px] text-slate-500 font-medium">Finalidad: <span class="text-emerald-700 font-bold">${r.fechaFinalidadLabs}</span></p>
+                            <div>
+                                <label class="block text-[10px] text-slate-500 font-semibold uppercase">Fecha Lab:</label>
+                                <input type="date" value="${r.fechaFinalidadLabs && r.fechaFinalidadLabs !== 'Pendiente' && r.fechaFinalidadLabs !== 'No Aplica' ? r.fechaFinalidadLabs : ''}" 
+                                       onchange="actualizarFechaLaboratoriosFila(${r.id}, this.value)"
+                                       ${esCompletadoBloqueado ? 'disabled class="text-[11px] px-2 py-0.5 rounded border border-slate-300 bg-slate-200 text-slate-600 cursor-not-allowed font-bold"' : 'class="text-[11px] px-2 py-0.5 rounded border border-amber-300 bg-white font-medium text-blue-950 focus:ring-1 focus:ring-amber-500"'}>
+                                ${esCompletadoBloqueado ? '<span class="block text-[9px] text-emerald-700 font-bold mt-0.5"><i class="fa-solid fa-lock"></i> Fecha bloqueada</span>' : ''}
+                            </div>
                         </div>
                     </td>
 
@@ -954,18 +963,39 @@
             });
         }
 
-        function actualizarLaboratoriosFila(id, nuevoEstadoLabs) {
-            const hoyStr = new Date().toISOString().slice(0, 10);
+        function actualizarEstadoLaboratoriosFila(id, nuevoEstadoLabs) {
             registros = registros.map(r => {
                 if (r.id === id) {
                     r.estadoLaboratorios = nuevoEstadoLabs;
-                    r.fechaFinalidadLabs = (nuevoEstadoLabs === 'Completado') ? hoyStr : ((nuevoEstadoLabs === 'Pendiente') ? 'Pendiente' : 'No Aplica');
+                    if (nuevoEstadoLabs === 'Pendiente') {
+                        r.fechaFinalidadLabs = 'Pendiente';
+                    } else if (nuevoEstadoLabs === 'No Aplica / Pendiente') {
+                        r.fechaFinalidadLabs = 'No Aplica';
+                    }
+                    // Si cambia a Completado y no tenía fecha válida, le sugerimos la de hoy para que la elija/bloquee
+                    if (nuevoEstadoLabs === 'Completado' && (!r.fechaFinalidadLabs || r.fechaFinalidadLabs === 'Pendiente' || r.fechaFinalidadLabs === 'No Aplica')) {
+                        r.fechaFinalidadLabs = new Date().toISOString().slice(0, 10);
+                    }
                 }
                 return r;
             });
             localStorage.setItem('rpms_registros', JSON.stringify(registros));
             cargarRegistros();
-            mostrarToast("Laboratorios actualizados");
+            mostrarToast("Estado de laboratorios actualizado");
+        }
+
+        function actualizarFechaLaboratoriosFila(id, nuevaFecha) {
+            if (!nuevaFecha) return;
+            registros = registros.map(r => {
+                if (r.id === id) {
+                    r.fechaFinalidadLabs = nuevaFecha;
+                    r.estadoLaboratorios = 'Completado'; // Al colocar fecha se asegura que quede completado y bloqueado
+                }
+                return r;
+            });
+            localStorage.setItem('rpms_registros', JSON.stringify(registros));
+            cargarRegistros();
+            mostrarToast("Fecha de laboratorios guardada y bloqueada");
         }
 
         function abrirModalEditar(id) {
@@ -1002,7 +1032,9 @@
                 if (r.id === id) {
                     const nuevoEstadoLabs = document.getElementById('edit-estadoLaboratorios').value;
                     if (r.estadoLaboratorios !== 'Completado' && nuevoEstadoLabs === 'Completado') {
-                        r.fechaFinalidadLabs = hoyStr;
+                        if (!r.fechaFinalidadLabs || r.fechaFinalidadLabs === 'Pendiente' || r.fechaFinalidadLabs === 'No Aplica') {
+                            r.fechaFinalidadLabs = hoyStr;
+                        }
                     } else if (nuevoEstadoLabs !== 'Completado') {
                         r.fechaFinalidadLabs = (nuevoEstadoLabs === 'Pendiente') ? 'Pendiente' : 'No Aplica';
                     }
