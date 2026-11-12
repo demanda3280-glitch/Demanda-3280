@@ -96,6 +96,7 @@
                         <option value="Asistió / Demanda Completa">Asistió / Demanda Completa</option>
                         <option value="Inasistencia / No asistió">Inasistencia / No asistió</option>
                         <option value="Desistió del proceso">Desistió del proceso</option>
+                        <option value="Seguimiento Incompleto EBS">Seguimiento Incompleto EBS</option>
                     </select>
                 </div>
 
@@ -383,7 +384,7 @@
                                    class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                         </div>
 
-                        <!-- Estado de Atención RPMS -->
+                        <!-- Estado de Atención RPMS (ACTUALIZADO: Seguimiento Incompleto EBS) -->
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Estado de Atención / Demanda</label>
                             <select id="estadoAtencion" onchange="verificarCierreAutomatico()" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white font-medium">
@@ -392,6 +393,7 @@
                                 <option value="Asistió / Demanda Completa">Asistió / Demanda Completa</option>
                                 <option value="Inasistencia / No asistió">Inasistencia / No asistió</option>
                                 <option value="Desistió del proceso">Desistió del proceso</option>
+                                <option value="Seguimiento Incompleto EBS">Seguimiento Incompleto EBS</option>
                             </select>
                         </div>
 
@@ -549,7 +551,7 @@
                     <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2">
                         <h3 class="text-xs font-bold text-slate-700 uppercase mb-4 flex items-center space-x-2">
                             <i class="fa-solid fa-chart-bar text-blue-900"></i>
-                            <span>KPI: Distribución Detallada por Estado de Atención (Pendientes, Citados, Demanda Completa, Inasistencias y Desistidos)</span>
+                            <span>KPI: Distribución Detallada por Estado de Atención (Pendientes, Citados, Demanda Completa, Inasistencias, Desistidos e Incompletos EBS)</span>
                         </h3>
                         <div class="h-72 relative flex items-center justify-center">
                             <canvas id="chartEstadoDetallado"></canvas>
@@ -894,7 +896,6 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition";
                 
-                // Determinamos si la fecha ya está fijada/bloqueada (si ya tiene valor y está completado)
                 let esCompletadoBloqueado = (r.estadoLaboratorios === 'Completado' && r.fechaFinalidadLabs && r.fechaFinalidadLabs !== 'Pendiente' && r.fechaFinalidadLabs !== 'No Aplica');
                 
                 tr.innerHTML = `
@@ -938,12 +939,13 @@
                     </td>
                     <td class="p-3 text-slate-700 font-medium">${r.responsable}</td>
                     <td class="p-3">
-                        <select onchange="actualizarEstadoFila(${r.id}, this.value)" class="text-xs px-2 py-1 rounded border border-slate-300 bg-white font-medium">
+                        <select onchange="actualizarEstadoFila(${r.id}, this.value)" class="text-xs px-2 py-1 rounded border border-slate-300 bg-white font-medium ${r.estadoAtencion === 'Seguimiento Incompleto EBS' ? 'text-amber-800 font-bold bg-amber-50' : ''}">
                             <option value="Pendiente" ${r.estadoAtencion === 'Pendiente' ? 'selected' : ''}>Pendiente</option>
                             <option value="Gestionado / Citado" ${r.estadoAtencion === 'Gestionado / Citado' ? 'selected' : ''}>Gestionado / Citado</option>
                             <option value="Asistió / Demanda Completa" ${r.estadoAtencion === 'Asistió / Demanda Completa' ? 'selected' : ''}>Asistió / Demanda Completa</option>
                             <option value="Inasistencia / No asistió" ${r.estadoAtencion === 'Inasistencia / No asistió' ? 'selected' : ''}>Inasistencia / No asistió</option>
                             <option value="Desistió del proceso" ${r.estadoAtencion === 'Desistió del proceso' ? 'selected' : ''}>Desistió del proceso</option>
+                            <option value="Seguimiento Incompleto EBS" ${r.estadoAtencion === 'Seguimiento Incompleto EBS' ? 'selected' : ''}>Seguimiento Incompleto EBS</option>
                         </select>
                     </td>
                     <td class="p-3 font-semibold text-emerald-700">${r.fechaCierreDemanda}</td>
@@ -972,7 +974,6 @@
                     } else if (nuevoEstadoLabs === 'No Aplica / Pendiente') {
                         r.fechaFinalidadLabs = 'No Aplica';
                     }
-                    // Si cambia a Completado y no tenía fecha válida, le sugerimos la de hoy para que la elija/bloquee
                     if (nuevoEstadoLabs === 'Completado' && (!r.fechaFinalidadLabs || r.fechaFinalidadLabs === 'Pendiente' || r.fechaFinalidadLabs === 'No Aplica')) {
                         r.fechaFinalidadLabs = new Date().toISOString().slice(0, 10);
                     }
@@ -989,7 +990,7 @@
             registros = registros.map(r => {
                 if (r.id === id) {
                     r.fechaFinalidadLabs = nuevaFecha;
-                    r.estadoLaboratorios = 'Completado'; // Al colocar fecha se asegura que quede completado y bloqueado
+                    r.estadoLaboratorios = 'Completado';
                 }
                 return r;
             });
@@ -1102,6 +1103,7 @@
             let completados = registros.filter(r => r.estadoAtencion.includes('Asistió')).length;
             let inasistencias = registros.filter(r => r.estadoAtencion.includes('Inasistencia')).length;
             let desistieron = registros.filter(r => r.estadoAtencion.includes('Desistió')).length;
+            let incompletosEbs = registros.filter(r => r.estadoAtencion.includes('Seguimiento Incompleto EBS')).length;
 
             let conteoEps = {};
             let conteoCicloAsistidos = {
@@ -1130,11 +1132,11 @@
             chartEstadoInstance = new Chart(ctxEstado, {
                 type: 'bar',
                 data: {
-                    labels: ['Pendientes', 'Citados / En Proceso', 'Demanda Completa (Asistió)', 'Inasistencia (No Asistió)', 'Desistió del Proceso'],
+                    labels: ['Pendientes', 'Citados', 'Demanda Completa', 'Inasistencias', 'Desistidos', 'Incompletos EBS'],
                     datasets: [{
                         label: 'Número de Pacientes',
-                        data: [pendientes, citados, completados, inasistencias, desistieron],
-                        backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#f43f5e', '#a855f7']
+                        data: [pendientes, citados, completados, inasistencias, desistieron, incompletosEbs],
+                        backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#f43f5e', '#a855f7', '#d97706']
                     }]
                 },
                 options: {
