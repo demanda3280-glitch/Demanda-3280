@@ -265,7 +265,7 @@
                             <input type="date" id="fechaCaptacion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm">
                         </div>
 
-                        <!-- Intervenciones a seguir -->
+                        <!-- Intervenciones a seguir (Con Sangre oculta materia fecal) -->
                         <div class="md:col-span-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
                             <label class="block text-xs font-bold text-slate-700 uppercase mb-2">
                                 Intervenciones a seguir
@@ -324,6 +324,10 @@
                                     <span>Tamizaje de tacto rectal</span>
                                 </label>
                                 <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" name="brechas" value="Sangre oculta materia fecal" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
+                                    <span>Sangre oculta materia fecal</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs font-medium bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-blue-50">
                                     <input type="checkbox" name="brechas" value="Agudeza visual" class="rounded text-blue-900 focus:ring-blue-600 h-4 w-4">
                                     <span>Agudeza visual</span>
                                 </label>
@@ -355,7 +359,7 @@
                             </div>
                         </div>
 
-                        <!-- Última Gestión (ACTUALIZADO: ATENCIÓN PRIMARIA EN SALUD EBS) -->
+                        <!-- Última Gestión -->
                         <div class="md:col-span-2">
                             <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Última Gestión / Intervención</label>
                             <select id="ultimaGestion" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm bg-white">
