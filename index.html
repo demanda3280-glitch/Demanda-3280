@@ -125,7 +125,7 @@
 
         <!-- Header Institucional -->
         <header class="bg-blue-900 text-white shadow-md border-b-4 border-amber-500">
-            <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-3">
                 <div class="flex items-center space-x-3">
                     <div class="bg-white text-blue-900 p-2.5 rounded-xl font-black text-xl shadow">
                         <i class="fa-solid fa-hospital"></i>
@@ -134,6 +134,11 @@
                         <h1 class="text-xl font-bold tracking-wide">HOSPITAL SAN ANTONIO E.S.E. DE AMBALEMA</h1>
                         <p class="text-xs text-blue-200 font-medium">Gestión de la Ruta Integral de Atención para la Promoción y Mantenimiento de la Salud (RPMS - Res. 3280)</p>
                     </div>
+                </div>
+                <!-- Indicador de estado de nube -->
+                <div id="cloud-status" class="flex items-center space-x-2 bg-blue-950/80 border border-blue-700 px-3.5 py-1.5 rounded-full text-xs font-semibold">
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" id="cloud-dot"></span>
+                    <span id="cloud-text" class="text-blue-200">Conectando a la nube...</span>
                 </div>
             </div>
         </header>
@@ -408,7 +413,7 @@
                         <div class="md:col-span-4 flex justify-end mt-2">
                             <button type="submit" class="bg-blue-900 hover:bg-blue-800 text-white font-bold px-8 py-3 rounded-xl transition duration-200 shadow-lg flex items-center space-x-2 text-sm">
                                 <i class="fa-solid fa-floppy-disk"></i>
-                                <span>Guardar Registro y Ver Pacientes</span>
+                                <span>Guardar Registro en la Nube</span>
                             </button>
                         </div>
                     </form>
@@ -481,7 +486,7 @@
                         </div>
                     </div>
                     
-                    <!-- CONTENEDOR CON SCROLL HORIZONTAL FLUIDO Y CELDAS MÁS COMPACTAS (py-2 px-2.5) -->
+                    <!-- CONTENEDOR CON SCROLL HORIZONTAL FLUIDO -->
                     <div class="overflow-x-auto w-full">
                         <table class="w-full text-left border-collapse text-xs min-w-[1300px]">
                             <thead>
@@ -702,6 +707,160 @@
         </main>
     </div>
 
+    <!-- MOTOR DE BASE DE DATOS EN LA NUBE (FIREBASE CLOUD FIRESTORE) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { 
+            getFirestore, collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, writeBatch 
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFQAX-yj_Jkomtii5REfqjsEGF6s7q64s",
+            authDomain: "demandas-3280.firebaseapp.com",
+            projectId: "demandas-3280",
+            storageBucket: "demandas-3280.firebasestorage.app",
+            messagingSenderId: "177409700306",
+            appId: "1:177409700306:web:6c989e515e78152e8b980b",
+            measurementId: "G-NGE45NZC2S"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Referencias a colecciones en la nube
+        const colRegistros = collection(db, "rpms_registros");
+        const colPuntos = collection(db, "rpms_puntos_criticos");
+        const colObs = collection(db, "rpms_obs_pacientes");
+        const colMejoras = collection(db, "rpms_acciones_mejora");
+
+        // Variables en memoria sincronizadas
+        window.registros = [];
+        window.puntosCriticos = [];
+        window.obsPacientes = [];
+        window.accionesMejora = [];
+
+        function actualizarEstadoNube(conectado) {
+            const dot = document.getElementById('cloud-dot');
+            const text = document.getElementById('cloud-text');
+            if (conectado) {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400";
+                text.innerText = "Nube Sincronizada";
+                text.className = "text-emerald-300";
+            } else {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping";
+                text.innerText = "Sin conexión";
+                text.className = "text-rose-300";
+            }
+        }
+
+        // Migración automática de datos locales antiguos hacia la nube (se ejecuta solo una vez por equipo si hay datos viejos)
+        async function migrarDatosLocalesANube() {
+            const yaMigrado = localStorage.getItem('rpms_migrado_nube_v1');
+            if (yaMigrado) return;
+
+            const locReg = JSON.parse(localStorage.getItem('rpms_registros')) || [];
+            const locPts = JSON.parse(localStorage.getItem('rpms_puntos_criticos')) || [];
+            const locObs = JSON.parse(localStorage.getItem('rpms_obs_pacientes')) || [];
+            const locMej = JSON.parse(localStorage.getItem('rpms_acciones_mejora')) || [];
+
+            if (locReg.length === 0 && locPts.length === 0 && locObs.length === 0 && locMej.length === 0) {
+                localStorage.setItem('rpms_migrado_nube_v1', 'true');
+                return;
+            }
+
+            try {
+                const batch = writeBatch(db);
+                locReg.forEach(item => batch.set(doc(colRegistros, String(item.id)), item));
+                locPts.forEach(item => batch.set(doc(colPuntos, String(item.id)), item));
+                locObs.forEach(item => batch.set(doc(colObs, String(item.id)), item));
+                locMej.forEach(item => batch.set(doc(colMejoras, String(item.id)), item));
+                await batch.commit();
+                localStorage.setItem('rpms_migrado_nube_v1', 'true');
+                window.mostrarToast("Datos antiguos de este equipo sincronizados con la nube.");
+            } catch (err) {
+                console.error("Error migrando datos locales:", err);
+            }
+        }
+
+        // Escucha en tiempo real de las 4 colecciones
+        window.iniciarSincronizacionTiempoReal = async function() {
+            await migrarDatosLocalesANube();
+
+            onSnapshot(query(colRegistros, orderBy("id", "desc")), (snapshot) => {
+                window.registros = snapshot.docs.map(d => d.data());
+                window.cargarRegistros();
+                if (!document.getElementById('seccion-analitica').classList.contains('hidden')) {
+                    window.renderizarGraficasDatos();
+                }
+                actualizarEstadoNube(true);
+            }, (error) => {
+                console.error("Error Firestore registros:", error);
+                actualizarEstadoNube(false);
+            });
+
+            onSnapshot(query(colPuntos, orderBy("id", "desc")), (snapshot) => {
+                window.puntosCriticos = snapshot.docs.map(d => d.data());
+                window.cargarPuntosCriticos();
+            });
+
+            onSnapshot(query(colObs, orderBy("id", "desc")), (snapshot) => {
+                window.obsPacientes = snapshot.docs.map(d => d.data());
+                window.cargarObservacionesPacientes();
+            });
+
+            onSnapshot(query(colMejoras, orderBy("id", "desc")), (snapshot) => {
+                window.accionesMejora = snapshot.docs.map(d => d.data());
+                window.cargarAccionesMejora();
+            });
+        };
+
+        // Operaciones CRUD en Firebase
+        window.dbGuardarRegistro = async (reg) => {
+            await setDoc(doc(colRegistros, String(reg.id)), reg);
+        };
+        window.dbActualizarRegistro = async (id, campos) => {
+            await updateDoc(doc(colRegistros, String(id)), campos);
+        };
+        window.dbEliminarRegistro = async (id) => {
+            await deleteDoc(doc(colRegistros, String(id)));
+        };
+        window.dbGuardarLoteRegistros = async (lista) => {
+            const batch = writeBatch(db);
+            lista.forEach(reg => {
+                batch.set(doc(colRegistros, String(reg.id)), reg);
+            });
+            await batch.commit();
+        };
+
+        window.dbGuardarPunto = async (pc) => {
+            await setDoc(doc(colPuntos, String(pc.id)), pc);
+        };
+        window.dbActualizarPunto = async (id, campos) => {
+            await updateDoc(doc(colPuntos, String(id)), campos);
+        };
+        window.dbEliminarPunto = async (id) => {
+            await deleteDoc(doc(colPuntos, String(id)));
+        };
+
+        window.dbGuardarObs = async (obs) => {
+            await setDoc(doc(colObs, String(obs.id)), obs);
+        };
+        window.dbEliminarObs = async (id) => {
+            await deleteDoc(doc(colObs, String(id)));
+        };
+
+        window.dbGuardarMejora = async (am) => {
+            await setDoc(doc(colMejoras, String(am.id)), am);
+        };
+        window.dbActualizarMejora = async (id, campos) => {
+            await updateDoc(doc(colMejoras, String(id)), campos);
+        };
+        window.dbEliminarMejora = async (id) => {
+            await deleteDoc(doc(colMejoras, String(id)));
+        };
+    </script>
+
+    <!-- LÓGICA DE INTERFAZ Y EVENTOS -->
     <script>
         let chartEstadoInstance = null;
         let chartEpsInstance = null;
@@ -714,10 +873,9 @@
                 document.getElementById('login-modal').classList.add('hidden');
                 document.getElementById('app-container').classList.remove('hidden');
                 verificarAlertaDia20();
-                cargarRegistros();
-                cargarPuntosCriticos();
-                cargarObservacionesPacientes();
-                cargarAccionesMejora();
+                if (window.iniciarSincronizacionTiempoReal) {
+                    window.iniciarSincronizacionTiempoReal();
+                }
             } else {
                 document.getElementById('login-error').classList.remove('hidden');
             }
@@ -794,12 +952,7 @@
             }
         }
 
-        let registros = JSON.parse(localStorage.getItem('rpms_registros')) || [];
-        let puntosCriticos = JSON.parse(localStorage.getItem('rpms_puntos_criticos')) || [];
-        let obsPacientes = JSON.parse(localStorage.getItem('rpms_obs_pacientes')) || [];
-        let accionesMejora = JSON.parse(localStorage.getItem('rpms_acciones_mejora')) || [];
-
-        function handleSubmit(event) {
+        async function handleSubmit(event) {
             event.preventDefault();
             
             const brechasSeleccionadas = Array.from(document.querySelectorAll('input[name="brechas"]:checked')).map(cb => cb.value);
@@ -833,26 +986,28 @@
                 fechaCierreDemanda: fechaCierreDemanda
             };
 
-            registros.unshift(nuevoRegistro);
-            localStorage.setItem('rpms_registros', JSON.stringify(registros));
-            
-            mostrarToast("Registro guardado con éxito.");
-            document.getElementById('rpms-form').reset();
-            document.getElementById('fechaCaptacion').valueAsDate = new Date();
-            document.getElementById('responsable').value = "Laura Ramírez";
-            document.getElementById('edadCalculada').value = "";
-            document.getElementById('cicloVital').value = "";
-            document.querySelectorAll('input[name="brechas"]').forEach(cb => cb.checked = false);
-            document.querySelectorAll('input[name="acciones_ruta"]').forEach(cb => cb.checked = false);
-            
-            cargarRegistros();
-            cambiarSeccion('pacientes');
+            try {
+                await window.dbGuardarRegistro(nuevoRegistro);
+                mostrarToast("Registro guardado y sincronizado en todos los dispositivos.");
+                document.getElementById('rpms-form').reset();
+                document.getElementById('fechaCaptacion').valueAsDate = new Date();
+                document.getElementById('responsable').value = "Laura Ramírez";
+                document.getElementById('edadCalculada').value = "";
+                document.getElementById('cicloVital').value = "";
+                document.querySelectorAll('input[name="brechas"]').forEach(cb => cb.checked = false);
+                document.querySelectorAll('input[name="acciones_ruta"]').forEach(cb => cb.checked = false);
+                cambiarSeccion('pacientes');
+            } catch (e) {
+                console.error(e);
+                alert("Error al guardar en la nube. Verifica tu conexión a internet.");
+            }
         }
 
         function poblarFiltros() {
+            const lista = window.registros || [];
             const selectEps = document.getElementById('filtro-eps');
             const epsActual = selectEps.value;
-            let epsList = [...new Set(registros.map(r => r.entidadEps).filter(Boolean))];
+            let epsList = [...new Set(lista.map(r => r.entidadEps).filter(Boolean))];
             let optionsEpsHTML = `<option value="TODOS">Todas las EPS</option>`;
             epsList.forEach(eps => {
                 optionsEpsHTML += `<option value="${eps}" ${eps === epsActual ? 'selected' : ''}>${eps}</option>`;
@@ -861,7 +1016,7 @@
 
             const selectEntorno = document.getElementById('filtro-entorno');
             const entornoActual = selectEntorno.value;
-            let entornoList = [...new Set(registros.map(r => r.entorno).filter(Boolean))];
+            let entornoList = [...new Set(lista.map(r => r.entorno).filter(Boolean))];
             let optionsEntornoHTML = `<option value="TODOS">Todos los Entornos</option>`;
             entornoList.forEach(ent => {
                 optionsEntornoHTML += `<option value="${ent}" ${ent === entornoActual ? 'selected' : ''}>${ent}</option>`;
@@ -870,6 +1025,7 @@
         }
 
         function cargarRegistros() {
+            const lista = window.registros || [];
             poblarFiltros();
             const tbody = document.getElementById('tabla-registros');
             tbody.innerHTML = "";
@@ -878,18 +1034,18 @@
             const filtroEps = document.getElementById('filtro-eps').value;
             const filtroEntorno = document.getElementById('filtro-entorno').value;
             
-            let registrosFiltrados = registros.filter(r => {
+            let registrosFiltrados = lista.filter(r => {
                 let matchLabs = (filtroLabs === 'TODOS' || r.estadoLaboratorios === filtroLabs);
                 let matchEps = (filtroEps === 'TODOS' || r.entidadEps === filtroEps);
                 let matchEntorno = (filtroEntorno === 'TODOS' || r.entorno === filtroEntorno);
                 return matchLabs && matchEps && matchEntorno;
             });
 
-            let total = registros.length;
-            let asistencias = registros.filter(r => r.estadoAtencion.includes('Asistió')).length;
-            let inasistencias = registros.filter(r => r.estadoAtencion.includes('Inasistencia')).length;
-            let desistieron = registros.filter(r => r.estadoAtencion.includes('Desistió')).length;
-            let cerrados = registros.filter(r => r.cierreVerificado.includes('Sí')).length;
+            let total = lista.length;
+            let asistencias = lista.filter(r => r.estadoAtencion.includes('Asistió')).length;
+            let inasistencias = lista.filter(r => r.estadoAtencion.includes('Inasistencia')).length;
+            let desistieron = lista.filter(r => r.estadoAtencion.includes('Desistió')).length;
+            let cerrados = lista.filter(r => r.cierreVerificado.includes('Sí')).length;
             let porcentajeCierre = total > 0 ? Math.round((cerrados / total) * 100) : 100;
 
             document.getElementById('kpi-total').innerText = total;
@@ -974,42 +1130,37 @@
             });
         }
 
-        function actualizarEstadoLaboratoriosFila(id, nuevoEstadoLabs) {
-            registros = registros.map(r => {
-                if (r.id === id) {
-                    r.estadoLaboratorios = nuevoEstadoLabs;
-                    if (nuevoEstadoLabs === 'Pendiente') {
-                        r.fechaFinalidadLabs = 'Pendiente';
-                    } else if (nuevoEstadoLabs === 'No Aplica / Pendiente') {
-                        r.fechaFinalidadLabs = 'No Aplica';
-                    }
-                    if (nuevoEstadoLabs === 'Completado' && (!r.fechaFinalidadLabs || r.fechaFinalidadLabs === 'Pendiente' || r.fechaFinalidadLabs === 'No Aplica')) {
-                        r.fechaFinalidadLabs = new Date().toISOString().slice(0, 10);
-                    }
-                }
-                return r;
+        async function actualizarEstadoLaboratoriosFila(id, nuevoEstadoLabs) {
+            const r = window.registros.find(item => item.id === id);
+            if (!r) return;
+
+            let nuevaFecha = r.fechaFinalidadLabs;
+            if (nuevoEstadoLabs === 'Pendiente') {
+                nuevaFecha = 'Pendiente';
+            } else if (nuevoEstadoLabs === 'No Aplica / Pendiente') {
+                nuevaFecha = 'No Aplica';
+            } else if (nuevoEstadoLabs === 'Completado' && (!nuevaFecha || nuevaFecha === 'Pendiente' || nuevaFecha === 'No Aplica')) {
+                nuevaFecha = new Date().toISOString().slice(0, 10);
+            }
+
+            await window.dbActualizarRegistro(id, {
+                estadoLaboratorios: nuevoEstadoLabs,
+                fechaFinalidadLabs: nuevaFecha
             });
-            localStorage.setItem('rpms_registros', JSON.stringify(registros));
-            cargarRegistros();
-            mostrarToast("Estado de laboratorios actualizado");
+            mostrarToast("Estado de laboratorios sincronizado");
         }
 
-        function actualizarFechaLaboratoriosFila(id, nuevaFecha) {
+        async function actualizarFechaLaboratoriosFila(id, nuevaFecha) {
             if (!nuevaFecha) return;
-            registros = registros.map(r => {
-                if (r.id === id) {
-                    r.fechaFinalidadLabs = nuevaFecha;
-                    r.estadoLaboratorios = 'Completado';
-                }
-                return r;
+            await window.dbActualizarRegistro(id, {
+                fechaFinalidadLabs: nuevaFecha,
+                estadoLaboratorios: 'Completado'
             });
-            localStorage.setItem('rpms_registros', JSON.stringify(registros));
-            cargarRegistros();
             mostrarToast("Fecha de laboratorios guardada y bloqueada");
         }
 
         function abrirModalEditar(id) {
-            const paciente = registros.find(r => r.id === id);
+            const paciente = window.registros.find(r => r.id === id);
             if (!paciente) return;
 
             document.getElementById('edit-id').value = paciente.id;
@@ -1033,85 +1184,81 @@
             document.getElementById('edit-modal').classList.add('hidden');
         }
 
-        function guardarEdicionModal(event) {
+        async function guardarEdicionModal(event) {
             event.preventDefault();
             const id = parseInt(document.getElementById('edit-id').value);
-            const hoyStr = new Date().toISOString().slice(0, 10);
+            const r = window.registros.find(item => item.id === id);
+            if (!r) return;
 
-            registros = registros.map(r => {
-                if (r.id === id) {
-                    const nuevoEstadoLabs = document.getElementById('edit-estadoLaboratorios').value;
-                    if (r.estadoLaboratorios !== 'Completado' && nuevoEstadoLabs === 'Completado') {
-                        if (!r.fechaFinalidadLabs || r.fechaFinalidadLabs === 'Pendiente' || r.fechaFinalidadLabs === 'No Aplica') {
-                            r.fechaFinalidadLabs = hoyStr;
-                        }
-                    } else if (nuevoEstadoLabs !== 'Completado') {
-                        r.fechaFinalidadLabs = (nuevoEstadoLabs === 'Pendiente') ? 'Pendiente' : 'No Aplica';
-                    }
-                    r.estadoLaboratorios = nuevoEstadoLabs;
-                    r.ultimaGestion = document.getElementById('edit-ultimaGestion').value;
-                    r.proximaAccion = document.getElementById('edit-proximaAccion').value;
-                    r.fechaProgramada = document.getElementById('edit-fechaProgramada').value;
-                    r.responsable = document.getElementById('edit-responsable').value;
-                    r.estadoAtencion = document.getElementById('edit-estadoAtencion').value;
-                    r.cierreVerificado = document.getElementById('edit-cierreVerificado').value;
-                    r.fechaCierreDemanda = (r.estadoAtencion.includes('Asistió') || r.cierreVerificado.includes('Sí')) ? hoyStr : "Pendiente";
+            const hoyStr = new Date().toISOString().slice(0, 10);
+            const nuevoEstadoLabs = document.getElementById('edit-estadoLaboratorios').value;
+            let nuevaFechaLabs = r.fechaFinalidadLabs;
+
+            if (r.estadoLaboratorios !== 'Completado' && nuevoEstadoLabs === 'Completado') {
+                if (!nuevaFechaLabs || nuevaFechaLabs === 'Pendiente' || nuevaFechaLabs === 'No Aplica') {
+                    nuevaFechaLabs = hoyStr;
                 }
-                return r;
+            } else if (nuevoEstadoLabs !== 'Completado') {
+                nuevaFechaLabs = (nuevoEstadoLabs === 'Pendiente') ? 'Pendiente' : 'No Aplica';
+            }
+
+            const nuevoEstadoAtencion = document.getElementById('edit-estadoAtencion').value;
+            const nuevoCierre = document.getElementById('edit-cierreVerificado').value;
+
+            await window.dbActualizarRegistro(id, {
+                estadoLaboratorios: nuevoEstadoLabs,
+                fechaFinalidadLabs: nuevaFechaLabs,
+                ultimaGestion: document.getElementById('edit-ultimaGestion').value,
+                proximaAccion: document.getElementById('edit-proximaAccion').value,
+                fechaProgramada: document.getElementById('edit-fechaProgramada').value,
+                responsable: document.getElementById('edit-responsable').value,
+                estadoAtencion: nuevoEstadoAtencion,
+                cierreVerificado: nuevoCierre,
+                fechaCierreDemanda: (nuevoEstadoAtencion.includes('Asistió') || nuevoCierre.includes('Sí')) ? hoyStr : "Pendiente"
             });
 
-            localStorage.setItem('rpms_registros', JSON.stringify(registros));
             cerrarModalEditar();
-            cargarRegistros();
-            mostrarToast("Paciente actualizado");
+            mostrarToast("Paciente actualizado en la nube");
         }
 
-        function actualizarEstadoFila(id, nuevoEstado) {
+        async function actualizarEstadoFila(id, nuevoEstado) {
             const hoyStr = new Date().toISOString().slice(0, 10);
-            registros = registros.map(r => {
-                if (r.id === id) {
-                    r.estadoAtencion = nuevoEstado;
-                    if (nuevoEstado.includes('Asistió / Demanda Completa')) {
-                        r.cierreVerificado = "Sí (Cerrado)";
-                        r.fechaCierreDemanda = hoyStr;
-                    } else {
-                        r.cierreVerificado = "No (Abierto)";
-                        r.fechaCierreDemanda = "Pendiente";
-                    }
-                }
-                return r;
+            const esAsistio = nuevoEstado.includes('Asistió / Demanda Completa');
+            await window.dbActualizarRegistro(id, {
+                estadoAtencion: nuevoEstado,
+                cierreVerificado: esAsistio ? "Sí (Cerrado)" : "No (Abierto)",
+                fechaCierreDemanda: esAsistio ? hoyStr : "Pendiente"
             });
-            localStorage.setItem('rpms_registros', JSON.stringify(registros));
-            cargarRegistros();
             mostrarToast("Estado actualizado");
         }
 
-        function alternarCompletado(id) {
+        async function alternarCompletado(id) {
+            const r = window.registros.find(item => item.id === id);
+            if (!r) return;
             const hoyStr = new Date().toISOString().slice(0, 10);
-            registros = registros.map(r => {
-                if (r.id === id) {
-                    if (r.cierreVerificado.includes('Sí')) {
-                        r.cierreVerificado = "No (Abierto)";
-                        r.fechaCierreDemanda = "Pendiente";
-                    } else {
-                        r.cierreVerificado = "Sí (Cerrado)";
-                        r.estadoAtencion = "Asistió / Demanda Completa";
-                        r.fechaCierreDemanda = hoyStr;
-                    }
-                }
-                return r;
-            });
-            localStorage.setItem('rpms_registros', JSON.stringify(registros));
-            cargarRegistros();
+
+            if (r.cierreVerificado.includes('Sí')) {
+                await window.dbActualizarRegistro(id, {
+                    cierreVerificado: "No (Abierto)",
+                    fechaCierreDemanda: "Pendiente"
+                });
+            } else {
+                await window.dbActualizarRegistro(id, {
+                    cierreVerificado: "Sí (Cerrado)",
+                    estadoAtencion: "Asistió / Demanda Completa",
+                    fechaCierreDemanda: hoyStr
+                });
+            }
             mostrarToast("Estado de cierre modificado");
         }
 
         function renderizarGraficasDatos() {
-            let pendientes = registros.filter(r => r.estadoAtencion === 'Pendiente').length;
-            let citados = registros.filter(r => r.estadoAtencion.includes('Gestionado')).length;
-            let completados = registros.filter(r => r.estadoAtencion.includes('Asistió')).length;
-            let inasistencias = registros.filter(r => r.estadoAtencion.includes('Inasistencia')).length;
-            let desistieron = registros.filter(r => r.estadoAtencion.includes('Desistió')).length;
+            const lista = window.registros || [];
+            let pendientes = lista.filter(r => r.estadoAtencion === 'Pendiente').length;
+            let citados = lista.filter(r => r.estadoAtencion.includes('Gestionado')).length;
+            let completados = lista.filter(r => r.estadoAtencion.includes('Asistió')).length;
+            let inasistencias = lista.filter(r => r.estadoAtencion.includes('Inasistencia')).length;
+            let desistieron = lista.filter(r => r.estadoAtencion.includes('Desistió')).length;
 
             let conteoEps = {};
             let conteoCicloAsistidos = {
@@ -1123,7 +1270,7 @@
                 "Vejez (60+ años)": 0
             };
 
-            registros.forEach(r => {
+            lista.forEach(r => {
                 let eps = r.entidadEps || 'No Especificado';
                 conteoEps[eps] = (conteoEps[eps] || 0) + 1;
 
@@ -1198,24 +1345,23 @@
         }
 
         // GESTIÓN DE PUNTOS CRÍTICOS (Pestaña 4)
-        function agregarPuntoCritico() {
+        async function agregarPuntoCritico() {
             const txt = document.getElementById('nuevo-punto-critico').value.trim();
             if (!txt) return;
-            puntosCriticos.unshift({ id: Date.now(), texto: txt, fecha: new Date().toISOString().slice(0, 10), completado: false });
-            localStorage.setItem('rpms_puntos_criticos', JSON.stringify(puntosCriticos));
+            await window.dbGuardarPunto({ id: Date.now(), texto: txt, fecha: new Date().toISOString().slice(0, 10), completado: false });
             document.getElementById('nuevo-punto-critico').value = "";
-            cargarPuntosCriticos();
             mostrarToast("Punto crítico registrado");
         }
 
         function cargarPuntosCriticos() {
+            const lista = window.puntosCriticos || [];
             const tbody = document.getElementById('tabla-puntos-criticos');
             tbody.innerHTML = "";
-            if (puntosCriticos.length === 0) {
+            if (lista.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">No hay puntos críticos registrados.</td></tr>`;
                 return;
             }
-            puntosCriticos.forEach(pc => {
+            lista.forEach(pc => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50">
                         <td class="p-3 font-medium text-slate-900">${pc.texto}</td>
@@ -1233,39 +1379,36 @@
             });
         }
 
-        function alternarPuntoCritico(id) {
-            puntosCriticos = puntosCriticos.map(pc => { if (pc.id === id) pc.completado = !pc.completado; return pc; });
-            localStorage.setItem('rpms_puntos_criticos', JSON.stringify(puntosCriticos));
-            cargarPuntosCriticos();
+        async function alternarPuntoCritico(id) {
+            const pc = window.puntosCriticos.find(item => item.id === id);
+            if (!pc) return;
+            await window.dbActualizarPunto(id, { completado: !pc.completado });
         }
 
-        function eliminarPuntoCritico(id) {
-            puntosCriticos = puntosCriticos.filter(pc => pc.id !== id);
-            localStorage.setItem('rpms_puntos_criticos', JSON.stringify(puntosCriticos));
-            cargarPuntosCriticos();
+        async function eliminarPuntoCritico(id) {
+            await window.dbEliminarPunto(id);
         }
 
         // GESTIÓN DE OBSERVACIONES DE PACIENTES (Pestaña 4)
-        function agregarObservacionPaciente() {
+        async function agregarObservacionPaciente() {
             const pac = document.getElementById('obs-paciente').value.trim();
             const txt = document.getElementById('obs-texto').value.trim();
             if (!pac || !txt) return;
-            obsPacientes.unshift({ id: Date.now(), paciente: pac, texto: txt, fecha: new Date().toISOString().slice(0, 10) });
-            localStorage.setItem('rpms_obs_pacientes', JSON.stringify(obsPacientes));
+            await window.dbGuardarObs({ id: Date.now(), paciente: pac, texto: txt, fecha: new Date().toISOString().slice(0, 10) });
             document.getElementById('obs-paciente').value = "";
             document.getElementById('obs-texto').value = "";
-            cargarObservacionesPacientes();
             mostrarToast("Observación guardada");
         }
 
         function cargarObservacionesPacientes() {
+            const lista = window.obsPacientes || [];
             const tbody = document.getElementById('tabla-observaciones-pacientes');
             tbody.innerHTML = "";
-            if (obsPacientes.length === 0) {
+            if (lista.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">No hay observaciones registradas.</td></tr>`;
                 return;
             }
-            obsPacientes.forEach(op => {
+            lista.forEach(op => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50">
                         <td class="p-3 font-bold text-blue-900">${op.paciente}</td>
@@ -1279,33 +1422,30 @@
             });
         }
 
-        function eliminarObsPaciente(id) {
-            obsPacientes = obsPacientes.filter(op => op.id !== id);
-            localStorage.setItem('rpms_obs_pacientes', JSON.stringify(obsPacientes));
-            cargarObservacionesPacientes();
+        async function eliminarObsPaciente(id) {
+            await window.dbEliminarObs(id);
         }
 
         // GESTIÓN DE ACCIONES DE MEJORA (Pestaña 5)
-        function agregarAccionMejora() {
+        async function agregarAccionMejora() {
             const tit = document.getElementById('mejora-titulo').value.trim();
             const resp = document.getElementById('mejora-responsable').value.trim();
             if (!tit || !resp) return;
-            accionesMejora.unshift({ id: Date.now(), titulo: tit, responsable: resp, fecha: new Date().toISOString().slice(0, 10), estado: 'En Proceso' });
-            localStorage.setItem('rpms_acciones_mejora', JSON.stringify(accionesMejora));
+            await window.dbGuardarMejora({ id: Date.now(), titulo: tit, responsable: resp, fecha: new Date().toISOString().slice(0, 10), estado: 'En Proceso' });
             document.getElementById('mejora-titulo').value = "";
             document.getElementById('mejora-responsable').value = "";
-            cargarAccionesMejora();
             mostrarToast("Acción de mejora agregada");
         }
 
         function cargarAccionesMejora() {
+            const lista = window.accionesMejora || [];
             const tbody = document.getElementById('tabla-acciones-mejora');
             tbody.innerHTML = "";
-            if (accionesMejora.length === 0) {
+            if (lista.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">No hay acciones de mejora registradas.</td></tr>`;
                 return;
             }
-            accionesMejora.forEach(am => {
+            lista.forEach(am => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50">
                         <td class="p-3 font-bold text-slate-900">${am.titulo}</td>
@@ -1325,24 +1465,18 @@
             });
         }
 
-        function cambiarEstadoMejora(id, nuevoEstado) {
-            accionesMejora = accionesMejora.map(am => { if (am.id === id) am.estado = nuevoEstado; return am; });
-            localStorage.setItem('rpms_acciones_mejora', JSON.stringify(accionesMejora));
-            cargarAccionesMejora();
+        async function cambiarEstadoMejora(id, nuevoEstado) {
+            await window.dbActualizarMejora(id, { estado: nuevoEstado });
             mostrarToast("Estado de mejora actualizado");
         }
 
-        function eliminarAccionMejora(id) {
-            accionesMejora = accionesMejora.filter(am => am.id !== id);
-            localStorage.setItem('rpms_acciones_mejora', JSON.stringify(accionesMejora));
-            cargarAccionesMejora();
+        async function eliminarAccionMejora(id) {
+            await window.dbEliminarMejora(id);
         }
 
-        function eliminarRegistro(id) {
-            if (confirm("¿Estás segura de eliminar este registro del sistema?")) {
-                registros = registros.filter(r => r.id !== id);
-                localStorage.setItem('rpms_registros', JSON.stringify(registros));
-                cargarRegistros();
+        async function eliminarRegistro(id) {
+            if (confirm("¿Estás segura de eliminar este registro del sistema? Se borrará de todos los dispositivos.")) {
+                await window.dbEliminarRegistro(id);
                 mostrarToast("Registro eliminado");
             }
         }
@@ -1356,12 +1490,13 @@
 
         // EXPORTACIÓN PROFESIONAL A EXCEL
         function exportarExcelProfesional() {
-            if (registros.length === 0) {
+            const lista = window.registros || [];
+            if (lista.length === 0) {
                 alert("No hay registros disponibles para exportar.");
                 return;
             }
 
-            let datosExportar = registros.map(r => ({
+            let datosExportar = lista.map(r => ({
                 "Nombre Completo": r.nombre,
                 "Documento": r.documento,
                 "Sexo / Género": r.sexo,
@@ -1410,7 +1545,7 @@
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
@@ -1449,11 +1584,8 @@
                         };
                     });
 
-                    registros = [...nuevosRegistrosImportados, ...registros];
-                    localStorage.setItem('rpms_registros', JSON.stringify(registros));
-
-                    cargarRegistros();
-                    mostrarToast(`¡Importación exitosa! Se cargaron ${nuevosRegistrosImportados.length} registros ordenados.`);
+                    await window.dbGuardarLoteRegistros(nuevosRegistrosImportados);
+                    mostrarToast(`¡Importación exitosa! Se subieron ${nuevosRegistrosImportados.length} registros a la nube.`);
                 } catch (error) {
                     console.error(error);
                     alert("Ocurrió un error al leer el archivo Excel. Asegúrate de que tenga el formato correcto.");
